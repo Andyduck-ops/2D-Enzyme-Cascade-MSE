@@ -31,10 +31,10 @@ Language / 语言: [English](2d_model_theory.en.md) | [中文](2d_model_theory.m
   - 底物 S 随机扩散；GOx、HRP 固定位于膜区（MSE 模式）或分布于体相（bulk 模式）。
   - 级联反应：$\mathrm{S} \xrightarrow{\mathrm{GOx}} \mathrm{I} \xrightarrow{\mathrm{HRP}} \mathrm{P}$。
 - 关键参数（默认值见配置）：
-  - 扩散系数：$D_{\mathrm{bulk}} = 1000\,\mathrm{nm}^2/\mathrm{s}$，$D_{\mathrm{film}} = 10\,\mathrm{nm}^2/\mathrm{s}$。
-  - 速率常数：$k_{\mathrm{cat,GOx}} = 100\,\mathrm{s}^{-1}$，$k_{\mathrm{cat,HRP}} = 100\,\mathrm{s}^{-1}$。
+  - 扩散系数：$D_{\mathrm{bulk}} = 1000\,\mathrm{nm}^2/\mathrm{s}$, $D_{\mathrm{film}} = 10\,\mathrm{nm}^2/\mathrm{s}$。
+  - 速率常数：$k_{\mathrm{cat,GOx}} = 100\,\mathrm{s}^{-1}$, $k_{\mathrm{cat,HRP}} = 100\,\mathrm{s}^{-1}$。
   - 拥挤抑制：范围 $R_{\mathrm{inhibit}} = 10\,\mathrm{nm}$，饱和阈值 $n_{\mathrm{sat}} = 5$，最大抑制 $I_{\max} = 0.8$。
-- 配置入口：（确保数学公式与英文版本格式一致）
+- 配置入口：
   - [2D/modules/config/default_config.m](../modules/config/default_config.m)
   - [2D/modules/config/interactive_config.m](../modules/config/interactive_config.m)
 
@@ -96,7 +96,7 @@ $$
 
 ### 3.4 拥挤抑制（局部调制）
 
-近邻半径内（$R_{\text{inhibit}}$）统计局部拥挤度 $n_{\text{local}}$，形成抑制权重：
+近邻半径内（$R_{\mathrm{inhibit}}$）统计局部拥挤度 $n_{\mathrm{local}}$，形成抑制权重：
 
 $$
 \mathrm{inhibition} = I_{\max}\,\max\!\left(0,\, 1 - \frac{n_{\mathrm{local}}}{n_{\mathrm{sat}}}\right).
@@ -136,8 +136,8 @@ $$
 
 - 建议：
 
-  - 验证/调参阶段：$M\approx 5-10$；
-  - 报告/区间估计：$M\ge 30$，并输出均值 $\pm$ 置信区间。
+  - 验证/调参阶段：$M \approx 5\text{--}10$；
+  - 报告/区间估计：$M \geq 30$,并输出均值 $\pm$ 置信区间。
 
 - 文件： [2D/modules/batch/run_batches.m](../modules/batch/run_batches.m)，种子策略见 [2D/modules/seed_utils/get_batch_seeds.m](../modules/seed_utils/get_batch_seeds.m)
 
