@@ -29,7 +29,7 @@ Language / 语言: [English](2d_model_theory.en.md) | [中文](2d_model_theory.m
   - 边界条件：盒壁、颗粒表面为镜面反射（无吸收）。
 - 物种与过程
   - 底物 S 随机扩散；GOx、HRP 固定位于膜区（MSE 模式）或分布于体相（bulk 模式）。
-  - 级联反应：S —(GOx)→ I —(HRP)→ P。
+  - 级联反应：$\mathrm{S} \xrightarrow{\mathrm{GOx}} \mathrm{I} \xrightarrow{\mathrm{HRP}} \mathrm{P}$。
 - 关键参数（默认值见配置）：
   - 扩散系数：$D_{\text{bulk}} = 1000\,\mathrm{nm}^2/\mathrm{s}$，$D_{\text{film}} = 10\,\mathrm{nm}^2/\mathrm{s}$。
   - 速率常数：$k_{\mathrm{cat,GOx}} = 100\,\mathrm{s}^{-1}$，$k_{\mathrm{cat,HRP}} = 100\,\mathrm{s}^{-1}$。
@@ -77,7 +77,7 @@ $$
 ### 3.2 边界与膜区约束
 
 - 盒子与颗粒表面镜面反射：法向分量取反。
-- MSE 模式：反应位点与可行相遇被限制在膜环 r ∈ [r_p, r_p + f_t]。
+- MSE 模式：反应位点与可行相遇被限制在膜环 $r \in [r_p, r_p + f_t]$。
 - 文件： [2D/modules/sim_core/boundary_reflection.m](../modules/sim_core/boundary_reflection.m)，膜环约束在 [2D/modules/sim_core/reaction_step.m](../modules/sim_core/reaction_step.m)
 
 ### 3.3 反应概率与事件采样（Gillespie 风格）
@@ -136,8 +136,8 @@ $$
 
 - 建议：
 
-  - 验证/调参阶段：M≈5–10；
-  - 报告/区间估计：M≥30，并输出均值±置信区间。
+  - 验证/调参阶段：$M\approx 5\text{-}10$；
+  - 报告/区间估计：$M\ge 30$，并输出均值±置信区间。
 
 - 文件： [2D/modules/batch/run_batches.m](../modules/batch/run_batches.m)，种子策略见 [2D/modules/seed_utils/get_batch_seeds.m](../modules/seed_utils/get_batch_seeds.m)
 
