@@ -25,15 +25,15 @@ Language: [English](2d_model_theory.en.md) | [中文](2d_model_theory.md)
 ## 1. System Overview and Modeling Assumptions
 
 - Geometry and Boundaries
-  - 2D square box with side length $L$ (default $500$ $\mathrm{nm}$), containing a central particle with radius $r_p$ (default $20$ $\mathrm{nm}$) and a film region with thickness $f_t$ (default $5$ $\mathrm{nm}$).
+  - 2D square box with side length $L$ (default $500\,\mathrm{nm}$), containing a central particle with radius $r_p$ (default $20\,\mathrm{nm}$) and a film region with thickness $f_t$ (default $5\,\mathrm{nm}$).
   - Boundary conditions: Box walls and particle surface are specular reflective (no absorption).
 - Species and Processes
   - Substrate S undergoes random diffusion; GOx and HRP are fixed in the film region (MSE mode) or distributed in bulk (bulk mode).
   - Cascade reaction: $\mathrm{S} \xrightarrow{\mathrm{GOx}} \mathrm{I} \xrightarrow{\mathrm{HRP}} \mathrm{P}$.
 - Key Parameters (default values in configuration):
-  - Diffusion coefficients: $D_{\mathrm{bulk}} = 1000$ $\mathrm{nm}^2/\mathrm{s}$, $D_{\mathrm{film}} = 10$ $\mathrm{nm}^2/\mathrm{s}$.
-  - Rate constants: $k_{\mathrm{cat,GOx}} = 100$ $\mathrm{s}^{-1}$, $k_{\mathrm{cat,HRP}} = 100$ $\mathrm{s}^{-1}$.
-  - Crowding inhibition: Range $R_{\mathrm{inhibit}} = 10$ $\mathrm{nm}$, saturation threshold $n_{\mathrm{sat}} = 5$, maximum inhibition $I_{\max} = 0.8$.
+  - Diffusion coefficients: $D_{\mathrm{bulk}} = 1000\,\mathrm{nm}^2/\mathrm{s}$, $D_{\mathrm{film}} = 10\,\mathrm{nm}^2/\mathrm{s}$.
+  - Rate constants: $k_{\mathrm{cat,GOx}} = 100\,\mathrm{s}^{-1}$, $k_{\mathrm{cat,HRP}} = 100\,\mathrm{s}^{-1}$.
+  - Crowding inhibition: Range $R_{\mathrm{inhibit}} = 10\,\mathrm{nm}$, saturation threshold $n_{\mathrm{sat}} = 5$, maximum inhibition $I_{\max} = 0.8$.
 - Configuration Entry
   - [2D/modules/config/default_config.m](../modules/config/default_config.m)
   - [2D/modules/config/interactive_config.m](../modules/config/interactive_config.m)
@@ -120,8 +120,8 @@ $$
 $$
 
 - Recommendations:
-  - Validation/parameter tuning phase: M≈5–10;
-  - Reporting/interval estimation: M≥30, and output mean ± confidence interval.
+  - Validation/parameter tuning phase: $M \approx 5\text{--}10$;
+  - Reporting/interval estimation: $M \geq 30$, and output mean $\pm$ confidence interval.
 - File: [2D/modules/batch/run_batches.m](../modules/batch/run_batches.m), seed strategy in [2D/modules/seed_utils/get_batch_seeds.m](../modules/seed_utils/get_batch_seeds.m)
 
 ---

@@ -25,15 +25,15 @@ Language / 语言: [English](2d_model_theory.en.md) | [中文](2d_model_theory.m
 ## 1. 系统概述与建模假设
 
 - 几何与边界
-  - 2D 方形盒子，边长 $L$（默认 $500$ $\mathrm{nm}$），中心存在半径 $r_p$（默认 $20$ $\mathrm{nm}$）的颗粒与膜厚 $f_t$（默认 $5$ $\mathrm{nm}$）的环区。
+  - 2D 方形盒子，边长 $L$（默认 $500\,\mathrm{nm}$），中心存在半径 $r_p$（默认 $20\,\mathrm{nm}$）的颗粒与膜厚 $f_t$（默认 $5\,\mathrm{nm}$）的环区。
   - 边界条件：盒壁、颗粒表面为镜面反射（无吸收）。
 - 物种与过程
   - 底物 S 随机扩散；GOx、HRP 固定位于膜区（MSE 模式）或分布于体相（bulk 模式）。
   - 级联反应：$\mathrm{S} \xrightarrow{\mathrm{GOx}} \mathrm{I} \xrightarrow{\mathrm{HRP}} \mathrm{P}$。
 - 关键参数（默认值见配置）：
-  - 扩散系数：$D_{\mathrm{bulk}} = 1000$ $\mathrm{nm}^2/\mathrm{s}$，$D_{\mathrm{film}} = 10$ $\mathrm{nm}^2/\mathrm{s}$。
-  - 速率常数：$k_{\mathrm{cat,GOx}} = 100$ $\mathrm{s}^{-1}$，$k_{\mathrm{cat,HRP}} = 100$ $\mathrm{s}^{-1}$。
-  - 拥挤抑制：范围 $R_{\mathrm{inhibit}} = 10$ $\mathrm{nm}$，饱和阈值 $n_{\mathrm{sat}} = 5$，最大抑制 $I_{\max} = 0.8$。
+  - 扩散系数：$D_{\mathrm{bulk}} = 1000\,\mathrm{nm}^2/\mathrm{s}$，$D_{\mathrm{film}} = 10\,\mathrm{nm}^2/\mathrm{s}$。
+  - 速率常数：$k_{\mathrm{cat,GOx}} = 100\,\mathrm{s}^{-1}$，$k_{\mathrm{cat,HRP}} = 100\,\mathrm{s}^{-1}$。
+  - 拥挤抑制：范围 $R_{\mathrm{inhibit}} = 10\,\mathrm{nm}$，饱和阈值 $n_{\mathrm{sat}} = 5$，最大抑制 $I_{\max} = 0.8$。
 - 配置入口
   - [2D/modules/config/default_config.m](../modules/config/default_config.m)
   - [2D/modules/config/interactive_config.m](../modules/config/interactive_config.m)
