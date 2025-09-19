@@ -34,7 +34,7 @@ Language / 语言: [English](2d_model_theory.en.md) | [中文](2d_model_theory.m
   - 扩散系数：$D_{\mathrm{bulk}} = 1000\,\mathrm{nm}^2/\mathrm{s}$，$D_{\mathrm{film}} = 10\,\mathrm{nm}^2/\mathrm{s}$。
   - 速率常数：$k_{\mathrm{cat,GOx}} = 100\,\mathrm{s}^{-1}$，$k_{\mathrm{cat,HRP}} = 100\,\mathrm{s}^{-1}$。
   - 拥挤抑制：范围 $R_{\mathrm{inhibit}} = 10\,\mathrm{nm}$，饱和阈值 $n_{\mathrm{sat}} = 5$，最大抑制 $I_{\max} = 0.8$。
-- 配置入口
+- 配置入口：（确保数学公式与英文版本格式一致）
   - [2D/modules/config/default_config.m](../modules/config/default_config.m)
   - [2D/modules/config/interactive_config.m](../modules/config/interactive_config.m)
 
