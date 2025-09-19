@@ -64,12 +64,15 @@ $$
 
 ### 3.1 扩散离散（Brownian step）
 
-- 理论：
+#### 理论
+
 $$
 \Delta \mathbf{r} = \sqrt{2\,D\,\Delta t}\,\boldsymbol{\eta},\quad \boldsymbol{\eta}\sim \mathcal{N}(\mathbf{0}, \mathbf{I}_2)
 $$
-- 代码对应：高斯位移叠加到粒子位置（bulk/film 选择 D）。
-- 文件： [2D/modules/sim_core/diffusion_step.m](../modules/sim_core/diffusion_step.m)
+
+代码对应：高斯位移叠加到粒子位置（bulk/film 选择 D）。
+
+文件： [2D/modules/sim_core/diffusion_step.m](../modules/sim_core/diffusion_step.m)
 
 ### 3.2 边界与膜区约束
 
@@ -79,21 +82,27 @@ $$
 
 ### 3.3 反应概率与事件采样（Gillespie 风格）
 
-- 单步反应概率：
+#### 单步反应概率
+
 $$
 p = 1 - e^{-k_{\mathrm{eff}}\,\Delta t},\qquad k_{\mathrm{eff}} = k_{\mathrm{cat}}\bigl(1 - \mathrm{inhibition}\bigr)
 $$
-- 判定：采样 $u \sim \mathcal{U}(0,1)$，若 $u < p$，则发生反应事件（$\mathrm{S}\!\to\!\mathrm{I}$ 或 $\mathrm{I}\!\to\!\mathrm{P}$）。
-- 事件坐标：在相遇对（酶-底物）局部附近采样并记录，用于事件热力图。
-- 文件： [2D/modules/sim_core/reaction_step.m](../modules/sim_core/reaction_step.m)
+
+判定：采样 $u \sim \mathcal{U}(0,1)$，若 $u < p$，则发生反应事件（$\mathrm{S}\!\to\!\mathrm{I}$ 或 $\mathrm{I}\!\to\!\mathrm{P}$）。
+
+事件坐标：在相遇对（酶-底物）局部附近采样并记录，用于事件热力图。
+
+文件： [2D/modules/sim_core/reaction_step.m](../modules/sim_core/reaction_step.m)
 
 ### 3.4 拥挤抑制（局部调制）
 
-- 近邻半径内（$R_{\text{inhibit}}$）统计局部拥挤度 $n_{\text{local}}$，形成抑制权重：
+近邻半径内（$R_{\text{inhibit}}$）统计局部拥挤度 $n_{\text{local}}$，形成抑制权重：
+
 $$
 \mathrm{inhibition} = I_{\max}\,\max\!\left(0,\, 1 - \frac{n_{\text{local}}}{n_{\text{sat}}}\right).
 $$
-- 文件： [2D/modules/sim_core/precompute_inhibition.m](../modules/sim_core/precompute_inhibition.m)
+
+文件： [2D/modules/sim_core/precompute_inhibition.m](../modules/sim_core/precompute_inhibition.m)
 
 ### 3.5 数据累计与时间积分
 
@@ -108,12 +117,16 @@ $$
 
 - 单批输出：最终产物数 `products_final`，以及轨迹/事件等。
 - 多批统计：独立种子下运行 $M$ 次，估计期望与方差：
+
 $$
-\hat{\mu} = \frac{1}{M}\sum_{m=1}^M P_m,\qquad \text{Var}(\hat{\mu}) = \frac{\sigma^2}{M}.
+\hat{\mu} = \frac{1}{M}\sum_{m=1}^M P_m,\qquad \mathrm{Var}(\hat{\mu}) = \frac{\sigma^2}{M}.
 $$
+
 - 建议：
+
   - 验证/调参阶段：M≈5–10；
   - 报告/区间估计：M≥30，并输出均值±置信区间。
+
 - 文件： [2D/modules/batch/run_batches.m](../modules/batch/run_batches.m)，种子策略见 [2D/modules/seed_utils/get_batch_seeds.m](../modules/seed_utils/get_batch_seeds.m)
 
 ---
