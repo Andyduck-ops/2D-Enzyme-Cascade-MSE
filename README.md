@@ -101,12 +101,15 @@ $$
 
 ### Diffusion (Brownian step)
 For each particle position $x \in \mathbb{R}^2$:
+
 $$
 \mathbf{x} \leftarrow \mathbf{x} + \sqrt{2\,D(\mathbf{x})\,\Delta t}\,\boldsymbol{\eta},\quad \boldsymbol{\eta}\sim \mathcal{N}(\mathbf{0}, \mathbf{I}_2)
 $$
+
 $D(\mathbf{x})$ is piecewise:
-- MSE mode: D = D_film inside film ring; D = D_bulk elsewhere  
-- Bulk mode: D = D_bulk everywhere  
+- MSE mode: $D = D_{\text{film}}$ inside the film ring; $D = D_{\text{bulk}}$ elsewhere
+- Bulk mode: $D = D_{\text{bulk}}$ everywhere
+
 Implementation: [diffusion_step()](modules/sim_core/diffusion_step.m)
 
 ### Boundaries
@@ -115,7 +118,9 @@ Implementation: [diffusion_step()](modules/sim_core/diffusion_step.m)
 Implementation: [boundary_reflection()](modules/sim_core/boundary_reflection.m)
 
 ### Reactions (τ-leaping per Δt)
-Two independent channels per step:  
+
+Two independent channels per step:
+  
   
 $$
 \mathrm{S} + \mathrm{GOx} \rightarrow \mathrm{I},\quad P_{\mathrm{GOx}} = 1 - e^{-k_{\mathrm{cat,GOx}}\,\Delta t}\,\bigl(1 - \mathrm{inhibition}_{\mathrm{GOx}}\bigr)
@@ -123,7 +128,8 @@ $$
 $$
 \mathrm{I} + \mathrm{HRP} \rightarrow \mathrm{P},\quad P_{\mathrm{HRP}} = 1 - e^{-k_{\mathrm{cat,HRP}}\,\Delta t}\,\bigl(1 - \mathrm{inhibition}_{\mathrm{HRP}}\bigr)
 $$
-Inhibition from local crowding (per enzyme):  
+Inhibition from local crowding (per enzyme):
+  
   
 $$
 \mathrm{inhibition} = I_{\max}\,\max\!\left(0,\, 1 - \frac{n_{\text{local}}}{n_{\text{sat}}}\right)

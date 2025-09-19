@@ -107,20 +107,21 @@ $$
 ### 3.5 数据累计与时间积分
 
 - 速率：
--
-- $$
-- r_{\mathrm{GOx}}(t) = \frac{n_{\mathrm{GOx,step}}}{\Delta t},\qquad
-- r_{\mathrm{HRP}}(t) = \frac{n_{\mathrm{HRP,step}}}{\Delta t}
-- $$
-- 
-- 产物曲线：
-- 
-- $$
-- P(t) \approx \sum r_{\mathrm{HRP}}(t)\,\Delta t
-- $$
-- 
-- 快照/分层/轨迹按配置选择性记录。
-- 文件： [2D/modules/sim_core/record_data.m](../modules/sim_core/record_data.m)，汇总在 [2D/modules/sim_core/simulate_once.m](../modules/sim_core/simulate_once.m)
+
+$$
+r_{\mathrm{GOx}}(t) = \frac{n_{\mathrm{GOx,step}}}{\Delta t},\qquad
+r_{\mathrm{HRP}}(t) = \frac{n_{\mathrm{HRP,step}}}{\Delta t}
+$$
+
+产物曲线：
+
+$$
+P(t) \approx \sum r_{\mathrm{HRP}}(t)\,\Delta t
+$$
+
+快照/分层/轨迹按配置选择性记录。
+
+文件： [2D/modules/sim_core/record_data.m](../modules/sim_core/record_data.m)，汇总在 [2D/modules/sim_core/simulate_once.m](../modules/sim_core/simulate_once.m)
 
 ---
 
@@ -204,8 +205,6 @@ graph TD;
 
 ## 7. 术语与参考
 
-- Brownian Dynamics（布朗动力学）：通过 `Δr = √(2DΔt)·η` 离散维纳过程模拟扩散。
-- Gillespie/τ-leaping：固定步长下用 `p=1−exp(−kΔt)` 近似事件发生概率。
+- Brownian Dynamics（布朗动力学）：通过 $ \Delta r = \sqrt{2D\Delta t}\cdot \eta $ 离散维纳过程模拟扩散。
+- Gillespie/τ-leaping：固定步长下用 $ p = 1 - \exp(-k\,\Delta t) $ 近似事件发生概率。
 - Smoluchowski 相遇理论：扩散控制反应的相遇率，在 2D/3D 下表达不同。
-
-如需将本理论文档导出为 PDF，可在 VSCode 渲染后使用导出插件，或复制到文档工具进行转排版。

@@ -191,5 +191,3 @@ graph TD;
 - Brownian Dynamics: Discrete Wiener process simulation of diffusion through $\Delta r = \sqrt{2D\Delta t}\cdot\eta$.
 - Gillespie/τ-leaping: Fixed-step event probability approximation using $p=1-\exp(-k\Delta t)$.
 - Smoluchowski Encounter Theory: Encounter rates for diffusion-controlled reactions, expressed differently in 2D/3D.
-
-To export this theory document as PDF, you can use export plugins in VSCode after rendering, or copy to document tools for formatting conversion.
