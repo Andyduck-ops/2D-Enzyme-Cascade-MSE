@@ -2,7 +2,7 @@
 
 Language: [English](2d_model_theory.en.md) | [中文](2d_model_theory.md)
 
-> This document systematically organizes the physical modeling, mathematical equations, stochastic/Monte Carlo mechanisms, statistical convergence, and code implementation mapping of the current 2D enzyme cascade simulation, facilitating reproduction, review, and extension.
+> This document systematically presents the physical modeling, mathematical equations, stochastic/Monte Carlo mechanisms, statistical convergence, and code implementation mapping of the current 2D enzyme cascade simulation, facilitating reproduction, review, and extension.
 
 - Main Control Entry and Batch Processing:
   - [2D/main_2d_pipeline.m](../main_2d_pipeline.m)
@@ -25,15 +25,15 @@ Language: [English](2d_model_theory.en.md) | [中文](2d_model_theory.md)
 ## 1. System Overview and Modeling Assumptions
 
 - Geometry and Boundaries
-  - 2D square box with side length $L$ (default $500\,\mathrm{nm}$), containing a central particle with radius $r_p$ (default $20\,\mathrm{nm}$) and a film region with thickness $f_t$ (default $5\,\mathrm{nm}$).
+  - 2D square box with side length $L$ (default $500$ $\mathrm{nm}$), containing a central particle with radius $r_p$ (default $20$ $\mathrm{nm}$) and a film region with thickness $f_t$ (default $5$ $\mathrm{nm}$).
   - Boundary conditions: Box walls and particle surface are specular reflective (no absorption).
 - Species and Processes
   - Substrate S undergoes random diffusion; GOx and HRP are fixed in the film region (MSE mode) or distributed in bulk (bulk mode).
-  - Cascade reaction: S —(GOx)→ I —(HRP)→ P.
+  - Cascade reaction: $\mathrm{S} \xrightarrow{\mathrm{GOx}} \mathrm{I} \xrightarrow{\mathrm{HRP}} \mathrm{P}$.
 - Key Parameters (default values in configuration):
-  - Diffusion coefficients: $D_{\text{bulk}} = 1000\,\mathrm{nm}^2/\mathrm{s}$, $D_{\text{film}} = 10\,\mathrm{nm}^2/\mathrm{s}$.
-  - Rate constants: $k_{\mathrm{cat,GOx}} = 100\,\mathrm{s}^{-1}$, $k_{\mathrm{cat,HRP}} = 100\,\mathrm{s}^{-1}$.
-  - Crowding inhibition: Range $R_{\text{inhibit}} = 10\,\mathrm{nm}$, saturation threshold $n_{\text{sat}} = 5$, maximum inhibition $I_{\max} = 0.8$.
+  - Diffusion coefficients: $D_{\mathrm{bulk}} = 1000$ $\mathrm{nm}^2/\mathrm{s}$, $D_{\mathrm{film}} = 10$ $\mathrm{nm}^2/\mathrm{s}$.
+  - Rate constants: $k_{\mathrm{cat,GOx}} = 100$ $\mathrm{s}^{-1}$, $k_{\mathrm{cat,HRP}} = 100$ $\mathrm{s}^{-1}$.
+  - Crowding inhibition: Range $R_{\mathrm{inhibit}} = 10$ $\mathrm{nm}$, saturation threshold $n_{\mathrm{sat}} = 5$, maximum inhibition $I_{\max} = 0.8$.
 - Configuration Entry
   - [2D/modules/config/default_config.m](../modules/config/default_config.m)
   - [2D/modules/config/interactive_config.m](../modules/config/interactive_config.m)
@@ -76,7 +76,7 @@ $$
 ### 3.2 Boundary and Film Region Constraints
 
 - Box and particle surface specular reflection: Normal component is reversed.
-- MSE mode: Reaction sites and feasible encounters are restricted to the film ring r ∈ [r_p, r_p + f_t].
+- MSE mode: Reaction sites and feasible encounters are restricted to the film ring $r \in [r_p, r_p + f_t]$.
 - File: [2D/modules/sim_core/boundary_reflection.m](../modules/sim_core/boundary_reflection.m), film ring constraints in [2D/modules/sim_core/reaction_step.m](../modules/sim_core/reaction_step.m)
 
 ### 3.3 Reaction Probability and Event Sampling (Gillespie Style)
@@ -96,7 +96,7 @@ $$
 - Count local crowding degree $n_{\text{local}}$ within neighbor radius ($R_{\text{inhibit}}$), forming inhibition weight:
 
 $$
-\mathrm{inhibition} = I_{\max}\,\max\!\left(0,\, 1 - \frac{n_{\text{local}}}{n_{\text{sat}}}\right).
+\mathrm{inhibition} = I_{\max}\,\max\!\left(0,\, 1 - \frac{n_{\mathrm{local}}}{n_{\mathrm{sat}}}\right).
 $$
 
 - File: [2D/modules/sim_core/precompute_inhibition.m](../modules/sim_core/precompute_inhibition.m)

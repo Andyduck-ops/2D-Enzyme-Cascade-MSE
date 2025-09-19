@@ -1,7 +1,7 @@
 # 2D 酶级联模拟：数学理论与模拟方法解析
 Language / 语言: [English](2d_model_theory.en.md) | [中文](2d_model_theory.md)
 
-> 本文系统性梳理当前 2D 酶级联模拟的物理建模、数学方程、随机数/蒙特卡洛机制、统计收敛与代码实现映射，便于复现、审阅与扩展。
+> 本文系统梳理当前 2D 酶级联模拟的物理建模、数学方程、随机数/蒙特卡洛机制、统计收敛与代码实现映射，便于复现、审阅与扩展。
 
 - 主控入口与批处理：
   - [2D/main_2d_pipeline.m](../main_2d_pipeline.m)
@@ -25,15 +25,15 @@ Language / 语言: [English](2d_model_theory.en.md) | [中文](2d_model_theory.m
 ## 1. 系统概述与建模假设
 
 - 几何与边界
-  - 2D 方形盒子，边长 $L$（默认 $500\,\mathrm{nm}$），中心存在半径 $r_p$（默认 $20\,\mathrm{nm}$）的颗粒与膜厚 $f_t$（默认 $5\,\mathrm{nm}$）的环区。
+  - 2D 方形盒子，边长 $L$（默认 $500$ $\mathrm{nm}$），中心存在半径 $r_p$（默认 $20$ $\mathrm{nm}$）的颗粒与膜厚 $f_t$（默认 $5$ $\mathrm{nm}$）的环区。
   - 边界条件：盒壁、颗粒表面为镜面反射（无吸收）。
 - 物种与过程
   - 底物 S 随机扩散；GOx、HRP 固定位于膜区（MSE 模式）或分布于体相（bulk 模式）。
   - 级联反应：$\mathrm{S} \xrightarrow{\mathrm{GOx}} \mathrm{I} \xrightarrow{\mathrm{HRP}} \mathrm{P}$。
 - 关键参数（默认值见配置）：
-  - 扩散系数：$D_{\text{bulk}} = 1000\,\mathrm{nm}^2/\mathrm{s}$，$D_{\text{film}} = 10\,\mathrm{nm}^2/\mathrm{s}$。
-  - 速率常数：$k_{\mathrm{cat,GOx}} = 100\,\mathrm{s}^{-1}$，$k_{\mathrm{cat,HRP}} = 100\,\mathrm{s}^{-1}$。
-  - 拥挤抑制：范围 $R_{\text{inhibit}} = 10\,\mathrm{nm}$，饱和阈值 $n_{\text{sat}} = 5$，最大抑制 $I_{\max} = 0.8$。
+  - 扩散系数：$D_{\mathrm{bulk}} = 1000$ $\mathrm{nm}^2/\mathrm{s}$，$D_{\mathrm{film}} = 10$ $\mathrm{nm}^2/\mathrm{s}$。
+  - 速率常数：$k_{\mathrm{cat,GOx}} = 100$ $\mathrm{s}^{-1}$，$k_{\mathrm{cat,HRP}} = 100$ $\mathrm{s}^{-1}$。
+  - 拥挤抑制：范围 $R_{\mathrm{inhibit}} = 10$ $\mathrm{nm}$，饱和阈值 $n_{\mathrm{sat}} = 5$，最大抑制 $I_{\max} = 0.8$。
 - 配置入口
   - [2D/modules/config/default_config.m](../modules/config/default_config.m)
   - [2D/modules/config/interactive_config.m](../modules/config/interactive_config.m)
@@ -67,7 +67,7 @@ $$
 #### 理论
 
 $$
-\Delta \mathbf{r} = \sqrt{2\,D\,\Delta t}\,\boldsymbol{\eta},\quad \boldsymbol{\eta}\sim \mathcal{N}(\mathbf{0}, \mathbf{I}_2)
+\Delta \mathbf{r} = \sqrt{2\,D\,\Delta t}\,\boldsymbol{\eta},\quad \boldsymbol{\eta} \sim \mathcal{N}(\mathbf{0}, \mathbf{I}_2)
 $$
 
 代码对应：高斯位移叠加到粒子位置（bulk/film 选择 D）。
@@ -99,7 +99,7 @@ $$
 近邻半径内（$R_{\text{inhibit}}$）统计局部拥挤度 $n_{\text{local}}$，形成抑制权重：
 
 $$
-\mathrm{inhibition} = I_{\max}\,\max\!\left(0,\, 1 - \frac{n_{\text{local}}}{n_{\text{sat}}}\right).
+\mathrm{inhibition} = I_{\max}\,\max\!\left(0,\, 1 - \frac{n_{\mathrm{local}}}{n_{\mathrm{sat}}}\right).
 $$
 
 文件： [2D/modules/sim_core/precompute_inhibition.m](../modules/sim_core/precompute_inhibition.m)
@@ -205,6 +205,6 @@ graph TD;
 
 ## 7. 术语与参考
 
-- Brownian Dynamics（布朗动力学）：通过 $ \Delta r = \sqrt{2D\Delta t}\cdot \eta $ 离散维纳过程模拟扩散。
+- Brownian Dynamics（布朗动力学）：通过 $ \Delta \mathbf{r} = \sqrt{2\,D\,\Delta t}\,\boldsymbol{\eta} $ 离散维纳过程模拟扩散。
 - Gillespie/τ-leaping：固定步长下用 $ p = 1 - \exp(-k\,\Delta t) $ 近似事件发生概率。
 - Smoluchowski 相遇理论：扩散控制反应的相遇率，在 2D/3D 下表达不同。

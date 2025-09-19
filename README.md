@@ -10,11 +10,11 @@
 
 - Theory: [2D Theory (English)](docs/2d_model_theory.en.md) | [理论（中文）](docs/2d_model_theory.md)
 
-A modular MATLAB framework for simulating a two-step enzyme cascade in 2D with mineral-surface–localized enzymes. It supports two modes (MSE vs bulk), heterogeneous diffusion, τ-leaping reactions, crowding inhibition, batch Monte Carlo, and reproducible outputs.
+A modular MATLAB framework for simulating a two-step enzyme cascade in 2D with mineral-surface-localized enzymes. It supports two modes (MSE vs bulk), heterogeneous diffusion, τ-leaping reactions, crowding inhibition, batch Monte Carlo, and reproducible outputs.
 
 ## Overview
 
-- Two-step cascade: S ---(GOx)--> I -->(HRP)--> P
+- Two-step cascade: $\mathrm{S} \xrightarrow{\mathrm{GOx}} \mathrm{I} \xrightarrow{\mathrm{HRP}} \mathrm{P}$
 - Modes:
   - MSE: enzymes localized to a ring film around a central particle
   - Bulk: enzymes uniformly distributed in the box
@@ -23,16 +23,16 @@ A modular MATLAB framework for simulating a two-step enzyme cascade in 2D with m
 
 ## Background (why MSE vs bulk)
 - Scientific motivation
-  - Mineral-surface enzyme (MSE) localization concentrates reacting species near a particle, boosting encounter probability versus bulk dispersion.
-  - The study asks how localization, diffusion contrast, enzyme numbers/split, and local crowding jointly shape yield and kinetics relative to a homogeneous bulk.
+  - Mineral-surface enzyme (MSE) localization concentrates reacting species near a particle, enhancing encounter probability compared to bulk dispersion.
+  - This study investigates how localization, diffusion contrast, enzyme numbers/split, and local crowding collectively influence yield and kinetics relative to a homogeneous bulk.
 - 2D abstraction of an interfacial layer
   - We approximate a thin surface film as a ring $[r_p, r_p+f_t]$ around a central particle (enzymes fixed in MSE; free placement in bulk).
-  - Defaults reflect a strong diffusion contrast (e.g., $D_{\text{film}}=10$ vs $D_{\text{bulk}}=1000$ nm$^2$/s) and moderate ring thickness ($f_t=5$ nm), see [default_config.m](modules/config/default_config.m).
+  - Defaults reflect a strong diffusion contrast (e.g., $D_{\mathrm{film}}=10$ vs $D_{\mathrm{bulk}}=1000$ $\mathrm{nm}^2/\mathrm{s}$) and moderate ring thickness ($f_t=5$ $\mathrm{nm}$), see [default_config.m](modules/config/default_config.m).
 - Reaction context
-  - Two-step cascade S --(GOx)→ I --(HRP)→ P; enzymes are split GOx/HRP (default 50/50 via `gox_hrp_split`).
+  - Two-step cascade $\mathrm{S} \xrightarrow{\mathrm{GOx}} \mathrm{I} \xrightarrow{\mathrm{HRP}} \mathrm{P}$; enzymes are split GOx/HRP (default 50/50 via `gox_hrp_split`).
   - Local crowding reduces effective $k_{\mathrm{cat}}$ via a bounded inhibition term; this penalizes dense patches and encodes steric/competition effects.
 - Assumptions (scope)
-  - Enzymes immobile; S/I/P diffuse; reflective boundaries; τ‑leaping with fixed $\Delta t$; no adsorption/desorption; MSE ring strictly enforced for accepted events.
+  - Enzymes immobile; S/I/P diffuse; reflective boundaries; $\tau$‑leaping with fixed $\Delta t$; no adsorption/desorption; MSE ring strictly enforced for accepted events.
 - Paper-facing outputs
   - Product advantage (MSE vs bulk), reaction-rate curves, spatial event maps, tracer paths; batch CSV for mean/variance reporting.
   - Visualization entrypoints: [plot_event_map.m](modules/viz/plot_event_map.m), [plot_tracers.m](modules/viz/plot_tracers.m), [plot_product_curve.m](modules/viz/plot_product_curve.m)
@@ -53,7 +53,7 @@ Key entrypoints:
   1) Diffusion (BD): for each particle position $\mathbf{x}$
   
 $$
-\mathbf{x}\leftarrow\mathbf{x}+\sqrt{2\,D(\mathbf{x})\,\Delta t}\,\boldsymbol{\eta},\quad \boldsymbol{\eta}\sim\mathcal{N}(\mathbf{0},\mathbf{I}_2)
+\mathbf{x} \leftarrow \mathbf{x} + \sqrt{2\,D(\mathbf{x})\,\Delta t}\,\boldsymbol{\eta},\quad \boldsymbol{\eta} \sim \mathcal{N}(\mathbf{0}, \mathbf{I}_2)
 $$
 
   2) Boundaries: reflect at box walls and at the particle boundary.
@@ -61,21 +61,21 @@ $$
   4) Reactions (per enzyme, per encounter):  
   
 $$
-P_{\mathrm{GOx}}=1-e^{-k_{\mathrm{cat,GOx}}\,\Delta t}\,(1-\mathrm{inhibition}_{\mathrm{GOx}}),\quad
-P_{\mathrm{HRP}}=1-e^{-k_{\mathrm{cat,HRP}}\,\Delta t}\,(1-\mathrm{inhibition}_{\mathrm{HRP}})
+P_{\mathrm{GOx}} = 1 - e^{-k_{\mathrm{cat,GOx}}\,\Delta t}\,(1 - \mathrm{inhibition}_{\mathrm{GOx}}),\quad
+P_{\mathrm{HRP}} = 1 - e^{-k_{\mathrm{cat,HRP}}\,\Delta t}\,(1 - \mathrm{inhibition}_{\mathrm{HRP}})
 $$
 
   with crowding inhibition
   
 $$
-\mathrm{inhibition}=I_{\max}\,\max\!\left(0,1-\frac{n_{\text{local}}}{n_{\text{sat}}}\right).
+\mathrm{inhibition} = I_{\max}\,\max\!\left(0,1 - \frac{n_{\mathrm{local}}}{n_{\mathrm{sat}}}\right).
 $$
 
   In MSE mode, accepted reaction events must lie within the ring $[r_p, r_p+f_t]$.
 
 - Recorded outputs (per run)
   - Final product count: products_final
-  - Time axis $t=(1..N)\,\Delta t$; reaction rates $r_{\mathrm{GOx}}(t), r_{\mathrm{HRP}}(t)$; product curve $P(t)=\sum r_{\mathrm{HRP}}(t)\,\Delta t$
+  - Time axis $t=(1..N)\,\Delta t$; reaction rates $r_{\mathrm{GOx}}(t), r_{\mathrm{HRP}}(t)$; product curve $P(t) = \sum r_{\mathrm{HRP}}(t)\,\Delta t$
   - Optional: snapshots, tracer paths, spatial reaction event coordinates
 
 - Config mapping to symbols
@@ -83,9 +83,9 @@ $$
   - $\Delta t$ → simulation_params.time_step
   - $r_p$ → geometry_params.particle_radius
   - $f_t$ → geometry_params.film_thickness
-  - $D_{\text{bulk}},D_{\text{film}}$ → particle_params.diff_coeff_bulk, diff_coeff_film
-  - $k_{\mathrm{cat,GOx}},k_{\mathrm{cat,HRP}}$ → particle_params.k_cat_GOx, k_cat_HRP
-  - $I_{\max}, n_{\text{sat}}, R_{\text{inhibit}}$ → inhibition_params.I_max, n_sat, R_inhibit
+  - $D_{\mathrm{bulk}}, D_{\mathrm{film}}$ → particle_params.diff_coeff_bulk, diff_coeff_film
+  - $k_{\mathrm{cat,GOx}}, k_{\mathrm{cat,HRP}}$ → particle_params.k_cat_GOx, k_cat_HRP
+  - $I_{\max}, n_{\mathrm{sat}}, R_{\mathrm{inhibit}}$ → inhibition_params.I_max, n_sat, R_inhibit
 
 - Monte Carlo and seeds
   - Use [run_batches.m](modules/batch/run_batches.m) with fixed seeds for determinism per $\Delta t$ and config; set `batch.seed_mode='fixed'` or provide seed list.
@@ -94,34 +94,33 @@ $$
 ## Algorithm
 
 ### Geometry and States
-- Domain: 2D square of size $L\times L$
+- Domain: 2D square of size $L \times L$
 - Central particle: radius $r_p$
 - Enzyme film: ring $[r_p, r_p+f_t]$ for MSE mode
 - Species: substrate S, intermediate I, product P (diffusive particles); enzymes fixed
 
 ### Diffusion (Brownian step)
-For each particle position $x \in \mathbb{R}^2$:
+For each particle position $\mathbf{x} \in \mathbb{R}^2$:
 
 $$
-\mathbf{x} \leftarrow \mathbf{x} + \sqrt{2\,D(\mathbf{x})\,\Delta t}\,\boldsymbol{\eta},\quad \boldsymbol{\eta}\sim \mathcal{N}(\mathbf{0}, \mathbf{I}_2)
+\mathbf{x} \leftarrow \mathbf{x} + \sqrt{2\,D(\mathbf{x})\,\Delta t}\,\boldsymbol{\eta},\quad \boldsymbol{\eta} \sim \mathcal{N}(\mathbf{0}, \mathbf{I}_2)
 $$
 
 $D(\mathbf{x})$ is piecewise:
-- MSE mode: $D = D_{\text{film}}$ inside the film ring; $D = D_{\text{bulk}}$ elsewhere
-- Bulk mode: $D = D_{\text{bulk}}$ everywhere
+- MSE mode: $D = D_{\mathrm{film}}$ inside the film ring; $D = D_{\mathrm{bulk}}$ elsewhere
+- Bulk mode: $D = D_{\mathrm{bulk}}$ everywhere
 
 Implementation: [diffusion_step()](modules/sim_core/diffusion_step.m)
 
 ### Boundaries
 - Box reflection (mirror)
-- Central particle reflection to a target radius > r_p for stability  
+- Central particle reflection to a target radius > $r_p$ for stability  
 Implementation: [boundary_reflection()](modules/sim_core/boundary_reflection.m)
 
 ### Reactions (τ-leaping per Δt)
 
 Two independent channels per step:
-  
-  
+
 $$
 \mathrm{S} + \mathrm{GOx} \rightarrow \mathrm{I},\quad P_{\mathrm{GOx}} = 1 - e^{-k_{\mathrm{cat,GOx}}\,\Delta t}\,\bigl(1 - \mathrm{inhibition}_{\mathrm{GOx}}\bigr)
 $$
@@ -132,7 +131,7 @@ Inhibition from local crowding (per enzyme):
   
   
 $$
-\mathrm{inhibition} = I_{\max}\,\max\!\left(0,\, 1 - \frac{n_{\text{local}}}{n_{\text{sat}}}\right)
+\mathrm{inhibition} = I_{\max}\,\max\!\left(0,\, 1 - \frac{n_{\mathrm{local}}}{n_{\mathrm{sat}}}\right)
 $$
 MSE mode additionally restricts events to film ring.  
 Implementation: [reaction_step()](modules/sim_core/reaction_step.m)
@@ -234,7 +233,7 @@ Outputs:
 
 ## Examples
 
-Compare MSE vs bulk:
+Compare MSE vs bulk modes:
 ```matlab
 config = default_config();
 config.batch.batch_count = 1;
@@ -288,7 +287,7 @@ From [default_config()](modules/config/default_config.m):
 
 - Seeds recorded per batch; RNG can be fixed via `batch.seed_mode = 'fixed'` and `batch.fixed_seed`
 - Batch summary CSV plus optional `mc_summary.csv` at the end of [main_2d_pipeline.m](main_2d_pipeline.m)  
-- Deterministic τ-leaping per step size $\Delta t$
+- Deterministic $\tau$-leaping per step size $\Delta t$
 
 ## License and Credits
 
