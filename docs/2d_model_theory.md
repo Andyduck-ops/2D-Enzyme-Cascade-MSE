@@ -31,8 +31,8 @@ Language / 语言: [English](2d_model_theory.en.md) | [中文](2d_model_theory.m
   - 底物 S 随机扩散；GOx、HRP 固定位于膜区（MSE 模式）或分布于体相（bulk 模式）。
   - 级联反应：$\mathrm{S} \xrightarrow{\mathrm{GOx}} \mathrm{I} \xrightarrow{\mathrm{HRP}} \mathrm{P}$。
 - 关键参数（默认值见配置）：
-  - 扩散系数：$D_{\mathrm{bulk}} = 1000\,\mathrm{nm}^2/\mathrm{s}$, $D_{\mathrm{film}} = 10\,\mathrm{nm}^2/\mathrm{s}$。
-  - 速率常数：$k_{\mathrm{cat,GOx}} = 100\,\mathrm{s}^{-1}$, $k_{\mathrm{cat,HRP}} = 100\,\mathrm{s}^{-1}$。
+  - 扩散系数： \( D_{\mathrm{bulk}} = 1000\,\mathrm{nm}^2/\mathrm{s} \), \( D_{\mathrm{film}} = 10\,\mathrm{nm}^2/\mathrm{s} \)。
+  - 速率常数： \( k_{\mathrm{cat},\mathrm{GOx}} = 100\,\mathrm{s}^{-1} \), \( k_{\mathrm{cat},\mathrm{HRP}} = 100\,\mathrm{s}^{-1} \)。
   - 拥挤抑制：范围 $R_{\mathrm{inhibit}} = 10\,\mathrm{nm}$，饱和阈值 $n_{\mathrm{sat}} = 5$，最大抑制 $I_{\max} = 0.8$。
 - 配置入口：
   - [2D/modules/config/default_config.m](../modules/config/default_config.m)
