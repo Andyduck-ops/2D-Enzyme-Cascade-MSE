@@ -1,0 +1,19 @@
+# Exclude paper-only file
+methods.txt
+
+# Outputs
+2D/out/
+out/
+
+# Editors/OS
+.vscode/
+*.code-workspace
+.DS_Store
+Thumbs.db
+
+# MATLAB temp/autosave
+*.asv
+*.m~
+
+# Figures (local)
+*.fig
