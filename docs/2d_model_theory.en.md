@@ -135,14 +135,14 @@ graph TD;
     C[Batch loop];
     D[Setup RNG];
     E[Simulate once];
-    E1[Init & inhibition precomp];
+    E1[Init and inhibition precomp];
     E2[Time loop 1..N];
     E3[Diffusion];
-    E4[Reflection & MSE];
+    E4[Reflection and MSE];
     E5[Reactions];
     E6[Record];
     F[Summarize products_final];
-    G[Aggregate & write CSV];
+    G[Aggregate and write CSV];
     H[Visualization optional];
 
     A --> B;
