@@ -90,8 +90,9 @@ $$
 ### 3.4 拥挤抑制（局部调制）
 
 - 近邻半径内（$R_{\text{inhibit}}$）统计局部拥挤度 $n_{\text{local}}$，形成抑制权重：
-  - inhibition = I_max · max(0, 1 − n_local / n_sat)
-  - k_eff = k_cat · (1 − inhibition)
+$$
+\mathrm{inhibition} = I_{\max}\,\max\!\left(0,\, 1 - \frac{n_{\text{local}}}{n_{\text{sat}}}\right).
+$$
 - 文件： [2D/modules/sim_core/precompute_inhibition.m](../modules/sim_core/precompute_inhibition.m)
 
 ### 3.5 数据累计与时间积分
@@ -107,7 +108,9 @@ $$
 
 - 单批输出：最终产物数 `products_final`，以及轨迹/事件等。
 - 多批统计：独立种子下运行 $M$ 次，估计期望与方差：
-  - 均值 `μ̂ = (1/M) Σ P_m`，方差 `Var(μ̂) = σ² / M`。
+$$
+\hat{\mu} = \frac{1}{M}\sum_{m=1}^M P_m,\qquad \mathrm{Var}(\hat{\mu}) = \frac{\sigma^2}{M}.
+$$
 - 建议：
   - 验证/调参阶段：M≈5–10；
   - 报告/区间估计：M≥30，并输出均值±置信区间。

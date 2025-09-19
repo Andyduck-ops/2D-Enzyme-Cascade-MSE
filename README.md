@@ -50,24 +50,24 @@ Key entrypoints:
   - Diffusive species: substrate S, intermediate I, product P.
 
 - One time step ($\Delta t$)
-  1) Diffusion (BD): for each particle position $\mathbf{x}$  
-     $$\mathbf{x}\leftarrow\mathbf{x}+\sqrt{2\\,D(\mathbf{x})\\,\\Delta t}\\,\boldsymbol{\\eta},\\quad \boldsymbol{\\eta}\sim\mathcal{N}(\mathbf{0},\mathbf{I}_2)$$
+  1) Diffusion (BD): for each particle position $\\mathbf{x}$  
+     $$\\mathbf{x}\\leftarrow\\mathbf{x}+\\sqrt{2\\,D(\\mathbf{x})\\,\\Delta t}\\,\\boldsymbol{\\eta},\\quad \\boldsymbol{\\eta}\\sim\\mathcal{N}(\\mathbf{0},\\mathbf{I}_2)$$
   2) Boundaries: reflect at box walls and at the particle boundary.
   3) Optional: tracer update if enabled.
   4) Reactions (per enzyme, per encounter):  
      $$
-     P_{\mathrm{GOx}}=1-e^{-k_{\mathrm{cat,GOx}}\\,\\Delta t}\\,(1-\mathrm{inhibition}_{\mathrm{GOx}}),\\quad
-     P_{\mathrm{HRP}}=1-e^{-k_{\mathrm{cat,HRP}}\\,\\Delta t}\\,(1-\mathrm{inhibition}_{\mathrm{HRP}})
+     P_{\\mathrm{GOx}}=1-e^{-k_{\\mathrm{cat,GOx}}\\,\\Delta t}\\,(1-\\mathrm{inhibition}_{\\mathrm{GOx}}),\\quad
+     P_{\\mathrm{HRP}}=1-e^{-k_{\\mathrm{cat,HRP}}\\,\\Delta t}\\,(1-\\mathrm{inhibition}_{\\mathrm{HRP}})
      $$
      with crowding inhibition  
      $$
-     \mathrm{inhibition}=I_{\max}\\,\max\\!\\left(0,1-\frac{n_{\text{local}}}{n_{\text{sat}}}\\right).\quad
+     \\mathrm{inhibition}=I_{\\max}\\,\\max\\!\\left(0,1-\\frac{n_{\\text{local}}}{n_{\\text{sat}}}\\right).\quad
      $$
      In MSE mode, accepted reaction events must lie within the ring $[r_p, r_p+f_t]$.
 
 - Recorded outputs (per run)
   - Final product count: products_final
-  - Time axis $t=(1..N)\\,\\Delta t$; reaction rates $r_{\mathrm{GOx}}(t), r_{\mathrm{HRP}}(t)$; product curve $P(t)=\\sum r_{\mathrm{HRP}}(t)\\,\\Delta t$
+  - Time axis $t=(1..N)\\,\\Delta t$; reaction rates $r_{\\mathrm{GOx}}(t), r_{\\mathrm{HRP}}(t)$; product curve $P(t)=\\sum r_{\\mathrm{HRP}}(t)\\,\\Delta t$
   - Optional: snapshots, tracer paths, spatial reaction event coordinates
 
 - Config mapping to symbols
@@ -75,9 +75,9 @@ Key entrypoints:
   - $\\Delta t$ → simulation_params.time_step
   - $r_p$ → geometry_params.particle_radius
   - $f_t$ → geometry_params.film_thickness
-  - $D_{\text{bulk}},D_{\text{film}}$ → particle_params.diff_coeff_bulk, diff_coeff_film
-  - $k_{\mathrm{cat,GOx}},k_{\mathrm{cat,HRP}}$ → particle_params.k_cat_GOx, k_cat_HRP
-  - $I_{\max}, n_{\text{sat}}, R_{\text{inhibit}}$ → inhibition_params.I_max, n_sat, R_inhibit
+  - $D_{\\text{bulk}},D_{\\text{film}}$ → particle_params.diff_coeff_bulk, diff_coeff_film
+  - $k_{\\mathrm{cat,GOx}},k_{\\mathrm{cat,HRP}}$ → particle_params.k_cat_GOx, k_cat_HRP
+  - $I_{\\max}, n_{\\text{sat}}, R_{\\text{inhibit}}$ → inhibition_params.I_max, n_sat, R_inhibit
 
 - Monte Carlo and seeds
   - Use [run_batches.m](modules/batch/run_batches.m) with fixed seeds for determinism per $\\Delta t$ and config; set `batch.seed_mode='fixed'` or provide seed list.
@@ -94,9 +94,9 @@ Key entrypoints:
 ### Diffusion (Brownian step)
 For each particle position $x \\in \\mathbb{R}^2$:
 $$
-\mathbf{x} \leftarrow \mathbf{x} + \sqrt{2\\,D(\mathbf{x})\\,\\Delta t}\\,\boldsymbol{\\eta},\\quad \boldsymbol{\\eta}\sim \mathcal{N}(\mathbf{0}, \mathbf{I}_2)
+\\mathbf{x} \\leftarrow \\mathbf{x} + \\sqrt{2\\,D(\\mathbf{x})\\,\\Delta t}\\,\\boldsymbol{\\eta},\\quad \\boldsymbol{\\eta}\\sim \\mathcal{N}(\\mathbf{0}, \\mathbf{I}_2)
 $$
-$D(\mathbf{x})$ is piecewise:
+$D(\\mathbf{x})$ is piecewise:
 - MSE mode: D = D_film inside film ring; D = D_bulk elsewhere  
 - Bulk mode: D = D_bulk everywhere  
 Implementation: [diffusion_step()](modules/sim_core/diffusion_step.m)
@@ -109,14 +109,14 @@ Implementation: [boundary_reflection()](modules/sim_core/boundary_reflection.m)
 ### Reactions (τ-leaping per Δt)
 Two independent channels per step:  
 $$
-\mathrm{S} + \mathrm{GOx} \\rightarrow \mathrm{I},\\quad P_{\mathrm{GOx}} = 1 - e^{-k_{\mathrm{cat,GOx}}\\,\\Delta t}\\,\\bigl(1 - \mathrm{inhibition}_{\mathrm{GOx}}\\bigr)
+\\mathrm{S} + \\mathrm{GOx} \\rightarrow \\mathrm{I},\\quad P_{\\mathrm{GOx}} = 1 - e^{-k_{\\mathrm{cat,GOx}}\\,\\Delta t}\\,\\bigl(1 - \\mathrm{inhibition}_{\\mathrm{GOx}}\\bigr)
 $$
 $$
-\mathrm{I} + \mathrm{HRP} \\rightarrow \mathrm{P},\\quad P_{\mathrm{HRP}} = 1 - e^{-k_{\mathrm{cat,HRP}}\\,\\Delta t}\\,\\bigl(1 - \mathrm{inhibition}_{\mathrm{HRP}}\\bigr)
+\\mathrm{I} + \\mathrm{HRP} \\rightarrow \\mathrm{P},\\quad P_{\\mathrm{HRP}} = 1 - e^{-k_{\\mathrm{cat,HRP}}\\,\\Delta t}\\,\\bigl(1 - \\mathrm{inhibition}_{\\mathrm{HRP}}\\bigr)
 $$
 Inhibition from local crowding (per enzyme):  
 $$
-\mathrm{inhibition} = I_{\max}\\,\max\\!\\left(0,\\, 1 - \frac{n_{\text{local}}}{n_{\text{sat}}}\\right)
+\\mathrm{inhibition} = I_{\\max}\\,\\max\\!\\left(0,\\, 1 - \\frac{n_{\\text{local}}}{n_{\\text{sat}}}\\right)
 $$
 MSE mode additionally restricts events to film ring.  
 Implementation: [reaction_step()](modules/sim_core/reaction_step.m))
