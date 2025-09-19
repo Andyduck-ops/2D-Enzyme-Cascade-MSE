@@ -106,8 +106,19 @@ $$
 
 ### 3.5 数据累计与时间积分
 
-- 速率：$r_{\mathrm{GOx}}(t) = n_{\mathrm{GOx,step}}/\Delta t$；同理 $r_{\mathrm{HRP}}(t)$。
-- 产物曲线：$P(t) \approx \sum r_{\mathrm{HRP}}(t)\,\Delta t$。
+- 速率：
+-
+- $$
+- r_{\mathrm{GOx}}(t) = \frac{n_{\mathrm{GOx,step}}}{\Delta t},\qquad
+- r_{\mathrm{HRP}}(t) = \frac{n_{\mathrm{HRP,step}}}{\Delta t}
+- $$
+- 
+- 产物曲线：
+- 
+- $$
+- P(t) \approx \sum r_{\mathrm{HRP}}(t)\,\Delta t
+- $$
+- 
 - 快照/分层/轨迹按配置选择性记录。
 - 文件： [2D/modules/sim_core/record_data.m](../modules/sim_core/record_data.m)，汇总在 [2D/modules/sim_core/simulate_once.m](../modules/sim_core/simulate_once.m)
 
