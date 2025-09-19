@@ -1,0 +1,9 @@
+**Stochastic Kinetic Simulation**
+
+To quantitatively assess the kinetic advantages of mineral surface-mediated enrichment (MSE), we employed stochastic Brownian dynamics simulations of a two-step enzymatic cascade reaction system. The computational model assumes a 500 nm cubic domain where substrate molecules, intermediate products, and final products undergo free diffusion, while enzymes remain spatially constrained. Molecular diffusion follows Brownian motion with position updates Δr = √(2D·Δt)·η, where η represents Gaussian white noise. Diffusion coefficients are set to D_bulk = 1000 nm²/s for bulk regions and D_film = 10 nm²/s within the enzyme film layer, reflecting the heterogeneous diffusion environment around mineral surfaces.
+
+Reaction kinetics are implemented using the τ-leaping algorithm with time steps of Δt = 0.1 s. The reaction probability follows P = 1 - exp(-k_cat·Δt), where k_cat = 100 s⁻¹ for both glucose oxidase (GOx) and horseradish peroxidase (HRP). Molecular crowding effects are incorporated through a spatial inhibition model, where local enzyme density modulates effective catalytic rates according to inhibition = I_max × max(0, 1 - n_local/n_sat), with I_max = 0.8 and n_sat = 5.
+
+We systematically compare two configurations: "MSE" mode, where enzymes are distributed within a 5 nm film around a central particle (radius = 20 nm), versus "Bulk" mode with uniform enzyme distribution. The simulation framework supports flexible enzyme concentrations to model varying system densities, enabling quantitative assessment of surface-mediated kinetic enhancement under prebiotic conditions. All simulations employ controlled random seeds for reproducibility.
+
+**Code Availability**: Complete implementation details and source code are available in the accompanying GitHub repository: https://github.com/Andyduck-ops/2D-Enzyme-Cascade-MSE

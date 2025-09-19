@@ -1,5 +1,5 @@
-# Exclude paper-only file
-methods.txt
+# Paper methods file (now included as it contains repository link)
+# methods.txt
 
 # Outputs
 2D/out/
