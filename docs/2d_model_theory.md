@@ -205,6 +205,6 @@ graph TD;
 
 ## 7. 术语与参考
 
-- Brownian Dynamics（布朗动力学）：通过 $ \Delta \mathbf{r} = \sqrt{2\,D\,\Delta t}\,\boldsymbol{\eta} $ 离散维纳过程模拟扩散。
-- Gillespie/τ-leaping：固定步长下用 $ p = 1 - \exp(-k\,\Delta t) $ 近似事件发生概率。
+- Brownian Dynamics（布朗动力学）：通过 $\Delta r = \sqrt{2D\Delta t}\cdot\eta$ 离散维纳过程模拟扩散。
+- Gillespie/τ-leaping：固定步长下用 $p=1-\exp(-k\Delta t)$ 近似事件发生概率。
 - Smoluchowski 相遇理论：扩散控制反应的相遇率，在 2D/3D 下表达不同。
