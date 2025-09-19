@@ -29,7 +29,7 @@ Language / 语言: [English](2d_model_theory.en.md) | [中文](2d_model_theory.m
   - 边界条件：盒壁、颗粒表面为镜面反射（无吸收）。
 - 物种与过程
   - 底物 S 随机扩散；GOx、HRP 固定位于膜区（MSE 模式）或分布于体相（bulk 模式）。
-  - 级联反应：$\mathrm{S} \xrightarrow{\mathrm{GOx}} \mathrm{I} \xrightarrow{\mathrm{HRP}} \mathrm{P}$。
+  - 级联反应：S → GOx → I → HRP → P。
 - 关键参数（默认值见配置）：
   - 扩散系数：D_bulk = 1000 nm²/s，D_film = 10 nm²/s。
   - 速率常数：k_cat,GOx = 100 s⁻¹，k_cat,HRP = 100 s⁻¹。
@@ -88,7 +88,7 @@ $$
 p = 1 - e^{-k_{\mathrm{eff}}\,\Delta t},\qquad k_{\mathrm{eff}} = k_{\mathrm{cat}}\bigl(1 - \mathrm{inhibition}\bigr)
 $$
 
-判定：采样 $u \sim \mathcal{U}(0,1)$，若 $u < p$，则发生反应事件（$\mathrm{S}\!\to\!\mathrm{I}$ 或 $\mathrm{I}\!\to\!\mathrm{P}$）。
+判定：采样 $u \sim \mathcal{U}(0,1)$，若 $u < p$，则发生反应事件（S→I 或 I→P）。
 
 事件坐标：在相遇对（酶-底物）局部附近采样并记录，用于事件热力图。
 
@@ -96,7 +96,7 @@ $$
 
 ### 3.4 拥挤抑制（局部调制）
 
-近邻半径内（$R_{\mathrm{inhibit}}$）统计局部拥挤度 $n_{\mathrm{local}}$，形成抑制权重：
+近邻半径内（R_inhibit）统计局部拥挤度 $n_{\mathrm{local}}$，形成抑制权重：
 
 $$
 \mathrm{inhibition} = I_{\max}\,\max\!\left(0,\, 1 - \frac{n_{\mathrm{local}}}{n_{\mathrm{sat}}}\right).
@@ -136,8 +136,8 @@ $$
 
 - 建议：
 
-  - 验证/调参阶段：$M \approx 5\text{--}10$；
-  - 报告/区间估计：$M \geq 30$,并输出均值 $\pm$ 置信区间。
+  - 验证/调参阶段：M ≈ 5-10；
+  - 报告/区间估计：M ≥ 30，并输出均值 ± 置信区间。
 
 - 文件： [2D/modules/batch/run_batches.m](../modules/batch/run_batches.m)，种子策略见 [2D/modules/seed_utils/get_batch_seeds.m](../modules/seed_utils/get_batch_seeds.m)
 
