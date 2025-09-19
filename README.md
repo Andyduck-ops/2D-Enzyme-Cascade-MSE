@@ -22,12 +22,12 @@ A modular MATLAB framework for simulating a two-step enzyme cascade in 2D with m
 - Batch runs with summary CSV and optional visualizations
 
 ## Background (why MSE vs bulk)
-- Scientific motivation
+- Motivation
   - Mineral-surface enzyme (MSE) localization concentrates reacting species near a particle, enhancing encounter probability compared to bulk dispersion.
   - This study investigates how localization, diffusion contrast, enzyme numbers/split, and local crowding collectively influence yield and kinetics relative to a homogeneous bulk.
 - 2D abstraction of an interfacial layer
   - We approximate a thin surface film as a ring $[r_p, r_p+f_t]$ around a central particle (enzymes fixed in MSE; free placement in bulk).
-  - Defaults reflect a strong diffusion contrast (e.g., $D_{\mathrm{film}}=10$ vs $D_{\mathrm{bulk}}=1000$ $\mathrm{nm}^2/\mathrm{s}$) and moderate ring thickness ($f_t=5$ $\mathrm{nm}$), see [default_config.m](modules/config/default_config.m).
+  - Defaults reflect a strong diffusion contrast (e.g., $D_{\mathrm{film}}=10$ vs $D_{\mathrm{bulk}}=1000$ $\mathrm{nm}^2/\mathrm{s}$) and moderate film thickness ($f_t=5$ $\mathrm{nm}$), see [default_config.m](modules/config/default_config.m).
 - Reaction context
   - Two-step cascade $\mathrm{S} \xrightarrow{\mathrm{GOx}} \mathrm{I} \xrightarrow{\mathrm{HRP}} \mathrm{P}$; enzymes are split GOx/HRP (default 50/50 via `gox_hrp_split`).
   - Local crowding reduces effective $k_{\mathrm{cat}}$ via a bounded inhibition term; this penalizes dense patches and encodes steric/competition effects.
