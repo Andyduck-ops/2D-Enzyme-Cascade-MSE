@@ -65,24 +65,28 @@ This model uses Brownian Dynamics for discrete diffusion, combined with fixed-st
 ### 3.1 Diffusion Discretization (Brownian Step)
 
 - Theory:
+
 $$
 \Delta \mathbf{r} = \sqrt{2\,D\,\Delta t}\,\boldsymbol{\eta},\quad \boldsymbol{\eta} \sim \mathcal{N}(\mathbf{0}, \mathbf{I}_2)
 $$
+
 - Code correspondence: Gaussian displacement is superimposed on particle positions (D chosen based on bulk/film).
 - File: [2D/modules/sim_core/diffusion_step.m](../modules/sim_core/diffusion_step.m)
 
 ### 3.2 Boundary and Film Region Constraints
 
 - Box and particle surface specular reflection: Normal component is reversed.
-- MSE mode: Reaction sites and feasible encounters are restricted to the film ring r ∈ [r_p, r_p + ft].
+- MSE mode: Reaction sites and feasible encounters are restricted to the film ring r ∈ [r_p, r_p + f_t].
 - File: [2D/modules/sim_core/boundary_reflection.m](../modules/sim_core/boundary_reflection.m), film ring constraints in [2D/modules/sim_core/reaction_step.m](../modules/sim_core/reaction_step.m)
 
 ### 3.3 Reaction Probability and Event Sampling (Gillespie Style)
 
 - Single-step reaction probability:
+
 $$
 p = 1 - e^{-k_{\mathrm{eff}}\,\Delta t},\qquad k_{\mathrm{eff}} = k_{\mathrm{cat}}\bigl(1 - \mathrm{inhibition}\bigr)
 $$
+
 - Determination: Sample $u \sim \mathcal{U}(0,1)$, if $u < p$, then a reaction event occurs ($\mathrm{S}\!\to\!\mathrm{I}$ or $\mathrm{I}\!\to\!\mathrm{P}$).
 - Event coordinates: Sampled and recorded near the encounter pair (enzyme-substrate) for event heatmaps.
 - File: [2D/modules/sim_core/reaction_step.m](../modules/sim_core/reaction_step.m)
@@ -90,9 +94,11 @@ $$
 ### 3.4 Crowding Inhibition (Local Modulation)
 
 - Count local crowding degree $n_{\text{local}}$ within neighbor radius ($R_{\text{inhibit}}$), forming inhibition weight:
+
 $$
 \mathrm{inhibition} = I_{\max}\,\max\!\left(0,\, 1 - \frac{n_{\text{local}}}{n_{\text{sat}}}\right).
 $$
+
 - File: [2D/modules/sim_core/precompute_inhibition.m](../modules/sim_core/precompute_inhibition.m)
 
 ### 3.5 Data Accumulation and Time Integration
@@ -108,9 +114,11 @@ $$
 
 - Single batch output: Final product count `products_final`, plus trajectories/events, etc.
 - Multi-batch statistics: Run $M$ times with independent seeds, estimate expectation and variance:
+
 $$
 \hat{\mu} = \frac{1}{M}\sum_{m=1}^M P_m,\qquad \mathrm{Var}(\hat{\mu}) = \frac{\sigma^2}{M}.
 $$
+
 - Recommendations:
   - Validation/parameter tuning phase: M≈5–10;
   - Reporting/interval estimation: M≥30, and output mean ± confidence interval.

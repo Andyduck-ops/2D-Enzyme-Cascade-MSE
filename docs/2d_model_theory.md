@@ -74,7 +74,7 @@ $$
 ### 3.2 边界与膜区约束
 
 - 盒子与颗粒表面镜面反射：法向分量取反。
-- MSE 模式：反应位点与可行相遇被限制在膜环 r ∈ [r_p, r_p + ft]。
+- MSE 模式：反应位点与可行相遇被限制在膜环 r ∈ [r_p, r_p + f_t]。
 - 文件： [2D/modules/sim_core/boundary_reflection.m](../modules/sim_core/boundary_reflection.m)，膜环约束在 [2D/modules/sim_core/reaction_step.m](../modules/sim_core/reaction_step.m)
 
 ### 3.3 反应概率与事件采样（Gillespie 风格）
@@ -109,7 +109,7 @@ $$
 - 单批输出：最终产物数 `products_final`，以及轨迹/事件等。
 - 多批统计：独立种子下运行 $M$ 次，估计期望与方差：
 $$
-\hat{\mu} = \frac{1}{M}\sum_{m=1}^M P_m,\qquad \mathrm{Var}(\hat{\mu}) = \frac{\sigma^2}{M}.
+\hat{\mu} = \frac{1}{M}\sum_{m=1}^M P_m,\qquad \text{Var}(\hat{\mu}) = \frac{\sigma^2}{M}.
 $$
 - 建议：
   - 验证/调参阶段：M≈5–10；

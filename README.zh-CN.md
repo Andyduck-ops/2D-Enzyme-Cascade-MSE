@@ -45,9 +45,11 @@
 
 ### 扩散（布朗步进）
 对每个粒子位置 $x \in \mathbb{R}^2$：
+
 $$
 \mathbf{x} \leftarrow \mathbf{x} + \sqrt{2\,D(\mathbf{x})\,\Delta t}\,\boldsymbol{\eta},\quad \boldsymbol{\eta}\sim \mathcal{N}(\mathbf{0}, \mathbf{I}_2)
 $$
+
 - MSE：环区内 $D = D_{\text{film}}$，环区外 $D = D_{\text{bulk}}$
 - Bulk：全域 $D = D_{\text{bulk}}$
 实现：[diffusion_step()](modules/sim_core/diffusion_step.m)  
@@ -59,16 +61,21 @@ $$
 
 ### 反应（每步 τ-跳跃）
 每步存在两条独立通道：
+
 $$
-\mathrm{S} + \mathrm{GOx} \rightarrow \mathrm{I},\quad P_{\mathrm{GOx}} = 1 - e^{-k_{\mathrm{cat,GOx}}\,\Delta t}\,\bigl(1 - \mathrm{inhibition}_{\mathrm{GOx}}\bigr)
+\mathrm{S} + \mathrm{GOx} \rightarrow \mathrm{I},\quad P_{\mathrm{GOx}} = 1 - e^{-k_{\mathrm{cat,GOx}}\,\Delta t}\,\bigl(1 - \mathrm{inhibition}_{\mathrm{ERP}}\bigr)
 $$
+
 $$
 \mathrm{I} + \mathrm{HRP} \rightarrow \mathrm{P},\quad P_{\mathrm{HRP}} = 1 - e^{-k_{\mathrm{cat,HRP}}\,\Delta t}\,\bigl(1 - \mathrm{inhibition}_{\mathrm{HRP}}\bigr)
 $$
+
 拥挤抑制（按酶局部密度）：
+
 $$
 \mathrm{inhibition} = I_{\max}\,\max\!\left(0,\, 1 - \frac{n_{\text{local}}}{n_{\text{sat}}}\right)
 $$
+
 MSE 模式同时要求反应位置在薄膜环区内。  
 实现：[reaction_step()](modules/sim_core/reaction_step.m)  
 
