@@ -113,13 +113,13 @@ r_{\mathrm{GOx}}(t) = \frac{n_{\mathrm{GOx,step}}}{\Delta t},\qquad
 r_{\mathrm{HRP}}(t) = \frac{n_{\mathrm{HRP,step}}}{\Delta t}
 $$
 
-产物曲线：
+- 产物曲线：
 
 $$
 P(t) \approx \sum r_{\mathrm{HRP}}(t)\,\Delta t
 $$
 
-快照/分层/轨迹按配置选择性记录。
+- 快照/分层/轨迹按配置选择性记录。
 
 文件： [2D/modules/sim_core/record_data.m](../modules/sim_core/record_data.m)，汇总在 [2D/modules/sim_core/simulate_once.m](../modules/sim_core/simulate_once.m)
 
@@ -136,8 +136,8 @@ $$
 
 - 建议：
 
-  - 验证/调参阶段：$M\approx 5\text{-}10$；
-  - 报告/区间估计：$M\ge 30$，并输出均值±置信区间。
+  - 验证/调参阶段：$M\approx 5-10$；
+  - 报告/区间估计：$M\ge 30$，并输出均值 $\pm$ 置信区间。
 
 - 文件： [2D/modules/batch/run_batches.m](../modules/batch/run_batches.m)，种子策略见 [2D/modules/seed_utils/get_batch_seeds.m](../modules/seed_utils/get_batch_seeds.m)
 
