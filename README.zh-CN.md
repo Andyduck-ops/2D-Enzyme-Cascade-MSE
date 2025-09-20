@@ -241,4 +241,4 @@ res = simulate_once(config, 2025);
 
 - 许可：MIT（见 [LICENSE](LICENSE)）
 - 作者：Rongfeng Zheng，Weifeng Chen —— 四川农业大学
-- 联系方式：通过 GitHub Issues 提问或在此处添加邮箱约定
+- 联系方式：2730916212@qq.com
