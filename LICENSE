@@ -1,0 +1,55 @@
+MIT License
+
+Copyright (c) 2024 Rongfeng Zheng, Weifeng Chen
+Sichuan Agricultural University
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+## License Summary
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+### What You CAN DO:
+- ✅ **Commercial Use**: Use this software in commercial applications
+- ✅ **Modification**: Modify the source code as needed
+- ✅ **Distribution**: Distribute copies of the software
+- ✅ **Private Use**: Use the software for personal purposes
+- ✅ **Sublicense**: Include this software in larger projects with different licenses
+
+### What You CANNOT DO:
+- ❌ **Hold Liable**: The authors cannot be held liable for damages
+- ❌ **Warranty**: No warranty is provided for the software
+- ❌ **Trademark Rights**: No trademark rights are granted
+
+### Requirements:
+- 📝 **Include Copyright**: The original copyright notice must be included
+- 📝 **Include License**: A copy of the license must be included in distributions
+
+### Attribution:
+When using this software in research publications, please cite:
+
+```
+Zheng, R., & Chen, W. (2024). 2D Enzyme Cascade Simulation:
+A MATLAB Framework for Mineral-Surface Enzyme Localization Studies.
+GitHub repository: https://github.com/your-org/2D-Enzyme-Cascade-Simulation
+```
+
+For questions about commercial licensing or special use cases, please contact the authors via GitHub Issues.
