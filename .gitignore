@@ -17,3 +17,15 @@ Thumbs.db
 
 # Figures (local)
 *.fig
+
+# Temporary files
+nul
+
+# Backup directories
+backup_readme/
+
+# Workflow files
+.spec-workflow/
+
+# PDF documents
+*.pdf
