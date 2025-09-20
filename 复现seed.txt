@@ -1,0 +1,37 @@
+# Reproducibility Seeds and Conditions
+# 复现种子与实验条件记录
+
+# This file contains experimental seeds and conditions for reproducing
+# specific simulation results from the 2D Enzyme Cascade MSE research.
+# 此文件包含用于复现2D酶级联MSE研究特定仿真结果的实验种子和条件。
+
+# Format:
+# 格式：
+# [Experiment_Name]
+# seed = [random_seed_value]
+# simulation_mode = [MSE|bulk]
+# batch_count = [number_of_batches]
+# key_parameters = [parameter1=value1, parameter2=value2, ...]
+# description = [brief_description_of_experiment]
+# results_summary = [key_findings_or_expected_outputs]
+# date_recorded = [YYYY-MM-DD]
+# researcher = [name_or_initials]
+#
+# Example entry format:
+# [MSE_vs_Bulk_Comparison_Study]
+# seed = 1234
+# simulation_mode = both_MSE_and_bulk
+# batch_count = 30
+# key_parameters = num_enzymes=200, diff_coeff_film=10, total_time=1.0
+# description = Comparative study of MSE vs bulk enzyme distribution effects
+# results_summary = MSE showed X-fold enhancement in product yield
+# date_recorded = 2024-XX-XX
+# researcher = [Your_Name]
+
+# ========================================
+# EXPERIMENTAL RECORDS
+# 实验记录
+# ========================================
+
+# [Add your experimental records below]
+# [在下方添加您的实验记录]

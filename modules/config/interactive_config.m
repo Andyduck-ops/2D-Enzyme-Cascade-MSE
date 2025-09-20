@@ -1,154 +1,154 @@
 function config = interactive_config(config)
-% INTERACTIVE_CONFIG 交互式采集模拟配置
-% 用法:
-%   cfg = interactive_config();                % 基于 [default_config()](./default_config.m) 的默认值进行交互
-%   cfg = interactive_config(existing_config); % 在传入配置基础上微调
+% INTERACTIVE_CONFIG Interactive configuration collection for simulation
+% Usage:
+%   cfg = interactive_config();                % Interactive setup based on [default_config()](./default_config.m) defaults
+%   cfg = interactive_config(existing_config); % Fine-tune based on passed configuration
 %
-% 交互项覆盖:
-%   - 粒子规模: 总酶数(num_enzymes), GOx占比(gox_hrp_split), 底物数(num_substrate)
-%   - 模式: surface/bulk
-%   - 可视化开关: visualize_enabled
-%   - 批次与RNG: batch_count, seed_mode(fixed/per_batch_random/manual_list/incremental),
+% Interactive items covered:
+%   - Particle scale: total enzymes(num_enzymes), GOx ratio(gox_hrp_split), substrate count(num_substrate)
+%   - Mode: surface/bulk
+%   - Visualization toggle: visualize_enabled
+%   - Batch & RNG: batch_count, seed_mode(fixed/per_batch_random/manual_list/incremental),
 %                fixed_seed/seed_base/seed_list, use_gpu, use_parfor
 %
-% 注意:
-%   - 本函数仅写入决策与参数, 后续 [get_batch_seeds()](../seed_utils/get_batch_seeds.m) 将实际生成批次种子
-%   - 可视化美学与绘图由 [viz_style()](../viz/viz_style.m) 与各 plot_* 函数负责
+% Note:
+%   - This function only writes decisions and parameters, subsequent [get_batch_seeds()](../seed_utils/get_batch_seeds.m) will actually generate batch seeds
+%   - Visualization aesthetics and plotting are handled by [viz_style()](../viz/viz_style.m) and various plot_* functions
 %
-% 参考基线: [refactored_2d_model.m](../../refactored_2d_model.m)
+% Reference baseline: [refactored_2d_model.m](../../refactored_2d_model.m)
 
 if nargin < 1 || isempty(config)
     config = default_config();
 end
 
 fprintf('====================================================\n');
-fprintf(' 2D 模拟交互式配置\n');
-fprintf(' (回车=使用默认值，输入数值或选项以覆盖)\n');
+fprintf(' 2D Simulation Interactive Configuration\n');
+fprintf(' (Press Enter to use default values, input numbers or options to override)\n');
 fprintf('====================================================\n');
 
 % -----------------------------
-% 基本规模设置
+% Basic scale settings
 % -----------------------------
-% 总酶数
+% Total enzyme count
 def_num_enz = config.particle_params.num_enzymes;
-val = input(sprintf('1) 总酶数量 num_enzymes [默认=%d]: ', def_num_enz));
+val = input(sprintf('1) Total enzyme count num_enzymes [default=%d]: ', def_num_enz));
 if ~isempty(val) && isnumeric(val) && isfinite(val) && val > 0
     config.particle_params.num_enzymes = round(val);
 end
 
-% GOx占比
+% GOx ratio
 def_ratio = config.particle_params.gox_hrp_split;
-val = input(sprintf('2) GOx占比 gox_hrp_split (0-1) [默认=%.2f]: ', def_ratio));
+val = input(sprintf('2) GOx ratio gox_hrp_split (0-1) [default=%.2f]: ', def_ratio));
 if ~isempty(val) && isnumeric(val) && isfinite(val)
     config.particle_params.gox_hrp_split = max(0, min(1, val));
 end
 
-% 底物数量
+% Substrate count
 def_num_sub = config.particle_params.num_substrate;
-val = input(sprintf('3) 底物数量 num_substrate [默认=%d]: ', def_num_sub));
+val = input(sprintf('3) Substrate count num_substrate [default=%d]: ', def_num_sub));
 if ~isempty(val) && isnumeric(val) && isfinite(val) && val >= 0
     config.particle_params.num_substrate = round(val);
 end
 
 % -----------------------------
-% 模式与可视化
+% Mode and visualization
 % -----------------------------
-% 模式
+% Mode
 def_mode = config.simulation_params.simulation_mode;
-val = input(sprintf('4) 模式 simulation_mode [MSE/bulk] [默认=%s]: ', def_mode), 's');
+val = input(sprintf('4) Mode simulation_mode [MSE/bulk] [default=%s]: ', def_mode), 's');
 if ~isempty(val)
     v = lower(strtrim(val));
-    % 兼容：将 surface 等价映射为 MSE
+    % Compatibility: map surface to MSE
     if any(strcmp(v, {'mse','surface','bulk'}))
         if strcmp(v,'surface'), v = 'mse'; end
         config.simulation_params.simulation_mode = v;
     else
-        fprintf('   无效输入, 保持默认: %s\n', def_mode);
+        fprintf('   Invalid input, keeping default: %s\n', def_mode);
     end
 end
 
-% 可视化开关
+% Visualization toggle
 def_vis = config.ui_controls.visualize_enabled;
-val = input(sprintf('5) 是否开启可视化 visualize_enabled [y/n] [默认=%s]: ', tf(def_vis)), 's');
+val = input(sprintf('5) Enable visualization visualize_enabled [y/n] [default=%s]: ', tf(def_vis)), 's');
 if ~isempty(val)
     config.ui_controls.visualize_enabled = is_yes(val);
 end
 
 % -----------------------------
-% 批次与随机数策略
+% Batch and RNG strategy
 % -----------------------------
-% 批次数
+% Batch count
 def_batches = config.batch.batch_count;
-val = input(sprintf('6) 批次数 batch_count [默认=%d]: ', def_batches));
+val = input(sprintf('6) Batch count batch_count [default=%d]: ', def_batches));
 if ~isempty(val) && isnumeric(val) && isfinite(val) && val > 0
     config.batch.batch_count = round(val);
 end
 
-% RNG 模式
+% RNG mode
 def_seed_mode = config.batch.seed_mode;
-val = input(sprintf(['7) 种子模式 seed_mode [fixed/per_batch_random/manual_list/incremental]\n' ...
-                     '   [默认=%s]: '], def_seed_mode), 's');
+val = input(sprintf(['7) Seed mode seed_mode [fixed/per_batch_random/manual_list/incremental]\n' ...
+                     '   [default=%s]: '], def_seed_mode), 's');
 if ~isempty(val)
     v = lower(strtrim(val));
     if any(strcmp(v, {'fixed','per_batch_random','manual_list','incremental'}))
         config.batch.seed_mode = v;
     else
-        fprintf('   无效输入, 保持默认: %s\n', def_seed_mode);
+        fprintf('   Invalid input, keeping default: %s\n', def_seed_mode);
     end
 end
 
-% 按模式补充参数
+% Additional parameters by mode
 switch config.batch.seed_mode
     case 'fixed'
         def_seed = config.batch.fixed_seed;
-        val = input(sprintf('   - 固定种子 fixed_seed [默认=%d]: ', def_seed));
+        val = input(sprintf('   - Fixed seed fixed_seed [default=%d]: ', def_seed));
         if ~isempty(val) && isnumeric(val) && isfinite(val)
             config.batch.fixed_seed = round(val);
         end
     case 'incremental'
         def_base = config.batch.seed_base;
-        val = input(sprintf('   - 增量种子基准 seed_base [默认=%d]: ', def_base));
+        val = input(sprintf('   - Incremental seed base seed_base [default=%d]: ', def_base));
         if ~isempty(val) && isnumeric(val) && isfinite(val)
             config.batch.seed_base = round(val);
         end
     case 'manual_list'
-        val = input('   - 手工种子列表 seed_list (例如: 101,202,303): ', 's');
+        val = input('   - Manual seed list seed_list (e.g., 101,202,303): ', 's');
         if ~isempty(val)
             nums = parse_list_to_int(val);
             if ~isempty(nums)
                 config.batch.seed_list = nums(:).';
                 if numel(nums) < config.batch.batch_count
-                    fprintf('   警告: 列表长度小于批次数(%d), 后续模块将按需截断/循环使用。\n', config.batch.batch_count);
+                    fprintf('   Warning: List length is less than batch count (%d), subsequent modules will truncate/cycle as needed.\n', config.batch.batch_count);
                 end
             else
-                fprintf('   未解析到有效整数列表, 保持默认空列表。\n');
+                fprintf('   No valid integer list parsed, keeping default empty list.\n');
             end
         end
     case 'per_batch_random'
-        % 不需要额外参数; 由 get_batch_seeds() 使用随机策略生成
+        % No additional parameters needed; get_batch_seeds() will use random strategy
 end
 
-% GPU 策略
+% GPU strategy
 def_gpu = config.batch.use_gpu;
-val = input(sprintf('8) GPU 策略 use_gpu [auto/on/off] [默认=%s]: ', def_gpu), 's');
+val = input(sprintf('8) GPU strategy use_gpu [auto/on/off] [default=%s]: ', def_gpu), 's');
 if ~isempty(val)
     v = lower(strtrim(val));
     if any(strcmp(v, {'auto','on','off'}))
         config.batch.use_gpu = v;
     else
-        fprintf('   无效输入, 保持默认: %s\n', def_gpu);
+        fprintf('   Invalid input, keeping default: %s\n', def_gpu);
     end
 end
 
 % parfor
 def_pf = config.batch.use_parfor;
-val = input(sprintf('9) 是否开启并行 parfor [y/n] [默认=%s]: ', tf(def_pf)), 's');
+val = input(sprintf('9) Enable parallel parfor [y/n] [default=%s]: ', tf(def_pf)), 's');
 if ~isempty(val)
     config.batch.use_parfor = is_yes(val);
 end
 
 % -----------------------------
-% 计算派生: GOx/HRP 数量(可选存放)
+% Calculate derived: GOx/HRP counts (optional storage)
 % -----------------------------
 N = config.particle_params.num_enzymes;
 r = config.particle_params.gox_hrp_split;
@@ -158,17 +158,17 @@ config.particle_params.gox_count = gox_count;
 config.particle_params.hrp_count = hrp_count;
 
 % -----------------------------
-% 汇总打印
+% Summary print
 % -----------------------------
-fprintf('\n--------------- 配置摘要 ---------------\n');
-fprintf('模式: %s | 盒子: L=%g nm | T=%gs, dt=%gs\n', ...
+fprintf('\n--------------- Configuration Summary ---------------\n');
+fprintf('Mode: %s | Box: L=%g nm | T=%gs, dt=%gs\n', ...
     config.simulation_params.simulation_mode, ...
     config.simulation_params.box_size, ...
     config.simulation_params.total_time, ...
     config.simulation_params.time_step);
-fprintf('酶: 总数=%d (GOx=%d, HRP=%d, 占比=%.2f), 底物=%d\n', ...
+fprintf('Enzymes: total=%d (GOx=%d, HRP=%d, ratio=%.2f), substrate=%d\n', ...
     N, gox_count, hrp_count, r, config.particle_params.num_substrate);
-fprintf('批次: %d | 种子模式: %s\n', config.batch.batch_count, config.batch.seed_mode);
+fprintf('Batches: %d | Seed mode: %s\n', config.batch.batch_count, config.batch.seed_mode);
 switch config.batch.seed_mode
     case 'fixed'
         fprintf('  fixed_seed=%d\n', config.batch.fixed_seed);
@@ -177,43 +177,11 @@ switch config.batch.seed_mode
     case 'manual_list'
         fprintf('  seed_list=[%s]\n', join_ints(config.batch.seed_list));
     case 'per_batch_random'
-        fprintf('  per-batch 将自动随机生成种子\n');
+        fprintf('  per-batch will auto-generate random seeds\n');
 end
-fprintf('GPU: %s | parfor: %s | 可视化: %s\n', ...
+fprintf('GPU: %s | parfor: %s | Visualization: %s\n', ...
     upper(config.batch.use_gpu), tf(config.batch.use_parfor), tf(config.ui_controls.visualize_enabled));
-fprintf('输出目录: %s\n', config.io.outdir);
+fprintf('Output directory: %s\n', config.io.outdir);
 fprintf('----------------------------------------\n');
 
-end
-
-% -----------------------------
-% 工具函数
-% -----------------------------
-function t = tf(b)
-    if b, t = 'y'; else, t = 'n'; end
-end
-
-function b = is_yes(s)
-    s = lower(strtrim(s));
-    b = any(strcmp(s, {'y','yes','1','true','t'}));
-end
-
-function nums = parse_list_to_int(str)
-    % 将 "1, 2, 3" -> [1 2 3]
-    parts = regexp(str, '[,\s]+', 'split');
-    nums = [];
-    for i = 1:numel(parts)
-        if isempty(parts{i}), continue; end
-        v = str2double(parts{i});
-        if ~isnan(v) && isfinite(v)
-            nums(end+1) = round(v); %#ok<AGROW>
-        end
-    end
-    nums = unique(nums, 'stable');
-end
-
-function s = join_ints(v)
-    if isempty(v), s = ''; return; end
-    s = sprintf('%d,', v(:));
-    s = s(1:end-1);
 end

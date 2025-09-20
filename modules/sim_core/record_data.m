@@ -1,19 +1,19 @@
 function accum = record_data(state, step, config, accum, reacted_gox_count, reacted_hrp_count)
-% RECORD_DATA 在时间步内记录所需数据(速率/快照/分层统计)
-% 用法:
+% RECORD_DATA Record required data within time step (rates/snapshots/shell statistics)
+% Usage:
 %   accum = record_data(state, step, config, accum, reacted_gox_count, reacted_hrp_count)
 %
-% 输入:
-%   - state: 当前系统状态(包含粒子位置等)
-%   - step:  当前步数(1-based)
-%   - config: 配置(开关/图像/分层等)
-%   - accum: 累加器结构(需在simulate_once中初始化)
-%   - reacted_gox_count, reacted_hrp_count: 本步两类反应计数
+% Inputs:
+%   - state: Current system state (including particle positions, etc.)
+%   - step:  Current step number (1-based)
+%   - config: Configuration (switches/images/shells, etc.)
+%   - accum: Accumulator structure (must be initialized in simulate_once)
+%   - reacted_gox_count, reacted_hrp_count: Reaction counts for this step
 %
-% 输出:
-%   - accum: 更新后的累加器
+% Output:
+%   - accum: Updated accumulator
 %
-% 初始化约定(由simulate_once设置):
+% Initialization convention (set by simulate_once):
 %   accum.num_steps, accum.dt
 %   accum.enable_rate (bool)
 %     accum.reaction_rate_gox [num_steps x 1], accum.reaction_rate_hrp [num_steps x 1]
@@ -24,16 +24,16 @@ function accum = record_data(state, step, config, accum, reacted_gox_count, reac
 
 dt = accum.dt;
 
-% 1) 瞬时反应速率
+% 1) Instantaneous reaction rates
 if accum.enable_rate
     accum.reaction_rate_gox(step,1) = reacted_gox_count / dt;
     accum.reaction_rate_hrp(step,1) = reacted_hrp_count / dt;
 end
 
-% 2) 选择性快照
+% 2) Selective snapshots
 if accum.snapshot_idx <= numel(accum.snapshot_steps)
     if step == accum.snapshot_steps(accum.snapshot_idx)
-        % 按原脚本存 GOx/HRP/Product
+        % Store GOx/HRP/Product as in original script
         k = accum.snapshot_idx;
         accum.snapshots{k,1} = state.gox_pos;
         accum.snapshots{k,2} = state.hrp_pos;
@@ -42,7 +42,7 @@ if accum.snapshot_idx <= numel(accum.snapshot_steps)
     end
 end
 
-% 3) 分层动态统计（仅在启用且表面模式）
+% 3) Shell dynamics statistics (only when enabled and in surface mode)
 if accum.enable_shell && ~isempty(state.substrate_pos)
     if mod(step, accum.data_recording_interval) == 0
         accum.shell_record_counter = accum.shell_record_counter + 1;

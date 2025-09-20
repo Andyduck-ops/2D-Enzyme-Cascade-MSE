@@ -1,12 +1,12 @@
 function v = getfield_or(s, key, default)
-% GETFIELD_OR 从结构体获取字段或嵌套字段, 不存在则返回默认值
-% 用法:
+% GETFIELD_OR Get field or nested field from structure, return default if not exists
+% Usage:
 %   v = getfield_or(s, 'field', default)
 %   v = getfield_or(s, {'a','b','c'}, default)
 
 v = default;
 try
-    % 单字段名
+    % Single field name
     if ischar(key) || (isstring(key) && isscalar(key))
         k = char(key);
         if isstruct(s) && isfield(s, k)
@@ -15,7 +15,7 @@ try
         return;
     end
 
-    % 嵌套路径: 元胞字符串数组
+    % Nested path: cell string array
     for i = 1:numel(key)
         k = key{i};
         if isstring(k), k = char(k); end

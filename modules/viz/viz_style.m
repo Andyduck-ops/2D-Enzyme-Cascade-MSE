@@ -1,18 +1,18 @@
 function viz_style(ax, font_settings, theme, plot_colors)
-% VIZ_STYLE 统一的可视化美学设置
-% 用法:
+% VIZ_STYLE Unified visualization aesthetic settings
+% Usage:
 %   viz_style(ax, font_settings, theme)
 %   viz_style(ax, font_settings, theme, plot_colors)
 %
-% 参数:
-%   - ax            目标坐标区句柄
-%   - font_settings 结构体, 字段同 [default_config()](../config/default_config.m:1):
+% Parameters:
+%   - ax            Target axes handle
+%   - font_settings Structure with fields from [default_config()](../config/default_config.m:1):
 %       .global_font_name, .title_font_size, .label_font_size, .legend_font_size, .axis_font_size
 %   - theme         'light' | 'dark'
-%   - plot_colors   (可选) 结构体, 字段同 [default_config()](../config/default_config.m:1) 的 plot_colors
-%                    将用于设置 ColorOrder 和部分默认色
+%   - plot_colors   (optional) Structure with same plot_colors fields as [default_config()](../config/default_config.m:1)
+%                    Will be used to set ColorOrder and some default colors
 %
-% 参考美学建议来源: [一些参考.txt](../../一些参考.txt:329)
+% Reference source for aesthetic suggestions: [Reference_notes.txt](../../Reference_notes.txt:329)
 
 arguments
     ax (1,1) matlab.graphics.axis.Axes
@@ -21,7 +21,7 @@ arguments
     plot_colors struct = struct()
 end
 
-% ---------------- 字体与基础外观 ----------------
+% ---------------- Font and Basic Appearance ----------------
 ax.FontName = getfield_or(font_settings, 'global_font_name', 'Arial');
 ax.FontSize = getfield_or(font_settings, 'axis_font_size', 10);
 ax.LineWidth = 1.0;
@@ -31,7 +31,7 @@ grid(ax, 'on');
 ax.GridLineStyle = ':';
 ax.GridAlpha = 0.5;
 
-% ---------------- 主题 ----------------
+% ---------------- Theme ----------------
 switch lower(theme)
     case 'light'
         bg_color = 'w';
@@ -51,15 +51,15 @@ ax.XColor = fg_color;
 ax.YColor = fg_color;
 ax.GridColor = grid_color;
 
-% ---------------- 颜色序列与colormap ----------------
-% 按参考文件建议, 默认 colormap 使用 'parula' 更具感知均匀性
+% ---------------- Color Order and Colormap ----------------
+% According to reference file, default colormap uses 'parula' for better perceptual uniformity
 try
     colormap(ax, 'parula');
 catch
-    % 低版本容错
+    % Backward compatibility for older versions
 end
 
-% 设置 ColorOrder (优先使用传入的 plot_colors 中 GOx/HRP/Product)
+% Set ColorOrder (prioritize using GOx/HRP/Product from passed plot_colors)
 co = [];
 if isfield(plot_colors, 'GOx'),      co(end+1,:) = plot_colors.GOx; end %#ok<AGROW>
 if isfield(plot_colors, 'HRP'),      co(end+1,:) = plot_colors.HRP; end %#ok<AGROW>
@@ -68,12 +68,12 @@ if size(co,1) >= 1
     ax.ColorOrder = co;
 end
 
-% ---------------- 标题/标签字号 ----------------
-% 注意: 仅当后续调用 title()/xlabel()/ylabel() 时, 再应用字号
-% 这里提供一个便捷函数用于统一设置
+% ---------------- Title/Label Font Sizes ----------------
+% Note: Font sizes are applied only when title()/xlabel()/ylabel() are called later
+% Here we provide a convenience function for unified settings
 apply_title_label_legend(ax, font_settings);
 
-    % 统一设置标题/标签/图例字号
+    % Uniformly set title/label/legend font sizes
     function apply_title_label_legend(ax, font_settings)
         ttl = get(ax, 'Title');
         if isgraphics(ttl)
@@ -96,11 +96,11 @@ apply_title_label_legend(ax, font_settings);
             yl.Color    = ax.YColor;
         end
 
-        % 图例字号可在创建图例时设置:
+        % Legend font size can be set when creating legend:
         %   lgd = legend(ax, ...); lgd.FontSize = font_settings.legend_font_size;
     end
 
-    % 读取字段或默认值
+    % Read field or default value
     function v = getfield_or(s, key, default)
         v = default;
         try
