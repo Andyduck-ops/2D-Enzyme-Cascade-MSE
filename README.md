@@ -129,17 +129,17 @@ $$
 
    For glucose oxidase (GOx):
    $$
-   P_{\mathrm{GOx}} = 1 - e^{-k_{\mathrm{cat,GOx}}\,\Delta t}\,(1 - \mathrm{inhibition}_{\mathrm{GOx}}),\quad k_{\mathrm{cat,GOx}} = 100\,\mathrm{s}^{-1}
+   P_{\mathrm{GOx}} = 1 - e^{-k_{\text{cat,GOx}} \Delta t}(1 - \mathrm{inhibition}_{\mathrm{GOx}}),\quad k_{\text{cat,GOx}} = 100\,\mathrm{s}^{-1}
    $$
 
    For horseradish peroxidase (HRP):
    $$
-   P_{\mathrm{HRP}} = 1 - e^{-k_{\mathrm{cat,HRP}}\,\Delta t}\,(1 - \mathrm{inhibition}_{\mathrm{HRP}}),\quad k_{\mathrm{cat,HRP}} = 100\,\mathrm{s}^{-1}
+   P_{\mathrm{HRP}} = 1 - e^{-k_{\text{cat,HRP}} \Delta t}(1 - \mathrm{inhibition}_{\mathrm{HRP}}),\quad k_{\text{cat,HRP}} = 100\,\mathrm{s}^{-1}
    $$
 
    with crowding inhibition:
    $$
-   \mathrm{inhibition} = I_{\max}\,\max\!\left(0,1 - \frac{n_{\mathrm{local}}}{n_{\mathrm{sat}}}\right),\quad I_{\max} = 0.8,\, n_{\mathrm{sat}} = 5
+   \mathrm{inhibition} = I_{\max} \max\!\left(0,1 - \frac{n_{\mathrm{local}}}{n_{\mathrm{sat}}}\right),\quad I_{\max} = 0.8,\, n_{\mathrm{sat}} = 5
    $$
 
    **MSE constraint**: All accepted reactions must occur within the film ring $[r_p, r_p+f_t]$
@@ -196,16 +196,14 @@ Implementation: [boundary_reflection()](modules/sim_core/boundary_reflection.m)
 Two independent channels per step:
 
 $$
-\mathrm{S} + \mathrm{GOx} \rightarrow \mathrm{I},\quad P_{\mathrm{GOx}} = 1 - e^{-k_{\mathrm{cat,GOx}}\,\Delta t}\,\bigl(1 - \mathrm{inhibition}_{\mathrm{GOx}}\bigr)
+\mathrm{S} + \mathrm{GOx} \rightarrow \mathrm{I},\quad P_{\mathrm{GOx}} = 1 - e^{-k_{\text{cat,GOx}} \Delta t}\bigl(1 - \mathrm{inhibition}_{\mathrm{GOx}}\bigr)
 $$
-$$
-\mathrm{I} + \mathrm{HRP} \rightarrow \mathrm{P},\quad P_{\mathrm{HRP}} = 1 - e^{-k_{\mathrm{cat,HRP}}\,\Delta t}\,\bigl(1 - \mathrm{inhibition}_{\mathrm{HRP}}\bigr)
+\mathrm{I} + \mathrm{HRP} \rightarrow \mathrm{P},\quad P_{\mathrm{HRP}} = 1 - e^{-k_{\text{cat,HRP}} \Delta t}\bigl(1 - \mathrm{inhibition}_{\mathrm{HRP}}\bigr)
 $$
 Inhibition from local crowding (per enzyme):
 
-
 $$
-\mathrm{inhibition} = I_{\max}\,\max\!\left(0,\, 1 - \frac{n_{\mathrm{local}}}{n_{\mathrm{sat}}}\right)
+\mathrm{inhibition} = I_{\max} \max\!\left(0,\, 1 - \frac{n_{\mathrm{local}}}{n_{\mathrm{sat}}}\right)
 $$
 MSE mode additionally restricts events to film ring.
 Implementation: [reaction_step()](modules/sim_core/reaction_step.m)

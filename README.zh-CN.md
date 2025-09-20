@@ -17,8 +17,8 @@
 
 <!-- 核心链接 -->
 - 📖 **文档资料**: [2D Theory (English)](docs/2d_model_theory.en.md) | [理论（中文）](docs/2d_model_theory.md)
-- 🎯 **快速入门**: [安装指南](#installation) | [使用方法](#quick-start) | [示例代码](#examples)
-- ⚡ **功能特性**: [核心功能](#key-features) | [算法原理](#algorithm) | [可视化](#visualization)
+- 🎯 **快速入门**: [安装指南](#-安装指南) | [使用方法](#-快速入门) | [示例代码](#-示例代码)
+- ⚡ **功能特性**: [核心功能](#-核心功能) | [算法原理](#-算法说明) | [可视化](#-visualization)
 
 ## 🎯 项目概览
 
@@ -154,16 +154,16 @@ RNG 设置：[setup_rng()](modules/rng/setup_rng.m)
 
 - [项目概览](#-项目概览)
 - [核心功能](#-核心功能)
-- [安装指南](#-installation)
-- [快速入门](#-quick-start)
-- [示例代码](#-examples)
-- [算法原理](#-algorithm)
-- [配置说明](#-configuration)
-- [可视化工具](#-visualization)
-- [项目结构](#-project-structure)
-- [贡献指南](#-contributing)
-- [许可证](#-license)
-- [作者与引用](#-authors-and-citation)
+- [安装指南](#-安装指南)
+- [快速入门](#-快速入门)
+- [示例代码](#-示例代码)
+- [算法原理](#-算法说明)
+- [配置说明](#-配置说明)
+- [可视化工具](#-可视化工具)
+- [项目结构](#-项目结构)
+- [贡献指南](#-贡献指南)
+- [许可证](#-许可证)
+- [作者与引用](#-作者与引用)
 
 ## 📦 安装指南
 
