@@ -30,7 +30,7 @@
 ## 背景（为何比较 MSE 与 bulk）
 
 - 科学动机：矿物表面酶（MSE）局域化使底物/中间体在颗粒附近富集，相遇概率显著高于体相（bulk）分散体系，从而提升级联效率。
-- 2D 抽象：用环区 $[r_p, r_p+f_t]$ 近似中心颗粒周围的表面薄膜，酶在 MSE 模式固定于环区，bulk 模式则在盒域均匀分布。默认参数体现强扩散对比（如 $D_{\text{film}}=10$ vs $D_{\text{bulk}}=1000$ nm$^2$/s）与适中的膜厚（$f_t=5$ nm），见 [modules/config/default_config.m](modules/config/default_config.m)。
+- 2D 抽象：用环区 [rp, rp+ft] 近似中心颗粒周围的表面薄膜，酶在 MSE 模式固定于环区，bulk 模式则在盒域均匀分布。默认参数体现强扩散对比（如 D_film=10 vs D_bulk=1000 nm²/s）与适中的膜厚（ft=5 nm），见 [modules/config/default_config.m](modules/config/default_config.m)。
 - 反应语境：两步级联 S —(GOx)→ I —(HRP)→ P；酶数量按比例 `gox_hrp_split`（默认 50/50）划分 GOx 与 HRP。
 - 模型假设（范围）：酶不移动；S/I/P 扩散；盒域与颗粒边界为镜面反射；固定步长 τ‑跳跃；无吸附/解吸；MSE 下仅接受薄膜环区内的反应事件。
 - 面向论文的输出：MSE vs bulk 的产物优势、反应速率曲线、空间事件图、示踪轨迹；批量 CSV 用于均值/方差等统计汇总。可视化入口： [modules/viz/plot_event_map.m](modules/viz/plot_event_map.m)、[modules/viz/plot_tracers.m](modules/viz/plot_tracers.m)、[modules/viz/plot_product_curve.m](modules/viz/plot_product_curve.m)。
@@ -38,20 +38,22 @@
 ## 算法说明
 
 ### 几何与状态
-- 域：$L \times L$ 的二维正方形
-- 中心颗粒：半径 $r_p$
-- 薄膜环区：MSE 模式下的 $[r_p, r_p + f_t]$ 
+- 域：L x L 的二维正方形
+- 中心颗粒：半径 rp
+- 薄膜环区：MSE 模式下的 [rp, rp + ft] 
 - 物种：S、I、P 为可扩散粒子；酶固定在其位置（MSE 模式局域在环区，bulk 模式均匀分布）
 
 ### 扩散（布朗步进）
-对每个粒子位置 $x \in \mathbb{R}^2$：
+对每个粒子位置 x ∈ R²：
 
-$$
-\mathbf{x} \leftarrow \mathbf{x} + \sqrt{2\,D(\mathbf{x})\,\Delta t}\,\boldsymbol{\eta},\quad \boldsymbol{\eta}\sim \mathcal{N}(\mathbf{0}, \mathbf{I}_2)
-$$
+**布朗步进公式**：
 
-- MSE：环区内 $D = D_{\text{film}}$，环区外 $D = D_{\text{bulk}}$
-- Bulk：全域 $D = D_{\text{bulk}}$
+    x_new = x_old + sqrt(2 * D(x) * Δt) * η
+
+其中 η 是标准正态分布随机数（均值为0，方差为1的二维向量）。
+
+- MSE：环区内 D = D_film，环区外 D = D_bulk
+- Bulk：全域 D = D_bulk
 实现：[diffusion_step()](modules/sim_core/diffusion_step.m)  
 
 
@@ -62,19 +64,19 @@ $$
 ### 反应（每步 τ-跳跃）
 每步存在两条独立通道：
 
-$$
-\mathrm{S} + \mathrm{GOx} \rightarrow \mathrm{I},\quad P_{\mathrm{GOx}} = 1 - e^{-k_{\mathrm{cat,GOx}}\,\Delta t}\,\bigl(1 - \mathrm{inhibition}_{\mathrm{ERP}}\bigr)
-$$
+**反应通道**：
 
-$$
-\mathrm{I} + \mathrm{HRP} \rightarrow \mathrm{P},\quad P_{\mathrm{HRP}} = 1 - e^{-k_{\mathrm{cat,HRP}}\,\Delta t}\,\bigl(1 - \mathrm{inhibition}_{\mathrm{HRP}}\bigr)
-$$
+1. S + GOx → I，反应概率：
+   P_GOx = 1 - exp(-k_cat,GOx * Δt * (1 - inhibition_GOx))
+
+2. I + HRP → P，反应概率：
+   P_HRP = 1 - exp(-k_cat,HRP * Δt * (1 - inhibition_HRP))
 
 拥挤抑制（按酶局部密度）：
 
-$$
-\mathrm{inhibition} = I_{\max}\,\max\!\left(0,\, 1 - \frac{n_{\text{local}}}{n_{\text{sat}}}\right)
-$$
+**拥挤抑制公式**：
+
+   inhibition = I_max * max(0, 1 - n_local / n_sat)
 
 MSE 模式同时要求反应位置在薄膜环区内。  
 实现：[reaction_step()](modules/sim_core/reaction_step.m)  
@@ -233,7 +235,7 @@ res = simulate_once(config, 2025);
 
 - 通过 `batch.seed_mode` 与 `batch.fixed_seed` 控制 RNG
 - 批处理结果聚合到 CSV；[main_2d_pipeline.m](main_2d_pipeline.m) 末尾含 MC 摘要写出逻辑
-- τ-跳跃基于固定步长 $\Delta t$，在给定种子与配置下结果可完全复现
+- τ-跳跃基于固定步长 Δt，在给定种子与配置下结果可完全复现
 
 ## 许可与致谢
 

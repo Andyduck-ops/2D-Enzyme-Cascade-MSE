@@ -1,6 +1,7 @@
 # 2D 酶级联模拟：数学理论与模拟方法解析
 Language / 语言: [English](2d_model_theory.en.md) | [中文](2d_model_theory.md)
 
+
 > 本文系统梳理当前 2D 酶级联模拟的物理建模、数学方程、随机数/蒙特卡洛机制、统计收敛与代码实现映射，便于复现、审阅与扩展。
 
 - 主控入口与批处理：
@@ -17,7 +18,7 @@ Language / 语言: [English](2d_model_theory.en.md) | [中文](2d_model_theory.m
 
   - [2D/modules/sim_core/record_data.m](../modules/sim_core/record_data.m)
 - 可视化（事件图/轨迹等）：
-  - [2D/modules/viz/plot_event_map.m](../modules/viz/plot_event_map.m) 
+  - [2D/modules/viz/plot_event_map.m](../modules/viz/plot_event_map.m)
   - [2D/modules/viz/plot_tracers.m](../modules/viz/plot_tracers.m)
 
 ---
@@ -25,7 +26,7 @@ Language / 语言: [English](2d_model_theory.en.md) | [中文](2d_model_theory.m
 ## 1. 系统概述与建模假设
 
 - 几何与边界
-  - 2D 方形盒子，边长 $L$（默认 $500\,\mathrm{nm}$），中心存在半径 $r_p$（默认 $20\,\mathrm{nm}$）的颗粒与膜厚 $f_t$（默认 $5\,\mathrm{nm}$）的环区。
+  - 2D 方形盒子，边长 L（默认 500 nm），中心存在半径 rp（默认 20 nm）的颗粒与膜厚 ft（默认 5 nm）的环区。
   - 边界条件：盒壁、颗粒表面为镜面反射（无吸收）。
 - 物种与过程
   - 底物 S 随机扩散；GOx、HRP 固定位于膜区（MSE 模式）或分布于体相（bulk 模式）。
@@ -33,7 +34,7 @@ Language / 语言: [English](2d_model_theory.en.md) | [中文](2d_model_theory.m
 - 关键参数（默认值见配置）：
   - 扩散系数：D_bulk = 1000 nm²/s，D_film = 10 nm²/s。
   - 速率常数：k_cat,GOx = 100 s⁻¹，k_cat,HRP = 100 s⁻¹。
-  - 拥挤抑制：范围 $R_{\mathrm{inhibit}} = 10\,\mathrm{nm}$，饱和阈值 $n_{\mathrm{sat}} = 5$，最大抑制 $I_{\max} = 0.8$。
+  - 拥挤抑制：范围 R_inhibit = 10 nm，饱和阈值 n_sat = 5，最大抑制 I_max = 0.8。
 - 配置入口：
   - [2D/modules/config/default_config.m](../modules/config/default_config.m)
   - [2D/modules/config/interactive_config.m](../modules/config/interactive_config.m)
@@ -52,8 +53,8 @@ $$
 
 说明：
 
-- $\nabla^2 = \frac{\partial^2}{\partial x^2} + \frac{\partial^2}{\partial y^2}$。
-- 在 MSE 模式，$[\mathrm{GOx}]$ 与 $[\mathrm{HRP}]$ 等效集中在膜环区域（$r \in [r_p, r_p+f_t]$），呈强非均匀源项。
+- ∇² = ∂²/∂x² + ∂²/∂y²。
+- 在 MSE 模式，[GOx] 与 [HRP] 等效集中在膜环区域（r ∈ [rp, rp+ft]），呈强非均匀源项。
 - 非线性、奇异边界导致解析解困难，因此采用随机粒子/蒙特卡洛方法进行数值近似。
 
 ---
@@ -77,7 +78,7 @@ $$
 ### 3.2 边界与膜区约束
 
 - 盒子与颗粒表面镜面反射：法向分量取反。
-- MSE 模式：反应位点与可行相遇被限制在膜环 $r \in [r_p, r_p + f_t]$。
+- MSE 模式：反应位点与可行相遇被限制在膜环 r ∈ [rp, rp + ft]。
 - 文件： [2D/modules/sim_core/boundary_reflection.m](../modules/sim_core/boundary_reflection.m)，膜环约束在 [2D/modules/sim_core/reaction_step.m](../modules/sim_core/reaction_step.m)
 
 ### 3.3 反应概率与事件采样（Gillespie 风格）
@@ -88,7 +89,7 @@ $$
 p = 1 - e^{-k_{\mathrm{eff}}\,\Delta t},\qquad k_{\mathrm{eff}} = k_{\mathrm{cat}}\bigl(1 - \mathrm{inhibition}\bigr)
 $$
 
-判定：采样 $u \sim \mathcal{U}(0,1)$，若 $u < p$，则发生反应事件（S→I 或 I→P）。
+判定：采样 u ~ U(0,1)，若 u < p，则发生反应事件（S→I 或 I→P）。
 
 事件坐标：在相遇对（酶-底物）局部附近采样并记录，用于事件热力图。
 
@@ -96,7 +97,7 @@ $$
 
 ### 3.4 拥挤抑制（局部调制）
 
-近邻半径内（R_inhibit）统计局部拥挤度 $n_{\mathrm{local}}$，形成抑制权重：
+近邻半径内（R_inhibit）统计局部拥挤度 n_local，形成抑制权重：
 
 $$
 \mathrm{inhibition} = I_{\max}\,\max\!\left(0,\, 1 - \frac{n_{\mathrm{local}}}{n_{\mathrm{sat}}}\right).
@@ -128,7 +129,7 @@ $$
 ## 4. 批次蒙特卡洛统计与收敛
 
 - 单批输出：最终产物数 `products_final`，以及轨迹/事件等。
-- 多批统计：独立种子下运行 $M$ 次，估计期望与方差：
+- 多批统计：独立种子下运行 M 次，估计期望与方差：
 
 $$
 \hat{\mu} = \frac{1}{M}\sum_{m=1}^M P_m,\qquad \mathrm{Var}(\hat{\mu}) = \frac{\sigma^2}{M}.
@@ -177,7 +178,7 @@ graph TD;
     G --> H;
 ```
 
-- 入口： [2D/main_2d_pipeline.m](../main_2d_pipeline.m)  
+- 入口： [2D/main_2d_pipeline.m](../main_2d_pipeline.m)
 - 单次模拟： [2D/modules/sim_core/simulate_once.m](../modules/sim_core/simulate_once.m)
 
 ---
@@ -205,6 +206,6 @@ graph TD;
 
 ## 7. 术语与参考
 
-- Brownian Dynamics（布朗动力学）：通过 $\Delta r = \sqrt{2D\Delta t}\cdot\eta$ 离散维纳过程模拟扩散。
-- Gillespie/τ-leaping：固定步长下用 $p=1-\exp(-k\Delta t)$ 近似事件发生概率。
+- Brownian Dynamics（布朗动力学）：通过 Δr = √(2DΔt)·η 离散维纳过程模拟扩散。
+- Gillespie/τ-leaping：固定步长下用 p=1-exp(-kΔt) 近似事件发生概率。
 - Smoluchowski 相遇理论：扩散控制反应的相遇率，在 2D/3D 下表达不同。
