@@ -40,7 +40,7 @@ The computational framework implements stochastic Brownian dynamics simulations 
 ## Overview
 
 **Protocell Emergence Modeling Framework**:
-- **Enzyme cascade system**: $\mathrm{S} \xrightarrow{\mathrm{GOx}} \mathrm{I} \xrightarrow{\mathrm{HRP}} \mathrm{P}$ - mimics **substrate channeling** in primitive proto-metabolic networks
+- **Enzyme cascade system**: S -(GOx)-> I -(HRP)-> P - mimics **substrate channeling** in primitive proto-metabolic networks
 - **Comparative modes** representing stages of **prebiotic evolution**:
   - **MSE mode**: Enzymes localized to a ring film around a central mineral particle, modeling **mineral-guided molecular enrichment**
   - **Bulk mode**: Enzymes uniformly distributed throughout the domain, representing dilute **prebiotic chemistry** conditions
@@ -57,14 +57,14 @@ To quantitatively assess how mineral surface-mediated enrichment (MSE) serves as
 MSE localization creates concentration gradients that drive **proto-metabolic flux**, concentrating reacting species near mineral particles and dramatically enhancing encounter probabilities compared to bulk dispersion. This mechanism represents a plausible solution to how primitive reaction networks could have achieved the molecular organization necessary for autocatalytic processes under **early Earth conditions**, providing computational insights into the emergence of life from non-living matter.
 
 ### Scientific Framework
-- **Molecular Diffusion**: Follows Brownian motion with position updates $\Delta r = \sqrt{2D\,\Delta t}\,\eta$, where $\eta$ represents Gaussian white noise
-- **Heterogeneous Environment**: Diffusion coefficients are set to $D_{\text{bulk}} = 1000\,\text{nm}^2\!\,/\text{s}$ for bulk regions and $D_{\text{film}} = 10\,\text{nm}^2\!\,/\text{s}$ within the enzyme film layer
-- **Spatial Confinement**: 2D abstraction approximates a thin surface film as a ring $[r_p,\, r_p + f_t]$ around a central particle (enzymes fixed in MSE; free placement in bulk)
+- **Molecular Diffusion**: Follows Brownian motion with position updates Δr = sqrt(2D Δt) η, where η represents Gaussian white noise
+- **Heterogeneous Environment**: Diffusion coefficients are set to D_bulk = 1000 nm²/s for bulk regions and D_film = 10 nm²/s within the enzyme film layer
+- **Spatial Confinement**: 2D abstraction approximates a thin surface film as a ring [r_p, r_p + f_t] around a central particle (enzymes fixed in MSE; free placement in bulk)
 
 ### Reaction System
-- **Two-step cascade**: $\mathrm{S} \xrightarrow{\mathrm{GOx}} \mathrm{I} \xrightarrow{\mathrm{HRP}} \mathrm{P}$ with enzymes split GOx/HRP (default 50/50 via `gox_hrp_split`)
-- **τ-leaping kinetics**: Reaction probability follows $P = 1 - \exp\bigl(-k_{\text{cat}}\,\Delta t\bigr)$, where $k_{\text{cat}} = 100\,\text{s}^{-1}$ for both enzymes
-- **Crowding effects**: Local enzyme density modulates effective catalytic rates according to $\text{inhibition} = I_{\max} \times \max\bigl(0, 1 - n_{\text{local}}/n_{\text{sat}}\bigr)$, with $I_{\max} = 0.8$ and $n_{\text{sat}} = 5$
+- **Two-step cascade**: S -(GOx)-> I -(HRP)-> P with enzymes split GOx/HRP (default 50/50 via `gox_hrp_split`)
+- **τ-leaping kinetics**: Reaction probability follows P = 1 - exp(-k_cat Δt), where k_cat = 100 s⁻¹ for both enzymes
+- **Crowding effects**: Local enzyme density modulates effective catalytic rates according to inhibition = I_max × max(0, 1 - n_local/n_sat), with I_max = 0.8 and n_sat = 5
 
 ### Key Comparisons
 The framework systematically compares two fundamental configurations representing distinct stages of **prebiotic evolution**:
@@ -76,7 +76,7 @@ The framework systematically compares two fundamental configurations representin
 ## ⚡ Key Features
 
 ### 🧬 Advanced Simulation Capabilities for Protocell Emergence Studies
-- **Proto-metabolic Network Modeling**: Two-step enzyme cascade $\mathrm{S} \xrightarrow{\mathrm{GOx}} \mathrm{I} \xrightarrow{\mathrm{HRP}} \mathrm{P}$ mimicking **substrate channeling** in primitive biochemical networks
+- **Proto-metabolic Network Modeling**: Two-step enzyme cascade S -(GOx)-> I -(HRP)-> P mimicking **substrate channeling** in primitive biochemical networks
 - **Prebiotic Evolution Simulation Modes**:
   - **MSE Mode**: Enzymes localized to a ring film around a central mineral particle, modeling **mineral-guided molecular enrichment** and **protocell emergence** pathways
   - **Bulk Mode**: Enzymes uniformly distributed throughout the domain, representing dilute **prebiotic chemistry** environments
@@ -105,20 +105,20 @@ Key entrypoints:
 ## Methods (paper-aligned summary)
 
 ### Computational Geometry and Species
-- **Domain**: 2D square box of side length $L = 500\,\text{nm}$ with reflective boundaries
-- **Central particle**: Radius $r_p = 20\,\text{nm}$ with reflective surface
-- **MSE configuration**: Enzymes localized to film ring $[r_p,\, r_p + f_t]$ where $f_t = 5\,\text{nm}$
+- **Domain**: 2D square box of side length L = 500 nm with reflective boundaries
+- **Central particle**: Radius r_p = 20 nm with reflective surface
+- **MSE configuration**: Enzymes localized to film ring [r_p, r_p + f_t] where f_t = 5 nm
 - **Bulk configuration**: Enzymes uniformly distributed throughout the domain
 - **Molecular species**: Substrate (S), Intermediate (I), and Product (P) undergo free diffusion; enzymes remain spatially fixed
 
 ### Diffusion (Brownian step)
-For each particle position $\mathbf{x} \in \mathbb{R}^2$:
+For each particle position x ∈ ℝ²:
 
-$\mathbf{x} \leftarrow \mathbf{x} + \sqrt{2 D(\mathbf{x})\,\Delta t}\,\boldsymbol{\eta}$, where $\boldsymbol{\eta} \sim \mathcal{N}(\mathbf{0}, \mathbf{I}_2)$
+x ← x + sqrt(2 D(x) Δt) · η, where η ~ N(0, I₂)
 
-D($\mathbf{x}$) is piecewise:
-- MSE mode: $D = D_{\text{film}}$ inside the film ring; $D = D_{\text{bulk}}$ elsewhere
-- Bulk mode: $D = D_{\text{bulk}}$ everywhere
+D(x) is piecewise:
+- MSE mode: D = D_film inside the film ring; D = D_bulk elsewhere
+- Bulk mode: D = D_bulk everywhere
 
 ### Boundaries
 - Box reflection (mirror)
@@ -128,12 +128,12 @@ D($\mathbf{x}$) is piecewise:
 
 Two independent channels per step:
 
-- $\mathrm{S} + \mathrm{GOx} \rightarrow \mathrm{I}$, $P_{\mathrm{GOx}} = 1 - \exp\bigl(-k_{\mathrm{cat,GOx}} (1 - \text{inhibition}_{\mathrm{GOx}}) \Delta t\bigr)$
-- $\mathrm{I} + \mathrm{HRP} \rightarrow \mathrm{P}$, $P_{\mathrm{HRP}} = 1 - \exp\bigl(-k_{\mathrm{cat,HRP}} (1 - \text{inhibition}_{\mathrm{HRP}}) \Delta t\bigr)$
+- S + GOx → I, P_GOx = 1 - exp(-k_cat,GOx (1 - inhibition_GOx) Δt)
+- I + HRP → P, P_HRP = 1 - exp(-k_cat,HRP (1 - inhibition_HRP) Δt)
 
 Inhibition from local crowding (per enzyme):
 
-$\text{inhibition} = I_{\max} \times \max\bigl(0, 1 - n_{\text{local}} / n_{\text{sat}}\bigr)$
+inhibition = I_max × max(0, 1 - n_local / n_sat)
 
 MSE mode additionally restricts events to film ring.
 
