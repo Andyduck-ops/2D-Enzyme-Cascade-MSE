@@ -92,7 +92,7 @@ The framework systematically compares two fundamental configurations representin
 
 ### 📊 Comprehensive Analysis
 - **Real-time Visualization**: Product curves, event maps, and tracer trajectories
-- **Statistical Reporting**: CSV outputs with means, variances, and confidence intervals
+- **Statistical Reporting**: Automatic CSV exports including batch results (`batch_results.csv`), seed records (`seeds.csv`), and statistical summaries (`mc_summary.csv`) with means, variances, and confidence intervals
 - **Spatial Analysis**: Heat maps of reaction events and particle distributions
 - **Performance Metrics**: Reaction rates, yields, and efficiency factors
 
@@ -193,7 +193,8 @@ Seeds: [get_batch_seeds()](modules/seed_utils/get_batch_seeds.m)
 git clone https://github.com/Andyduck-ops/2D-Enzyme-Cascade-MSE.git
 cd 2D-Enzyme-Cascade-Simulation
 
-# Optional: Create output directory
+# Note: Output directory will be auto-created when running simulations
+# Optional: Pre-create output directory
 mkdir -p out
 ```
 
@@ -700,8 +701,9 @@ end
 ├── 📁 docs/                          # Documentation
 │   ├── 📄 2d_model_theory.md         # English theory
 │   └── 📄 2d_model_theory.en.md      # Chinese theory
-├── 📁 out/                           # Output directory
+├── 📁 out/                           # Output directory (auto-created)
 │   ├── 📄 batch_results.csv          # Batch results
+│   ├── 📄 seeds.csv                  # Batch seed records
 │   ├── 📄 mc_summary.csv            # Statistical summary
 │   └── 📁 figures/                   # Generated plots
 └── 📁 tests/                         # Test suite

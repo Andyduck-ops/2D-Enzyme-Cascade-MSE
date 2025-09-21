@@ -73,7 +73,7 @@
 
 ### 📊 全面分析
 - **实时可视化**: 产物曲线、事件图和示踪轨迹
-- **统计报告**: 包含均值、方差和置信区间的CSV输出
+- **统计报告**: 自动生成CSV导出文件，包括批次结果(`batch_results.csv`)、种子记录(`seeds.csv`)和统计摘要(`mc_summary.csv`)，含均值、方差和置信区间
 - **空间分析**: 反应事件和粒子分布的热图
 - **性能指标**: 反应速率、产率和效率因子
 
@@ -174,7 +174,8 @@ RNG 设置：[setup_rng()](modules/rng/setup_rng.m)
 git clone https://github.com/Andyduck-ops/2D-Enzyme-Cascade-MSE.git
 cd 2D-Enzyme-Cascade-Simulation
 
-# 可选：创建输出目录
+# 注意：运行模拟时会自动创建输出目录
+# 可选：预先创建输出目录
 mkdir -p out
 ```
 
@@ -535,8 +536,9 @@ end
 ├── 📁 docs/                          # 文档
 │   ├── 📄 2d_model_theory.md         # 英文理论
 │   └── 📄 2d_model_theory.en.md      # 中文理论
-├── 📁 out/                           # 输出目录
+├── 📁 out/                           # 输出目录 (自动创建)
 │   ├── 📄 batch_results.csv          # 批量结果
+│   ├── 📄 seeds.csv                  # 批次种子记录
 │   ├── 📄 mc_summary.csv            # 统计摘要
 │   └── 📁 figures/                   # 生成的图
 └── 📁 tests/                         # 测试套件
