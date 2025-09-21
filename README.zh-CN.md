@@ -63,7 +63,7 @@
   - **Bulk模式**: 酶在模拟盒中均匀分布
 - **异质扩散**: 薄膜与体相区域的不同扩散系数
 - **随机反应**: 基于概率的 $\tau$ -跳跃反应事件
-- **拥挤抑制**: 局部密度对催化效率的影响
+- **拥挤抑制**: 局部酶密度通过抑制因子调节有效催化速率，公式为 $\text{抑制因子} = 1 - I_{\text{max}} \times \min(n_{\text{local}}/n_{\text{sat}}, 1)$
 
 ### 🔬 科学严谨性
 - **可复现结果**: 使用固定随机种子的确定性模拟
@@ -104,13 +104,13 @@
 
 **反应通道**：
 
-1. S + GOx $\rightarrow$ I，反应概率： $P_{\text{GOx}} = 1 - \exp(-k_{\text{cat,GOx}} (1 - \text{inhibition}_{\text{GOx}}) \Delta t)$
+1. S + GOx $\rightarrow$ I，反应概率： $P_{\text{GOx}} = (1 - \exp(-k_{\text{cat,GOx}} \Delta t)) \times \text{抑制因子}_{\text{GOx}}$
 
-2. I + HRP $\rightarrow$ P，反应概率： $P_{\text{HRP}} = 1 - \exp(-k_{\text{cat,HRP}} (1 - \text{inhibition}_{\text{HRP}}) \Delta t)$
+2. I + HRP $\rightarrow$ P，反应概率： $P_{\text{HRP}} = (1 - \exp(-k_{\text{cat,HRP}} \Delta t)) \times \text{抑制因子}_{\text{HRP}}$
 
 拥挤抑制（按酶局部密度）：
 
-**拥挤抑制公式**： $\text{inhibition} = I_{\text{max}} \times \max(0, 1 - n_{\text{local}}/n_{\text{sat}})$
+**拥挤抑制公式**： $\text{抑制因子} = 1 - I_{\text{max}} \times \min(n_{\text{local}}/n_{\text{sat}}, 1)$
 
 MSE 模式同时要求反应位置在薄膜环区内。
 实现：[reaction_step()](modules/sim_core/reaction_step.m)
@@ -239,9 +239,9 @@ config = default_config();
 
 % 示例：复现MSE增强研究
 config.simulation_params.simulation_mode = 'MSE';
-config.particle_params.num_enzymes = 200;
+config.particle_params.num_enzymes = 400;
 config.particle_params.diff_coeff_film = 10;
-config.simulation_params.total_time = 1.0;
+config.simulation_params.total_time = 100.0;
 
 % 使用已记录的种子进行精确复现
 documented_seed = 1234;  % 来自 复现seed.txt
@@ -294,7 +294,7 @@ batch_count = 30
 key_parameters = num_enzymes=200, diff_coeff_film=10, total_time=1.0
 description = 你的发现的简要描述
 results_summary = 关键数值结果（如 mean±std）
-date_recorded = 2024-09-21
+date_recorded = 2025-09-21
 researcher = 你的姓名
 ```
 
@@ -389,15 +389,15 @@ end
 #### 模拟参数
 ```matlab
 config.simulation_params.box_size = 500;          % nm
-config.simulation_params.total_time = 1.0;        % s
-config.simulation_params.time_step = 1e-5;       % s
+config.simulation_params.total_time = 100;        % s
+config.simulation_params.time_step = 0.1;        % s
 config.simulation_params.simulation_mode = 'MSE'; % 'MSE'或'bulk'
 ```
 
 #### 粒子参数
 ```matlab
-config.particle_params.num_enzymes = 200;
-config.particle_params.num_substrate = 1000;
+config.particle_params.num_enzymes = 400;
+config.particle_params.num_substrate = 3000;
 config.particle_params.diff_coeff_bulk = 1000;   % $\text{nm}^2/\text{s}$
 config.particle_params.diff_coeff_film = 10;     % $\text{nm}^2/\text{s}$
 config.particle_params.k_cat_GOx = 100;          % $\text{s}^{-1}$

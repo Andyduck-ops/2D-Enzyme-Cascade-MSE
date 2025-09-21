@@ -64,7 +64,7 @@ MSE localization creates concentration gradients that drive **proto-metabolic fl
 ### Reaction System
 - **Two-step cascade**: S -(GOx)-> I -(HRP)-> P with enzymes split GOx/HRP (default 50/50 via `gox_hrp_split`)
 - **$\tau$-leaping kinetics**: Reaction probability follows $P = 1 - \exp(-k_{\text{cat}} \Delta t)$, where $k_{\text{cat}} = 100 \text{ s}^{-1}$ for both enzymes
-- **Crowding effects**: Local enzyme density modulates effective catalytic rates according to $\text{inhibition} = I_{\text{max}} \times \max(0, 1 - n_{\text{local}}/n_{\text{sat}})$, with $I_{\text{max}} = 0.8$ and $n_{\text{sat}} = 5$
+- **Crowding effects**: Local enzyme density modulates effective catalytic rates according to $\text{inhibition\_factor} = 1 - I_{\text{max}} \times \min(n_{\text{local}}/n_{\text{sat}}, 1)$, with $I_{\text{max}} = 0.8$ and $n_{\text{sat}} = 5$
 
 ### Key Comparisons
 The framework systematically compares two fundamental configurations representing distinct stages of **prebiotic evolution**:
@@ -128,12 +128,12 @@ D(x) is piecewise:
 
 Two independent channels per step:
 
-- S + GOx $\rightarrow$ I, $P_{\text{GOx}} = 1 - \exp(-k_{\text{cat,GOx}} (1 - \text{inhibition}_{\text{GOx}}) \Delta t)$
-- I + HRP $\rightarrow$ P, $P_{\text{HRP}} = 1 - \exp(-k_{\text{cat,HRP}} (1 - \text{inhibition}_{\text{HRP}}) \Delta t)$
+- S + GOx $\rightarrow$ I, $P_{\text{GOx}} = (1 - \exp(-k_{\text{cat,GOx}} \Delta t)) \times \text{inhibition\_factor}_{\text{GOx}}$
+- I + HRP $\rightarrow$ P, $P_{\text{HRP}} = (1 - \exp(-k_{\text{cat,HRP}} \Delta t)) \times \text{inhibition\_factor}_{\text{HRP}}$
 
 Inhibition from local crowding (per enzyme):
 
-$\text{inhibition} = I_{\text{max}} \times \max(0, 1 - n_{\text{local}} / n_{\text{sat}})$
+$\text{inhibition\_factor} = 1 - I_{\text{max}} \times \min(n_{\text{local}} / n_{\text{sat}}, 1)$
 
 MSE mode additionally restricts events to film ring.
 
@@ -258,9 +258,9 @@ config = default_config();
 
 % Example: Reproduce MSE Enhancement Study
 config.simulation_params.simulation_mode = 'MSE';
-config.particle_params.num_enzymes = 200;
+config.particle_params.num_enzymes = 400;
 config.particle_params.diff_coeff_film = 10;
-config.simulation_params.total_time = 1.0;
+config.simulation_params.total_time = 100.0;
 
 % Use documented seed for exact reproduction
 documented_seed = 1234;  % From 复现seed.txt
@@ -313,7 +313,7 @@ batch_count = 30
 key_parameters = num_enzymes=200, diff_coeff_film=10, total_time=1.0
 description = Brief description of your findings
 results_summary = Key numerical results (e.g., mean±std)
-date_recorded = 2024-09-21
+date_recorded = 2025-09-21
 researcher = YourName
 ```
 
@@ -554,15 +554,15 @@ end
 #### Simulation Parameters
 ```matlab
 config.simulation_params.box_size = 500;          % nm
-config.simulation_params.total_time = 1.0;        % s
-config.simulation_params.time_step = 1e-5;       % s
+config.simulation_params.total_time = 100;        % s
+config.simulation_params.time_step = 0.1;        % s
 config.simulation_params.simulation_mode = 'MSE'; % 'MSE' or 'bulk'
 ```
 
 #### Particle Parameters
 ```matlab
-config.particle_params.num_enzymes = 200;
-config.particle_params.num_substrate = 1000;
+config.particle_params.num_enzymes = 400;
+config.particle_params.num_substrate = 3000;
 config.particle_params.diff_coeff_bulk = 1000;   % $\text{nm}^2/\text{s}$
 config.particle_params.diff_coeff_film = 10;     % $\text{nm}^2/\text{s}$
 config.particle_params.k_cat_GOx = 100;          % $\text{s}^{-1}$
