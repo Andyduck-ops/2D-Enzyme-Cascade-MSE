@@ -64,7 +64,7 @@ MSE localization creates concentration gradients that drive **proto-metabolic fl
 ### Reaction System
 - **Two-step cascade**: S -(GOx)-> I -(HRP)-> P with enzymes split GOx/HRP (default 50/50 via `gox_hrp_split`)
 - **$\tau$-leaping kinetics**: Reaction probability follows $P = 1 - \exp(-k_{\text{cat}} \Delta t)$, where $k_{\text{cat}} = 100 \text{ s}^{-1}$ for both enzymes
-- **Crowding effects**: Local enzyme density modulates effective catalytic rates according to $\text{inhibition\_factor} = 1 - I_{\text{max}} \times \min(n_{\text{local}}/n_{\text{sat}}, 1)$, with $I_{\text{max}} = 0.8$ and $n_{\text{sat}} = 5$
+- **Crowding effects**: Local enzyme density modulates effective catalytic rates according to $\text{inhibition factor} = 1 - I_{\text{max}} \times \min(n_{\text{local}}/n_{\text{sat}}, 1)$, with $I_{\text{max}} = 0.8$ and $n_{\text{sat}} = 5$
 
 ### Key Comparisons
 The framework systematically compares two fundamental configurations representing distinct stages of **prebiotic evolution**:
@@ -128,12 +128,12 @@ D(x) is piecewise:
 
 Two independent channels per step:
 
-- S + GOx $\rightarrow$ I, $P_{\text{GOx}} = (1 - \exp(-k_{\text{cat,GOx}} \Delta t)) \times \text{inhibition\_factor}_{\text{GOx}}$
-- I + HRP $\rightarrow$ P, $P_{\text{HRP}} = (1 - \exp(-k_{\text{cat,HRP}} \Delta t)) \times \text{inhibition\_factor}_{\text{HRP}}$
+- S + GOx $\rightarrow$ I, $P_{\text{GOx}} = (1 - \exp(-k_{\text{cat,GOx}} \Delta t)) \times \text{inhibition factor}_{\text{GOx}}$
+- I + HRP $\rightarrow$ P, $P_{\text{HRP}} = (1 - \exp(-k_{\text{cat,HRP}} \Delta t)) \times \text{inhibition factor}_{\text{HRP}}$
 
 Inhibition from local crowding (per enzyme):
 
-$\text{inhibition\_factor} = 1 - I_{\text{max}} \times \min(n_{\text{local}} / n_{\text{sat}}, 1)$
+$\text{inhibition factor} = 1 - I_{\text{max}} \times \min(n_{\text{local}} / n_{\text{sat}}, 1)$
 
 MSE mode additionally restricts events to film ring.
 

@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2024 Rongfeng Zheng, Weifeng Chen
+Copyright (c) 2025 Rongfeng Zheng, Weifeng Chen, Zhaosen Luo
 Sichuan Agricultural University
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -47,7 +47,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 When using this software in research publications, please cite:
 
 ```
-Zheng, R., & Chen, W. (2024). 2D Enzyme Cascade Simulation:
+Zheng, R., Chen, W., & Luo, Z. (2025). 2D Enzyme Cascade Simulation:
 A MATLAB Framework for Mineral-Surface Enzyme Localization Studies.
 GitHub repository: https://github.com/Andyduck-ops/2D-Enzyme-Cascade-MSE
 ```
