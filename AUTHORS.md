@@ -4,25 +4,28 @@ The 2D Enzyme Cascade Simulation project is developed and maintained by:
 
 ## Lead Authors
 
-### Rongfeng Zheng (郑蓉锋)
+### Rongfeng Zheng
 - **Affiliation**: Sichuan Agricultural University
 - **Primary contributions**:
-  - Designed the mineral-surface enzyme cascade algorithms
+  - Designed the core mineral-surface enzyme cascade algorithms
   - Implemented the MATLAB simulation pipeline and supporting modules
-  - Led end-to-end verification and regression testing across scenarios
+  - Developed batch processing and modular code architecture
+  - Led comprehensive testing and verification
 
-### Weifeng Chen (陈为锋)
+### Weifeng Chen
 - **Affiliation**: Sichuan Agricultural University
 - **Primary contributions**:
-  - Co-designed simulation algorithms and configuration strategy
-  - Co-authored the MATLAB codebase, including batch processing utilities
-  - Performed comprehensive functional and performance testing
+  - Co-designed simulation algorithms and system architecture
+  - Contributed to algorithm development and construction
+  - Performed performance and functional validation
+  - Executed comprehensive testing
 
-### Zhaosen Luo (罗照森)
+### Zhaosen Luo
 - **Affiliation**: Sichuan Agricultural University
 - **Primary contributions**:
-  - Executed reproducibility and regression testing of the MATLAB modules
-  - Reported defects and validation results for simulation outputs
+  - Executed regression and reproducibility testing of MATLAB modules
+  - Reported issues and verified simulation results
+  - Validated reproducibility and system reliability
 
 ## Citation
 
@@ -32,7 +35,7 @@ When using this software in your research, please cite:
 @software{enzyme_cascade_2d,
   title={2D Enzyme Cascade Simulation: A MATLAB Framework for Mineral-Surface Enzyme Localization Studies},
   author={Zheng, Rongfeng and Chen, Weifeng and Luo, Zhaosen},
-  year={2024},
+  year={2025},
   publisher={GitHub},
   journal={GitHub repository},
   howpublished={\\url{https://github.com/Andyduck-ops/2D-Enzyme-Cascade-MSE}},
@@ -63,4 +66,4 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ---
 
-*Last updated: September 2024*
+*Last updated: September 2025*

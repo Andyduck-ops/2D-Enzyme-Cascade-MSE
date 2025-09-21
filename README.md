@@ -753,9 +753,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 👨‍🔬 Authors and Citation
 
 ### Authors
-- **Rongfeng Zheng** (郑蓉锋) — Sichuan Agricultural University · Algorithm design, MATLAB pipeline implementation, comprehensive testing
-- **Weifeng Chen** (陈为锋) — Sichuan Agricultural University · Algorithm co-design, module implementation, performance validation
-- **Zhaosen Luo** (罗照森) — Sichuan Agricultural University · Regression testing, reproducibility verification, issue reporting
+- **Rongfeng Zheng** — Sichuan Agricultural University · Core algorithm design, MATLAB pipeline implementation, batch processing and modular code development, comprehensive testing
+- **Weifeng Chen** — Sichuan Agricultural University · Algorithm co-design and construction, performance and functional validation, comprehensive testing
+- **Zhaosen Luo** — Sichuan Agricultural University · Regression and reproducibility testing, issue reporting and result verification
 
 ### Contact Information
 - **GitHub Issues**: [Submit issues here](https://github.com/Andyduck-ops/2D-Enzyme-Cascade-MSE/issues)
@@ -768,7 +768,7 @@ If you use this software in your research, please cite:
 @software{enzyme_cascade_2d,
   title={2D Enzyme Cascade Simulation: A MATLAB Framework for Mineral-Surface Enzyme Localization Studies},
   author={Zheng, Rongfeng and Chen, Weifeng and Luo, Zhaosen},
-  year={2024},
+  year={2025},
   publisher={GitHub},
   journal={GitHub repository},
   howpublished={\\url{https://github.com/Andyduck-ops/2D-Enzyme-Cascade-MSE}},

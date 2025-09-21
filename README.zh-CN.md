@@ -582,15 +582,14 @@ end
 - ✅ **修改**: 允许
 - ✅ **分发**: 允许
 - ✅ **私人使用**: 允许
-- ❌ **责任**: 不提供保证
 - ❌ **商标权**: 不授予商标权
 
 ## 👨‍🔬 作者与引用
 
 ### 主要作者
-- **郑蓉锋** (Rongfeng Zheng) — 四川农业大学 · 设计中心算法、编写 MATLAB 主流程、执行全面测试
-- **陈为锋** (Weifeng Chen) — 四川农业大学 · 共同设计算法、实现批处理与模块化代码、开展性能与功能验证
-- **罗照森** (Zhaosen Luo) — 四川农业大学 · 执行回归与复现测试、记录问题与验证结果
+- **Rongfeng Zheng** — Sichuan Agricultural University · 设计中心算法、编写 MATLAB 主流程、实现批处理与模块化代码、执行测试
+- **Weifeng Chen** — Sichuan Agricultural University · 共同设计算法思路与构建、开展性能与功能验证，执行全面测试
+- **Zhaosen Luo** — Sichuan Agricultural University · 执行回归与复现测试、记录问题与验证结果
 
 ### 联系方式
 - **GitHub Issues**: [在此提交问题](https://github.com/Andyduck-ops/2D-Enzyme-Cascade-MSE/issues)
@@ -602,8 +601,8 @@ end
 ```bibtex
 @software{enzyme_cascade_2d,
   title={2D酶级联模拟：矿物表面酶局域化研究的MATLAB框架},
-  author={郑蓉锋 and 陈为锋 and 罗照森},
-  year={2024},
+  author={Rongfeng Zheng and Weifeng Chen and Zhaosen Luo},
+  year={2025},
   publisher={GitHub},
   journal={GitHub仓库},
   howpublished={\\url{https://github.com/Andyduck-ops/2D-Enzyme-Cascade-MSE}},
