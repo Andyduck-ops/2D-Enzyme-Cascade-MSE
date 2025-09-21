@@ -9,7 +9,7 @@
 
 <!-- Project Badges -->
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![MATLAB](https://img.shields.io/badge/MATLAB-R2019b+-orange.svg)](https://www.mathworks.com/products/matlab.html)
+[![MATLAB](https://img.shields.io/badge/MATLAB-R2019b%2B%20(tested%202023)-orange.svg)](https://www.mathworks.com/products/matlab.html)
 [![Release](https://img.shields.io/badge/Release-v1.0.0-blue.svg)](#)
 [![Documentation](https://img.shields.io/badge/Docs-Comprehensive-purple.svg)](docs/)
 [![Contributions Welcome](https://img.shields.io/badge/Contributions-Welcome-brightgreen.svg)](CONTRIBUTING.md)
@@ -180,12 +180,13 @@ Seeds: [get_batch_seeds()](modules/seed_utils/get_batch_seeds.m)
 ## 📦 Installation
 
 ### System Requirements
-- **MATLAB Version**: R2019b or later
+- **MATLAB Version**: R2019b or later (tested with MATLAB 2023)
 - **Required Toolboxes**:
   - Statistics and Machine Learning Toolbox (for `pdist2`)
   - Parallel Computing Toolbox (optional, for batch processing acceleration)
 - **Operating System**: Windows, macOS, or Linux
 - **Memory**: Minimum 4GB RAM, 8GB+ recommended for large simulations
+- **GPU**: NVIDIA GPU recommended for accelerated computation (optional)
 
 ### Quick Installation
 ```bash
@@ -201,7 +202,8 @@ mkdir -p out
 ### MATLAB Setup
 1. Open MATLAB and navigate to the project root directory
 2. The main pipeline automatically adds `modules/` to the MATLAB path
-3. Verify installation by running:
+3. **GPU Setup (Optional)**: If you have an NVIDIA GPU, ensure CUDA is installed and GPU computing is enabled in MATLAB for optimal performance
+4. Verify installation by running:
 ```matlab
 % At project root in MATLAB
 main_2d_pipeline

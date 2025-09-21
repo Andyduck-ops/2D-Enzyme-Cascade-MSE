@@ -8,6 +8,7 @@ out/
 # Editors/OS
 .vscode/
 *.code-workspace
+.kiro/
 .DS_Store
 Thumbs.db
 

@@ -9,7 +9,7 @@
 
 <!-- 项目徽章 -->
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![MATLAB](https://img.shields.io/badge/MATLAB-R2019b+-orange.svg)](https://www.mathworks.com/products/matlab.html)
+[![MATLAB](https://img.shields.io/badge/MATLAB-R2019b%2B%20(已测试%202023)-orange.svg)](https://www.mathworks.com/products/matlab.html)
 [![Release](https://img.shields.io/badge/Release-v1.0.0-blue.svg)](#)
 [![Documentation](https://img.shields.io/badge/Docs-Comprehensive-purple.svg)](docs/)
 [![Contributions Welcome](https://img.shields.io/badge/Contributions-Welcome-brightgreen.svg)](CONTRIBUTING.md)
@@ -161,12 +161,13 @@ RNG 设置：[setup_rng()](modules/rng/setup_rng.m)
 ## 📦 安装指南
 
 ### 系统要求
-- **MATLAB版本**: R2019b或更高版本
+- **MATLAB版本**: R2019b或更高版本（已在MATLAB 2023上测试）
 - **必需工具箱**:
   - Statistics and Machine Learning Toolbox（用于`pdist2`）
   - Parallel Computing Toolbox（可选，用于批量处理加速）
 - **操作系统**: Windows、macOS或Linux
 - **内存**: 最小4GB RAM，大型模拟推荐8GB+
+- **GPU**: 推荐NVIDIA GPU用于加速计算（可选）
 
 ### 快速安装
 ```bash
@@ -182,7 +183,8 @@ mkdir -p out
 ### MATLAB设置
 1. 打开MATLAB并导航到项目根目录
 2. 主流程会自动将`modules/`添加到MATLAB路径
-3. 通过运行以下命令验证安装：
+3. **GPU设置（可选）**: 如果您有NVIDIA GPU，请确保安装了CUDA并在MATLAB中启用GPU计算以获得最佳性能
+4. 通过运行以下命令验证安装：
 ```matlab
 % 在MATLAB中的项目根目录
 main_2d_pipeline
