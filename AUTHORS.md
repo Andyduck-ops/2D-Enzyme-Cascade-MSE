@@ -4,36 +4,25 @@ The 2D Enzyme Cascade Simulation project is developed and maintained by:
 
 ## Lead Authors
 
-### Rongfeng Zheng (郑荣峰)
-- **Affiliation**: Sichuan Agricultural University (四川农业大学)
-- **Email**: [Contact via GitHub Issues](https://github.com/your-org/2D-Enzyme-Cascade-Simulation/issues)
-- **Role**: Project Lead, Algorithm Design, Core Implementation
-- **Contributions**:
-  - Developed the core simulation engine
-  - Implemented MSE vs bulk comparison framework
-  - Designed the mathematical models and algorithms
-  - Wrote the initial version of the simulation pipeline
+### Rongfeng Zheng (郑蓉锋)
+- **Affiliation**: Sichuan Agricultural University
+- **Primary contributions**:
+  - Designed the mineral-surface enzyme cascade algorithms
+  - Implemented the MATLAB simulation pipeline and supporting modules
+  - Led end-to-end verification and regression testing across scenarios
 
-### Weifeng Chen (陈伟峰)
-- **Affiliation**: Sichuan Agricultural University (四川农业大学)
-- **Email**: [Contact via GitHub Issues](https://github.com/your-org/2D-Enzyme-Cascade-Simulation/issues)
-- **Role**: Co-developer, Validation, Testing
-- **Contributions**:
-  - Contributed to the physical modeling aspects
-  - Developed visualization and analysis tools
-  - Performed extensive testing and validation
-  - Optimized simulation performance
+### Weifeng Chen (陈为锋)
+- **Affiliation**: Sichuan Agricultural University
+- **Primary contributions**:
+  - Co-designed simulation algorithms and configuration strategy
+  - Co-authored the MATLAB codebase, including batch processing utilities
+  - Performed comprehensive functional and performance testing
 
-## Contributors
-
-This project welcomes contributions from the scientific and engineering communities.
-Contributors will be listed here in chronological order of their first significant contribution.
-
-### How to Become a Contributor
-- Submit a Pull Request that gets merged
-- Report significant bugs that lead to improvements
-- Provide valuable feedback or documentation improvements
-- Help with testing and validation
+### Zhaosen Luo (罗照森)
+- **Affiliation**: Sichuan Agricultural University
+- **Primary contributions**:
+  - Executed reproducibility and regression testing of the MATLAB modules
+  - Reported defects and validation results for simulation outputs
 
 ## Citation
 
@@ -42,11 +31,11 @@ When using this software in your research, please cite:
 ```bibtex
 @software{enzyme_cascade_2d,
   title={2D Enzyme Cascade Simulation: A MATLAB Framework for Mineral-Surface Enzyme Localization Studies},
-  author={Zheng, Rongfeng and Chen, Weifeng},
+  author={Zheng, Rongfeng and Chen, Weifeng and Luo, Zhaosen},
   year={2024},
   publisher={GitHub},
   journal={GitHub repository},
-  howpublished={\\url{https://github.com/your-org/2D-Enzyme-Cascade-Simulation}},
+  howpublished={\\url{https://github.com/Andyduck-ops/2D-Enzyme-Cascade-MSE}},
   license={MIT}
 }
 ```
@@ -64,8 +53,8 @@ We would like to thank:
 
 For questions related to this project, please use the following channels:
 
-- **GitHub Issues**: [Submit issues and bug reports](https://github.com/your-org/2D-Enzyme-Cascade-Simulation/issues)
-- **GitHub Discussions**: [General questions and discussions](https://github.com/your-org/2D-Enzyme-Cascade-Simulation/discussions)
+- **GitHub Issues**: [Submit issues and bug reports](https://github.com/Andyduck-ops/2D-Enzyme-Cascade-MSE/issues)
+- **GitHub Discussions**: [General questions and discussions](https://github.com/Andyduck-ops/2D-Enzyme-Cascade-MSE/discussions)
 - **Email**: For sensitive inquiries, please contact the authors via GitHub Issues
 
 ## License

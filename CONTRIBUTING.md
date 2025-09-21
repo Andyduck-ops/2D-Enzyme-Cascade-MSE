@@ -40,7 +40,7 @@ Thank you for your interest in contributing to the 2D Enzyme Cascade Simulation 
 
 3. **Set Upstream Remote**
    ```bash
-   git remote add upstream https://github.com/your-org/2D-Enzyme-Cascade-Simulation.git
+   git remote add upstream https://github.com/Andyduck-ops/2D-Enzyme-Cascade-MSE.git
    ```
 
 4. **Install Dependencies**

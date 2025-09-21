@@ -35,7 +35,7 @@
 
 ## 概览
 
-- 两步级联：S —(GOx)→ I —(HRP)→ P
+- 两步级联：$\mathrm{S} \xrightarrow{\mathrm{GOx}} \mathrm{I} \xrightarrow{\mathrm{HRP}} \mathrm{P}$
 - 模式：
   - MSE：酶局域于中心颗粒周围的薄膜环区
   - Bulk：酶在盒域内均匀分布
@@ -49,8 +49,8 @@
 ## 背景（为何比较 MSE 与 bulk）
 
 - 科学动机：矿物表面酶（MSE）局域化使底物/中间体在颗粒附近富集，相遇概率显著高于体相（bulk）分散体系，从而提升级联效率。
-- 2D 抽象：用环区 [rp, rp+ft] 近似中心颗粒周围的表面薄膜，酶在 MSE 模式固定于环区，bulk 模式则在盒域均匀分布。默认参数体现强扩散对比（如 D_film=10 vs D_bulk=1000 nm²/s）与适中的膜厚（ft=5 nm），见 [modules/config/default_config.m](modules/config/default_config.m)。
-- 反应语境：两步级联 S —(GOx)→ I —(HRP)→ P；酶数量按比例 `gox_hrp_split`（默认 50/50）划分 GOx 与 HRP。
+- 2D 抽象：用环区 $[r_p, r_p + f_t]$ 近似中心颗粒周围的表面薄膜，酶在 MSE 模式固定于环区，bulk 模式则在盒域均匀分布。默认参数体现强扩散对比（如 $D_{\text{film}} = 10$ 与 $D_{\text{bulk}} = 1000\,\text{nm}^2\!\,/\text{s}$）与适中的膜厚（$f_t = 5\,\text{nm}$），见 [modules/config/default_config.m](modules/config/default_config.m)。
+- 反应语境：两步级联 $\mathrm{S} \xrightarrow{\mathrm{GOx}} \mathrm{I} \xrightarrow{\mathrm{HRP}} \mathrm{P}$；酶数量按比例 `gox_hrp_split`（默认 50/50）划分 GOx 与 HRP。
 - 模型假设（范围）：酶不移动；S/I/P 扩散；盒域与颗粒边界为镜面反射；固定步长 τ‑跳跃；无吸附/解吸；MSE 下仅接受薄膜环区内的反应事件。
 - 面向论文的输出：MSE vs bulk 的产物优势、反应速率曲线、空间事件图、示踪轨迹；批量 CSV 用于均值/方差等统计汇总。可视化入口： [modules/viz/plot_event_map.m](modules/viz/plot_event_map.m)、[modules/viz/plot_tracers.m](modules/viz/plot_tracers.m)、[modules/viz/plot_product_curve.m](modules/viz/plot_product_curve.m)。
 
@@ -80,22 +80,18 @@
 ## 算法说明
 
 ### 几何与状态
-- 域：L x L 的二维正方形
-- 中心颗粒：半径 rp
-- 薄膜环区：MSE 模式下的 [rp, rp + ft]
+- 域：$L \times L$ 的二维正方形
+- 中心颗粒：半径 $r_p$
+- 薄膜环区：MSE 模式下的 $[r_p, r_p + f_t]$
 - 物种：S、I、P 为可扩散粒子；酶固定在其位置（MSE 模式局域在环区，bulk 模式均匀分布）
 
 ### 扩散（布朗步进）
-对每个粒子位置 x ∈ R²：
+对每个粒子位置 $\mathbf{x} \in \mathbb{R}^2$：
 
-**布朗步进公式**：
+**布朗步进公式**：$\mathbf{x}_{t+\Delta t} = \mathbf{x}_t + \sqrt{2 D(\mathbf{x}_t)\,\Delta t}\,\boldsymbol{\eta}$，其中 $\boldsymbol{\eta} \sim \mathcal{N}(\mathbf{0}, \mathbf{I}_2)$。
 
-    x_new = x_old + sqrt(2 * D(x) * Δt) * η
-
-其中 η 是标准正态分布随机数（均值为0，方差为1的二维向量）。
-
-- MSE：环区内 D = D_film，环区外 D = D_bulk
-- Bulk：全域 D = D_bulk
+- MSE：环区内 $D = D_{\text{film}}$，环区外 $D = D_{\text{bulk}}$
+- Bulk：全域 $D = D_{\text{bulk}}$
 实现：[diffusion_step()](modules/sim_core/diffusion_step.m)
 
 
@@ -108,17 +104,15 @@
 
 **反应通道**：
 
-1. S + GOx → I，反应概率：
-   P_GOx = 1 - exp(-k_cat,GOx * Δt * (1 - inhibition_GOx))
+1. $\mathrm{S} + \mathrm{GOx} \rightarrow \mathrm{I}$，反应概率：
+   $P_{\mathrm{GOx}} = 1 - \exp\bigl(-k_{\text{cat,GOx}}\,\Delta t\,(1 - \text{inhibition}_{\mathrm{GOx}})\bigr)$
 
-2. I + HRP → P，反应概率：
-   P_HRP = 1 - exp(-k_cat,HRP * Δt * (1 - inhibition_HRP))
+2. $\mathrm{I} + \mathrm{HRP} \rightarrow \mathrm{P}$，反应概率：
+   $P_{\mathrm{HRP}} = 1 - \exp\bigl(-k_{\text{cat,HRP}}\,\Delta t\,(1 - \text{inhibition}_{\mathrm{HRP}})\bigr)$
 
 拥挤抑制（按酶局部密度）：
 
-**拥挤抑制公式**：
-
-   inhibition = I_max * max(0, 1 - n_local / n_sat)
+**拥挤抑制公式**：$\text{inhibition} = I_{\max} \times \max\bigl(0, 1 - n_{\text{local}}/n_{\text{sat}}\bigr)$
 
 MSE 模式同时要求反应位置在薄膜环区内。
 实现：[reaction_step()](modules/sim_core/reaction_step.m)
@@ -178,7 +172,7 @@ RNG 设置：[setup_rng()](modules/rng/setup_rng.m)
 ### 快速安装
 ```bash
 # 克隆仓库
-git clone https://github.com/your-org/2D-Enzyme-Cascade-Simulation.git
+git clone https://github.com/Andyduck-ops/2D-Enzyme-Cascade-MSE.git
 cd 2D-Enzyme-Cascade-Simulation
 
 # 可选：创建输出目录
@@ -523,11 +517,12 @@ end
 ## 👨‍🔬 作者与引用
 
 ### 主要作者
-- **郑荣峰** (Rongfeng Zheng) - 四川农业大学
-- **陈伟峰** (Weifeng Chen) - 四川农业大学
+- **郑蓉锋** (Rongfeng Zheng) — 四川农业大学 · 设计中心算法、编写 MATLAB 主流程、执行全面测试
+- **陈为锋** (Weifeng Chen) — 四川农业大学 · 共同设计算法、实现批处理与模块化代码、开展性能与功能验证
+- **罗照森** (Zhaosen Luo) — 四川农业大学 · 执行回归与复现测试、记录问题与验证结果
 
 ### 联系方式
-- **GitHub Issues**: [在此提交问题](https://github.com/your-org/2D-Enzyme-Cascade-Simulation/issues)
+- **GitHub Issues**: [在此提交问题](https://github.com/Andyduck-ops/2D-Enzyme-Cascade-MSE/issues)
 - **邮箱**: 一般咨询请使用GitHub Issues
 
 ### 引用格式
@@ -536,17 +531,16 @@ end
 ```bibtex
 @software{enzyme_cascade_2d,
   title={2D酶级联模拟：矿物表面酶局域化研究的MATLAB框架},
-  author={郑荣峰 and 陈伟峰},
+  author={郑蓉锋 and 陈为锋 and 罗照森},
   year={2024},
   publisher={GitHub},
   journal={GitHub仓库},
-  howpublished={\\url{https://github.com/your-org/2D-Enzyme-Cascade-Simulation}},
+  howpublished={\\url{https://github.com/Andyduck-ops/2D-Enzyme-Cascade-MSE}},
   license={MIT}
 }
 ```
 
 ### 致谢
-- 本工作得到[如果适用，请提供资助信息]的支持
 - 特别感谢所有贡献者和测试人员的帮助
 - 基于已建立的生物物理建模原理构建
 

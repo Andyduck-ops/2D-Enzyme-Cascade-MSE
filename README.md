@@ -16,7 +16,7 @@
 
 
 <!-- Core Links -->
-- 📖 **Documentation**: [2D Theory (English)](docs/2d_model_theory.en.md) | [理论（中文）](docs/2d_model_theory.md)
+- 📖 **Documentation**: [2D Theory (English)](docs/2d_model_theory.en.md) | [Theory（中文）](docs/2d_model_theory.md)
 - 🎯 **Quick Start**: [Installation](#installation) | [Usage](#quick-start) | [Examples](#examples)
 - ⚡ **Features**: [Key Features](#key-features) | [Algorithm](#algorithm) | [Visualization](#visualization)
 
@@ -57,14 +57,14 @@ To quantitatively assess how mineral surface-mediated enrichment (MSE) serves as
 MSE localization creates concentration gradients that drive **proto-metabolic flux**, concentrating reacting species near mineral particles and dramatically enhancing encounter probabilities compared to bulk dispersion. This mechanism represents a plausible solution to how primitive reaction networks could have achieved the molecular organization necessary for autocatalytic processes under **early Earth conditions**, providing computational insights into the emergence of life from non-living matter.
 
 ### Scientific Framework
-- **Molecular Diffusion**: Follows Brownian motion with position updates $\Delta r = \sqrt{2D \cdot \Delta t} \cdot \eta$, where $\eta$ represents Gaussian white noise
-- **Heterogeneous Environment**: Diffusion coefficients are set to $D_{\mathrm{bulk}} = 1000\,\mathrm{nm}^2/\mathrm{s}$ for bulk regions and $D_{\mathrm{film}} = 10\,\mathrm{nm}^2/\mathrm{s}$ within the enzyme film layer
-- **Spatial Confinement**: 2D abstraction approximates a thin surface film as a ring $[r_p, r_p+f_t]$ around a central particle (enzymes fixed in MSE; free placement in bulk)
+- **Molecular Diffusion**: Follows Brownian motion with position updates $\Delta r = \sqrt{2D\,\Delta t}\,\eta$, where $\eta$ represents Gaussian white noise
+- **Heterogeneous Environment**: Diffusion coefficients are set to $D_{\text{bulk}} = 1000\,\text{nm}^2\!\,/\text{s}$ for bulk regions and $D_{\text{film}} = 10\,\text{nm}^2\!\,/\text{s}$ within the enzyme film layer
+- **Spatial Confinement**: 2D abstraction approximates a thin surface film as a ring $[r_p,\, r_p + f_t]$ around a central particle (enzymes fixed in MSE; free placement in bulk)
 
 ### Reaction System
 - **Two-step cascade**: $\mathrm{S} \xrightarrow{\mathrm{GOx}} \mathrm{I} \xrightarrow{\mathrm{HRP}} \mathrm{P}$ with enzymes split GOx/HRP (default 50/50 via `gox_hrp_split`)
-- **τ-leaping kinetics**: Reaction probability follows $P = 1 - \exp(-k_{\mathrm{cat}} \cdot \Delta t)$, where $k_{\mathrm{cat}} = 100\,\mathrm{s}^{-1}$ for both enzymes
-- **Crowding effects**: Local enzyme density modulates effective catalytic rates according to $\mathrm{inhibition} = I_{\max} \times \max(0, 1 - n_{\mathrm{local}}/n_{\mathrm{sat}})$, with $I_{\max} = 0.8$ and $n_{\mathrm{sat}} = 5$
+- **τ-leaping kinetics**: Reaction probability follows $P = 1 - \exp\bigl(-k_{\text{cat}}\,\Delta t\bigr)$, where $k_{\text{cat}} = 100\,\text{s}^{-1}$ for both enzymes
+- **Crowding effects**: Local enzyme density modulates effective catalytic rates according to $\text{inhibition} = I_{\max} \times \max\bigl(0, 1 - n_{\text{local}}/n_{\text{sat}}\bigr)$, with $I_{\max} = 0.8$ and $n_{\text{sat}} = 5$
 
 ### Key Comparisons
 The framework systematically compares two fundamental configurations representing distinct stages of **prebiotic evolution**:
@@ -79,7 +79,7 @@ The framework systematically compares two fundamental configurations representin
 - **Proto-metabolic Network Modeling**: Two-step enzyme cascade $\mathrm{S} \xrightarrow{\mathrm{GOx}} \mathrm{I} \xrightarrow{\mathrm{HRP}} \mathrm{P}$ mimicking **substrate channeling** in primitive biochemical networks
 - **Prebiotic Evolution Simulation Modes**:
   - **MSE Mode**: Enzymes localized to a ring film around a central mineral particle, modeling **mineral-guided molecular enrichment** and **protocell emergence** pathways
-  - **Bulk Mode**: Enzymes uniformly distributed in the simulation domain, representing dilute **prebiotic chemistry** environments
+  - **Bulk Mode**: Enzymes uniformly distributed throughout the domain, representing dilute **prebiotic chemistry** environments
 - **Interfacial Driving Forces**: Heterogeneous diffusion coefficients capturing **early Earth conditions** with different molecular mobility in film vs bulk regions
 - **Prebiotic Reaction Kinetics**: τ-leaping methodology with probabilistic reaction events modeling stochastic molecular encounters under primitive conditions
 - **Molecular Crowding Physics**: Local density effects on catalytic efficiency, simulating **compartmentalization** effects critical for **proto-metabolic flux** generation
@@ -87,7 +87,7 @@ The framework systematically compares two fundamental configurations representin
 ### 🔬 Scientific Rigor
 - **Reproducible Results**: Deterministic simulations with fixed random seeds
 - **Batch Monte Carlo**: Statistical analysis across multiple independent runs
-- **Boundary Conditions**: Reflective boundaries at box walls and particle surface
+- **Boundary Conditions**: Reflect particles at box walls and particle surface
 - **Physical Validation**: Models based on established biophysical principles
 
 ### 📊 Comprehensive Analysis
@@ -105,116 +105,43 @@ Key entrypoints:
 ## Methods (paper-aligned summary)
 
 ### Computational Geometry and Species
-- **Domain**: 2D square box of side length $L = 500$ nm with reflective boundaries
-- **Central particle**: Radius $r_p = 20$ nm with reflective surface
-- **MSE configuration**: Enzymes localized to film ring $[r_p, r_p+f_t]$ where $f_t = 5$ nm
+- **Domain**: 2D square box of side length $L = 500\,\text{nm}$ with reflective boundaries
+- **Central particle**: Radius $r_p = 20\,\text{nm}$ with reflective surface
+- **MSE configuration**: Enzymes localized to film ring $[r_p,\, r_p + f_t]$ where $f_t = 5\,\text{nm}$
 - **Bulk configuration**: Enzymes uniformly distributed throughout the domain
 - **Molecular species**: Substrate (S), Intermediate (I), and Product (P) undergo free diffusion; enzymes remain spatially fixed
-
-### Simulation Algorithm (per time step $\Delta t = 0.1$ s)
-
-1. **Brownian Diffusion**: For each diffusive particle at position $\mathbf{x}$
-
-$$
-\mathbf{x} \leftarrow \mathbf{x} + \sqrt{2\,D(\mathbf{x})\,\Delta t}\,\boldsymbol{\eta},\quad \boldsymbol{\eta} \sim \mathcal{N}(\mathbf{0}, \mathbf{I}_2)
-$$
-
-   where $D(\mathbf{x})$ is spatially dependent:
-   - MSE mode: $D = D_{\mathrm{film}} = 10$ nm²/s within film ring, $D = D_{\mathrm{bulk}} = 1000$ nm²/s elsewhere
-   - Bulk mode: $D = D_{\mathrm{bulk}} = 1000$ nm²/s everywhere
-
-2. **Boundary Conditions**: Reflect particles at box walls and central particle surface
-
-3. **Reaction Kinetics**: τ-leaping implementation with probabilistic reactions per enzyme-substrate encounter
-
-   For glucose oxidase (GOx):
-   $$
-   P_{\mathrm{GOx}} = 1 - e^{-k_{\text{cat,GOx}} \Delta t}(1 - \mathrm{inhibition}_{\mathrm{GOx}}),\quad k_{\text{cat,GOx}} = 100\,\mathrm{s}^{-1}
-   $$
-
-   For horseradish peroxidase (HRP):
-   $$
-   P_{\mathrm{HRP}} = 1 - e^{-k_{\text{cat,HRP}} \Delta t}(1 - \mathrm{inhibition}_{\mathrm{HRP}}),\quad k_{\text{cat,HRP}} = 100\,\mathrm{s}^{-1}
-   $$
-
-   with crowding inhibition:
-   $$
-   \mathrm{inhibition} = I_{\max} \max\!\left(0,1 - \frac{n_{\mathrm{local}}}{n_{\mathrm{sat}}}\right),\quad I_{\max} = 0.8,\, n_{\mathrm{sat}} = 5
-   $$
-
-   **MSE constraint**: All accepted reactions must occur within the film ring $[r_p, r_p+f_t]$
-
-### Data Collection and Analysis
-- **Primary output**: Final product count ($\mathrm{products_{final}}$)
-- **Time series**: Reaction rates $r_{\mathrm{GOx}}(t)$, $r_{\mathrm{HRP}}(t)$, and product accumulation $P(t) = \int_0^t r_{\mathrm{HRP}}(\tau) d\tau$
-- **Spatial data**: Optional recording of reaction event coordinates, particle trajectories, and system snapshots
-- **Statistical analysis**: Batch processing with $M \ge 30$ independent runs for significance testing
-
-### Parameter Mapping
-| Symbol | Physical Meaning | Config Parameter | Default Value |
-|--------|------------------|------------------|---------------|
-| $L$ | Box size | `simulation_params.box_size` | 500 nm |
-| $\Delta t$ | Time step | `simulation_params.time_step` | 1×10⁻⁵ s |
-| $r_p$ | Particle radius | `geometry_params.particle_radius` | 20 nm |
-| $f_t$ | Film thickness | `geometry_params.film_thickness` | 5 nm |
-| $D_{\mathrm{bulk}}$ | Bulk diffusion | `particle_params.diff_coeff_bulk` | 1000 nm²/s |
-| $D_{\mathrm{film}}$ | Film diffusion | `particle_params.diff_coeff_film` | 10 nm²/s |
-
-### Reproducibility Framework
-- **Deterministic simulations**: Fixed random seeds ensure reproducibility for identical configurations
-- **Batch processing**: Automated aggregation of results across multiple independent runs
-- **Export format**: CSV files containing means, variances, and confidence intervals for all metrics
-
-## Algorithm
-
-### Geometry and States
-- Domain: 2D square of size $L \times L$
-- Central particle: radius $r_p$
-- Enzyme film: ring $[r_p, r_p+f_t]$ for MSE mode
-- Species: substrate S, intermediate I, product P (diffusive particles); enzymes fixed
 
 ### Diffusion (Brownian step)
 For each particle position $\mathbf{x} \in \mathbb{R}^2$:
 
-$$
-\mathbf{x} \leftarrow \mathbf{x} + \sqrt{2\,D(\mathbf{x})\,\Delta t}\,\boldsymbol{\eta},\quad \boldsymbol{\eta} \sim \mathcal{N}(\mathbf{0}, \mathbf{I}_2)
-$$
+$\mathbf{x} \leftarrow \mathbf{x} + \sqrt{2 D(\mathbf{x})\,\Delta t}\,\boldsymbol{\eta}$, where $\boldsymbol{\eta} \sim \mathcal{N}(\mathbf{0}, \mathbf{I}_2)$
 
-$D(\mathbf{x})$ is piecewise:
-- MSE mode: $D = D_{\mathrm{film}}$ inside the film ring; $D = D_{\mathrm{bulk}}$ elsewhere
-- Bulk mode: $D = D_{\mathrm{bulk}}$ everywhere
-
-Implementation: [diffusion_step()](modules/sim_core/diffusion_step.m)
+D($\mathbf{x}$) is piecewise:
+- MSE mode: $D = D_{\text{film}}$ inside the film ring; $D = D_{\text{bulk}}$ elsewhere
+- Bulk mode: $D = D_{\text{bulk}}$ everywhere
 
 ### Boundaries
 - Box reflection (mirror)
-- Central particle reflection to a target radius > $r_p$ for stability
-Implementation: [boundary_reflection()](modules/sim_core/boundary_reflection.m)
+- Central particle reflection to a target radius > r_p for stability
 
 ### Reactions (τ-leaping per Δt)
 
 Two independent channels per step:
 
-$$
-\mathrm{S} + \mathrm{GOx} \rightarrow \mathrm{I},\quad P_{\mathrm{GOx}} = 1 - e^{-k_{\text{cat,GOx}} \Delta t}\bigl(1 - \mathrm{inhibition}_{\mathrm{GOx}}\bigr)
-$$
-\mathrm{I} + \mathrm{HRP} \rightarrow \mathrm{P},\quad P_{\mathrm{HRP}} = 1 - e^{-k_{\text{cat,HRP}} \Delta t}\bigl(1 - \mathrm{inhibition}_{\mathrm{HRP}}\bigr)
-$$
+$\mathrm{S} + \mathrm{GOx} \rightarrow \mathrm{I}, \quad P_{\mathrm{GOx}} = 1 - \exp\bigl(-k_{\text{cat,GOx}}\,\Delta t\bigr)\bigl(1 - \text{inhibition}_{\mathrm{GOx}}\bigr)$
+
+$\mathrm{I} + \mathrm{HRP} \rightarrow \mathrm{P}, \quad P_{\mathrm{HRP}} = 1 - \exp\bigl(-k_{\text{cat,HRP}}\,\Delta t\bigr)\bigl(1 - \text{inhibition}_{\mathrm{HRP}}\bigr)$
+
 Inhibition from local crowding (per enzyme):
 
-$$
-\mathrm{inhibition} = I_{\max} \max\!\left(0,\, 1 - \frac{n_{\mathrm{local}}}{n_{\mathrm{sat}}}\right)
-$$
+$\text{inhibition} = I_{\max} \times \max\bigl(0, 1 - n_{\text{local}} / n_{\text{sat}}\bigr)$
+
 MSE mode additionally restricts events to film ring.
-Implementation: [reaction_step()](modules/sim_core/reaction_step.m)
 
 ### Recording
-- Instantaneous reaction counts → reaction rates
+- Instantaneous reaction counts -> reaction rates
 - Product curve P(t) via integrating HRP rate
 - Optional snapshots, tracer paths, and spatial reaction events
-
-Implementation: [record_data()](modules/sim_core/record_data.m)
-
 
 ### Orchestration
 Time loop:
@@ -263,7 +190,7 @@ Seeds: [get_batch_seeds()](modules/seed_utils/get_batch_seeds.m)
 ### Quick Installation
 ```bash
 # Clone the repository
-git clone https://github.com/your-org/2D-Enzyme-Cascade-Simulation.git
+git clone https://github.com/Andyduck-ops/2D-Enzyme-Cascade-MSE.git
 cd 2D-Enzyme-Cascade-Simulation
 
 # Optional: Create output directory
@@ -660,7 +587,7 @@ function plot_custom_analysis(results)
     xlabel('Final Products');
     ylabel('Frequency');
 
-    % Enhancement factor
+    % Enhancement Factor
     subplot(2, 2, 4);
     plot_enhancement_factor(results);
     title('Enhancement Factor Analysis');
@@ -753,12 +680,13 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👨‍🔬 Authors and Citation
 
-### Lead Authors
-- **Rongfeng Zheng** (郑荣峰) - Sichuan Agricultural University
-- **Weifeng Chen** (陈伟峰) - Sichuan Agricultural University
+### Authors
+- **Rongfeng Zheng** (郑蓉锋) — Sichuan Agricultural University · Algorithm design, MATLAB pipeline implementation, comprehensive testing
+- **Weifeng Chen** (陈为锋) — Sichuan Agricultural University · Algorithm co-design, module implementation, performance validation
+- **Zhaosen Luo** (罗照森) — Sichuan Agricultural University · Regression testing, reproducibility verification, issue reporting
 
 ### Contact Information
-- **GitHub Issues**: [Submit issues here](https://github.com/your-org/2D-Enzyme-Cascade-Simulation/issues)
+- **GitHub Issues**: [Submit issues here](https://github.com/Andyduck-ops/2D-Enzyme-Cascade-MSE/issues)
 - **Email**: Please use GitHub Issues for general inquiries
 
 ### Citation
@@ -767,26 +695,22 @@ If you use this software in your research, please cite:
 ```bibtex
 @software{enzyme_cascade_2d,
   title={2D Enzyme Cascade Simulation: A MATLAB Framework for Mineral-Surface Enzyme Localization Studies},
-  author={Zheng, Rongfeng and Chen, Weifeng},
+  author={Zheng, Rongfeng and Chen, Weifeng and Luo, Zhaosen},
   year={2024},
   publisher={GitHub},
   journal={GitHub repository},
   howpublished={\\url{https://github.com/Andyduck-ops/2D-Enzyme-Cascade-MSE}},
-  license={MIT},
-  doi={10.5281/zenodo.[insert-doi-here]},
-  note={Complete implementation details and source code available at:
-        https://github.com/Andyduck-ops/2D-Enzyme-Cascade-MSE}
+  license={MIT}
 }
 ```
 **Code Availability**: Complete implementation details and source code are available in the accompanying GitHub repository: https://github.com/Andyduck-ops/2D-Enzyme-Cascade-MSE
 
 ### Acknowledgments
-- This work was supported by [Grant Information if applicable]
+- This work was supported by the research environment of Sichuan Agricultural University
 - Special thanks to contributors and beta testers
 - Built on the foundation of established biophysical modeling principles
 
 ---
-
 
 <div align="center">
 

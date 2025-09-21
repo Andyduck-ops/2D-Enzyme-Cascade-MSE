@@ -25,15 +25,15 @@ Language: [English](2d_model_theory.en.md) | [中文](2d_model_theory.md)
 ## 1. System Overview and Modeling Assumptions
 
 - Geometry and Boundaries
-  - 2D square box with side length $L$ (default $500\,\mathrm{nm}$), containing a central particle with radius $r_p$ (default $20\,\mathrm{nm}$) and a film region with thickness $f_t$ (default $5\,\mathrm{nm}$).
+  - 2D square box with side length L (default 500 nm), containing a central particle with radius r_p (default 20 nm) and a film region with thickness f_t (default 5 nm).
   - Boundary conditions: Box walls and particle surface are specular reflective (no absorption).
 - Species and Processes
   - Substrate S undergoes random diffusion; GOx and HRP are fixed in the film region (MSE mode) or distributed in bulk (bulk mode).
   - Cascade reaction: $\mathrm{S} \xrightarrow{\mathrm{GOx}} \mathrm{I} \xrightarrow{\mathrm{HRP}} \mathrm{P}$.
-- Key Parameters (default values in configuration):
-  - Diffusion coefficients: $D_{\mathrm{bulk}} = 1000\,\mathrm{nm}^2/\mathrm{s}$, $D_{\mathrm{film}} = 10\,\mathrm{nm}^2/\mathrm{s}$.
-  - Rate constants: $k_{\mathrm{cat,GOx}} = 100\,\mathrm{s}^{-1}$, $k_{\mathrm{cat,HRP}} = 100\,\mathrm{s}^{-1}$.
-  - Crowding inhibition: Range $R_{\mathrm{inhibit}} = 10\,\mathrm{nm}$, saturation threshold $n_{\mathrm{sat}} = 5$, maximum inhibition $I_{\max} = 0.8$.
+  - Key Parameters (default values in configuration):
+  - Diffusion coefficients: $D_{\text{bulk}} = 1000\,\text{nm}^2\!\,/\text{s}$, $D_{\text{film}} = 10\,\text{nm}^2\!\,/\text{s}$.
+  - Rate constants: $k_{\text{cat,GOx}} = 100\,\text{s}^{-1}$, $k_{\text{cat,HRP}} = 100\,\text{s}^{-1}$.
+  - Crowding inhibition: Range $R_{\text{inhibit}} = 10\,\text{nm}$, saturation threshold $n_{\text{sat}} = 5$, maximum inhibition $I_{\max} = 0.8$.
 - Configuration Entry
   - [2D/modules/config/default_config.m](../modules/config/default_config.m)
   - [2D/modules/config/interactive_config.m](../modules/config/interactive_config.m)
@@ -44,17 +44,15 @@ Language: [English](2d_model_theory.en.md) | [中文](2d_model_theory.md)
 
 The reaction-diffusion equations in 2D space (qualitative display):
 
-$$
-\frac{\partial [\mathrm{S}]}{\partial t} = D \nabla^2[\mathrm{S}] - k_{\mathrm{GOx}}[\mathrm{S}][\mathrm{GOx}] \\
-\frac{\partial [\mathrm{I}]}{\partial t} = D \nabla^2[\mathrm{I}] + k_{\mathrm{GOx}}[\mathrm{S}][\mathrm{GOx}] - k_{\mathrm{HRP}}[\mathrm{I}][\mathrm{HRP}] \\
-\frac{\partial [\mathrm{P}]}{\partial t} = D \nabla^2[\mathrm{P}] + k_{\mathrm{HRP}}[\mathrm{I}][\mathrm{HRP}]
-$$
+**Reaction-Diffusion System**
+- $\displaystyle \frac{\partial [S]}{\partial t} = D\nabla^2 [S] - k_{\mathrm{GOx}}[S][\mathrm{GOx}]$
+- $\displaystyle \frac{\partial [I]}{\partial t} = D\nabla^2 [I] + k_{\mathrm{GOx}}[S][\mathrm{GOx}] - k_{\mathrm{HRP}}[I][\mathrm{HRP}]$
+- $\displaystyle \frac{\partial [P]}{\partial t} = D\nabla^2 [P] + k_{\mathrm{HRP}}[I][\mathrm{HRP}]$
 
 Explanation:
 
-- $\nabla^2 = \frac{\partial^2}{\partial x^2} + \frac{\partial^2}{\partial y^2}$.
-- In MSE mode, $[\mathrm{GOx}]$ and $[\mathrm{HRP}]$ are effectively concentrated in the film annular region ($r \in [r_p, r_p+f_t]$), appearing as strongly non-uniform source terms.
-- Nonlinearity and singular boundaries make analytical solutions difficult, so stochastic particle/Monte Carlo methods are used for numerical approximation.
+- $\nabla^2 = \partial^2/\partial x^2 + \partial^2/\partial y^2$.
+- In MSE mode, $[\mathrm{GOx}]$ and $[\mathrm{HRP}]$ are effectively concentrated in the film annular region $r \in [r_p, r_p + f_t]$, appearing as strongly non-uniform source terms.
 
 ---
 
@@ -66,9 +64,8 @@ This model uses Brownian Dynamics for discrete diffusion, combined with fixed-st
 
 - Theory:
 
-$$
-\Delta \mathbf{r} = \sqrt{2\,D\,\Delta t}\,\boldsymbol{\eta},\quad \boldsymbol{\eta} \sim \mathcal{N}(\mathbf{0}, \mathbf{I}_2)
-$$
+**Brownian Step Formula**:
+$\Delta\mathbf{r} = \sqrt{2D\,\Delta t}\,\boldsymbol{\eta}$, where $\boldsymbol{\eta} \sim \mathcal{N}(\mathbf{0}, \mathbf{I}_2)$
 
 - Code correspondence: Gaussian displacement is superimposed on particle positions (D chosen based on bulk/film).
 - File: [2D/modules/sim_core/diffusion_step.m](../modules/sim_core/diffusion_step.m)
@@ -76,28 +73,27 @@ $$
 ### 3.2 Boundary and Film Region Constraints
 
 - Box and particle surface specular reflection: Normal component is reversed.
-- MSE mode: Reaction sites and feasible encounters are restricted to the film ring $r \in [r_p, r_p + f_t]$.
+- MSE mode: Reaction sites and feasible encounters are restricted to the film ring r ∈ [r_p, r_p + f_t].
 - File: [2D/modules/sim_core/boundary_reflection.m](../modules/sim_core/boundary_reflection.m), film ring constraints in [2D/modules/sim_core/reaction_step.m](../modules/sim_core/reaction_step.m)
 
 ### 3.3 Reaction Probability and Event Sampling (Gillespie Style)
 
 - Single-step reaction probability:
 
-$$
-p = 1 - e^{-k_{\mathrm{eff}}\,\Delta t},\qquad k_{\mathrm{eff}} = k_{\mathrm{cat}}\bigl(1 - \mathrm{inhibition}\bigr)
-$$
+**Reaction Probability Formula**:
+$p = 1 - \exp\bigl(-k_{\text{eff}}\,\Delta t\bigr)$, where $k_{\text{eff}} = k_{\text{cat}}(1 - \text{inhibition})$
 
-- Determination: Sample $u \sim \mathcal{U}(0,1)$, if $u < p$, then a reaction event occurs ($\mathrm{S}\!\to\!\mathrm{I}$ or $\mathrm{I}\!\to\!\mathrm{P}$).
+- Determination: Sample $u \sim \mathcal{U}(0,1)$; if $u < p$, then a reaction event occurs ($\mathrm{S}\rightarrow\mathrm{I}$ or $\mathrm{I}\rightarrow\mathrm{P}$).
+
 - Event coordinates: Sampled and recorded near the encounter pair (enzyme-substrate) for event heatmaps.
 - File: [2D/modules/sim_core/reaction_step.m](../modules/sim_core/reaction_step.m)
 
 ### 3.4 Crowding Inhibition (Local Modulation)
 
-- Count local crowding degree $n_{\text{local}}$ within neighbor radius ($R_{\text{inhibit}}$), forming inhibition weight:
+- Count local crowding degree $n_{\text{local}}$ within neighbor radius $R_{\text{inhibit}}$, forming inhibition weight:
 
-$$
-\mathrm{inhibition} = I_{\max}\,\max\!\left(0,\, 1 - \frac{n_{\mathrm{local}}}{n_{\mathrm{sat}}}\right).
-$$
+**Crowding Inhibition Formula**:
+$\text{inhibition} = I_{\max} \times \max\bigl(0, 1 - n_{\text{local}}/n_{\text{sat}}\bigr)$
 
 - File: [2D/modules/sim_core/precompute_inhibition.m](../modules/sim_core/precompute_inhibition.m)
 
@@ -113,15 +109,15 @@ $$
 ## 4. Batch Monte Carlo Statistics and Convergence
 
 - Single batch output: Final product count `products_final`, plus trajectories/events, etc.
-- Multi-batch statistics: Run $M$ times with independent seeds, estimate expectation and variance:
+- Multi-batch statistics: Run M times with independent seeds, estimate expectation and variance:
 
-$$
-\hat{\mu} = \frac{1}{M}\sum_{m=1}^M P_m,\qquad \mathrm{Var}(\hat{\mu}) = \frac{\sigma^2}{M}.
-$$
+**Monte Carlo Statistics Formulas**:
+- $\hat{\mu} = \frac{1}{M} \sum_{m=1}^{M} P_m$
+- $\operatorname{Var}(\hat{\mu}) = \sigma^2/M$
 
 - Recommendations:
-  - Validation/parameter tuning phase: $M \approx 5\text{--}10$;
-  - Reporting/interval estimation: $M \geq 30$, and output mean $\pm$ confidence interval.
+  - Validation/parameter tuning phase: M ≈ 5-10;
+  - Reporting/interval estimation: M ≥ 30, and output mean ± confidence interval.
 - File: [2D/modules/batch/run_batches.m](../modules/batch/run_batches.m), seed strategy in [2D/modules/seed_utils/get_batch_seeds.m](../modules/seed_utils/get_batch_seeds.m)
 
 ---
@@ -188,6 +184,6 @@ graph TD;
 
 ## 7. Terminology and Reference
 
-- Brownian Dynamics: Discrete Wiener process simulation of diffusion through $\Delta r = \sqrt{2D\Delta t}\cdot\eta$.
-- Gillespie/τ-leaping: Fixed-step event probability approximation using $p=1-\exp(-k\Delta t)$.
+- Brownian Dynamics: Discrete Wiener process simulation of diffusion through $\Delta r = \sqrt{2D\,\Delta t}\,\eta$.
+- Gillespie/τ-leaping: Fixed-step event probability approximation using $p = 1 - \exp(-k\,\Delta t)$.
 - Smoluchowski Encounter Theory: Encounter rates for diffusion-controlled reactions, expressed differently in 2D/3D.
