@@ -22,7 +22,7 @@
 
 ## 🎯 项目概览
 
-一个全面、模块化的MATLAB框架，用于在二维空间中模拟矿物表面局域化酶的两步级联反应。该框架实现了先进的随机模拟，包括异质扩散、$\tau$-跳跃反应、拥挤抑制、批量蒙特卡洛分析和完全可复现的科学计算。
+一个全面、模块化的MATLAB框架，用于在二维空间中模拟矿物表面局域化酶的两步级联反应。该框架实现了先进的随机模拟，包括异质扩散、τ-跳跃反应、拥挤抑制、批量蒙特卡洛分析和完全可复现的科学计算。
 
 ### 核心科学背景
 
@@ -49,9 +49,9 @@
 ## 背景（为何比较 MSE 与 bulk）
 
 - 科学动机：矿物表面酶（MSE）局域化使底物/中间体在颗粒附近富集，相遇概率显著高于体相（bulk）分散体系，从而提升级联效率。
-- 2D 抽象：用环区 $[r_p, r_p + f_t]$ 近似中心颗粒周围的表面薄膜，酶在 MSE 模式固定于环区，bulk 模式则在盒域均匀分布。默认参数体现强扩散对比（如 $D_{\text{film}} = 10$ 与 $D_{\text{bulk}} = 1000 \text{ nm}^2/\text{s}$）与适中的膜厚（$f_t = 5 \text{ nm}$），见 [modules/config/default_config.m](modules/config/default_config.m)。
-- 反应语境：两步级联 S -(GOx)$\rightarrow$ I -(HRP)$\rightarrow$ P；酶数量按比例 `gox_hrp_split`（默认 50/50）划分 GOx 与 HRP。
-- 模型假设（范围）：酶不移动；S/I/P 扩散；盒域与颗粒边界为镜面反射；固定步长 $\tau$‑跳跃；无吸附/解吸；MSE 下仅接受薄膜环区内的反应事件。
+- 2D 抽象：用环区 [r_p, r_p + f_t] 近似中心颗粒周围的表面薄膜，酶在 MSE 模式固定于环区，bulk 模式则在盒域均匀分布。默认参数体现强扩散对比（如 D_film = 10 与 D_bulk = 1000 nm²/s）与适中的膜厚（f_t = 5 nm），见 [modules/config/default_config.m](modules/config/default_config.m)。
+- 反应语境：两步级联 S -(GOx)-> I -(HRP)-> P；酶数量按比例 `gox_hrp_split`（默认 50/50）划分 GOx 与 HRP。
+- 模型假设（范围）：酶不移动；S/I/P 扩散；盒域与颗粒边界为镜面反射；固定步长 τ‑跳跃；无吸附/解吸；MSE 下仅接受薄膜环区内的反应事件。
 - 面向论文的输出：MSE vs bulk 的产物优势、反应速率曲线、空间事件图、示踪轨迹；批量 CSV 用于均值/方差等统计汇总。可视化入口： [modules/viz/plot_event_map.m](modules/viz/plot_event_map.m)、[modules/viz/plot_tracers.m](modules/viz/plot_tracers.m)、[modules/viz/plot_product_curve.m](modules/viz/plot_product_curve.m)。
 
 ## ⚡ 核心功能
@@ -62,7 +62,7 @@
   - **MSE模式**: 酶局域于中心颗粒周围的薄膜环区
   - **Bulk模式**: 酶在模拟盒中均匀分布
 - **异质扩散**: 薄膜与体相区域的不同扩散系数
-- **随机反应**: 基于概率的$\tau$-跳跃反应事件
+- **随机反应**: 基于概率的τ-跳跃反应事件
 - **拥挤抑制**: 局部密度对催化效率的影响
 
 ### 🔬 科学严谨性
@@ -80,15 +80,15 @@
 ## 算法说明
 
 ### 几何与状态
-- 域：$L \times L$ 的二维正方形
+- 域：L × L 的二维正方形
 - 中心颗粒：半径 r_p
 - 薄膜环区：MSE 模式下的 [r_p, r_p + f_t]
 - 物种：S、I、P 为可扩散粒子；酶固定在其位置（MSE 模式局域在环区，bulk 模式均匀分布）
 
 ### 扩散（布朗步进）
-对每个粒子位置 $x \in \mathbb{R}^2$：
+对每个粒子位置 x ∈ ℝ²：
 
-**布朗步进公式**：$x_{t+\Delta t} = x_t + \sqrt{2 D(x_t) \Delta t} \cdot \eta$，其中 $\eta \sim N(0, I_2)$。
+**布朗步进公式**：x_{t+Δt} = x_t + sqrt(2 D(x_t) Δt) · η，其中 η ~ N(0, I₂)。
 
 - MSE：环区内 D = D_film，环区外 D = D_bulk
 - Bulk：全域 D = D_bulk
@@ -99,26 +99,26 @@
 - 盒域边界：镜面反射，见 [boundary_reflection()](modules/sim_core/boundary_reflection.m)
 
 
-### 反应（每步 $\tau$-跳跃）
+### 反应（每步 τ-跳跃）
 每步存在两条独立通道：
 
 **反应通道**：
 
-1. S + GOx $\rightarrow$ I，反应概率：$P_{\text{GOx}} = 1 - \exp(-k_{\text{cat,GOx}} (1 - \text{inhibition}_{\text{GOx}}) \Delta t)$
+1. S + GOx → I，反应概率：P_GOx = 1 - exp(-k_cat,GOx (1 - inhibition_GOx) Δt)
 
-2. I + HRP $\rightarrow$ P，反应概率：$P_{\text{HRP}} = 1 - \exp(-k_{\text{cat,HRP}} (1 - \text{inhibition}_{\text{HRP}}) \Delta t)$
+2. I + HRP → P，反应概率：P_HRP = 1 - exp(-k_cat,HRP (1 - inhibition_HRP) Δt)
 
 拥挤抑制（按酶局部密度）：
 
-**拥挤抑制公式**：$\text{inhibition} = I_{\text{max}} \times \max(0, 1 - n_{\text{local}}/n_{\text{sat}})$
+**拥挤抑制公式**：inhibition = I_max × max(0, 1 - n_local/n_sat)
 
 MSE 模式同时要求反应位置在薄膜环区内。
 实现：[reaction_step()](modules/sim_core/reaction_step.m)
 
 
 ### 记录与汇总
-- 反应计数 $\rightarrow$ 反应速率曲线
-- 产物曲线 $P(t) \leftarrow$ HRP 速率积分
+- 反应计数 → 反应速率曲线
+- 产物曲线 P(t) ← HRP 速率积分
 - 可选：快照、示踪轨迹、事件空间坐标
 实现：[record_data()](modules/sim_core/record_data.m)
 
@@ -128,8 +128,8 @@ MSE 模式同时要求反应位置在薄膜环区内。
 时间循环：
 ```
 for step = 1..N
-  扩散 $\rightarrow$ 边界反射 $\rightarrow$（可选）轨迹更新
-  GOx/HRP 反应 $\rightarrow$ 记录
+  扩散 → 边界反射 →（可选）轨迹更新
+  GOx/HRP 反应 → 记录
 end
 ```
 实现：[simulate_once()](modules/sim_core/simulate_once.m)
@@ -325,10 +325,10 @@ config.simulation_params.simulation_mode = 'MSE'; % 'MSE'或'bulk'
 ```matlab
 config.particle_params.num_enzymes = 200;
 config.particle_params.num_substrate = 1000;
-config.particle_params.diff_coeff_bulk = 1000;   % $\text{nm}^2/\text{s}$
-config.particle_params.diff_coeff_film = 10;     % $\text{nm}^2/\text{s}$
-config.particle_params.k_cat_GOx = 100;          % $\text{s}^{-1}$
-config.particle_params.k_cat_HRP = 100;          % $\text{s}^{-1}$
+config.particle_params.diff_coeff_bulk = 1000;   % nm²/s
+config.particle_params.diff_coeff_film = 10;     % nm²/s
+config.particle_params.k_cat_GOx = 100;          % s⁻¹
+config.particle_params.k_cat_HRP = 100;          % s⁻¹
 ```
 
 #### 几何参数

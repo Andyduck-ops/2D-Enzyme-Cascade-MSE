@@ -22,7 +22,7 @@
 
 ## 🎯 Project Overview
 
-A comprehensive, modular MATLAB framework for investigating **protocell emergence** through computational modeling of mineral-guided molecular enrichment processes. This framework simulates two-step enzyme cascade reactions in 2D space with mineral-surface-localized enzymes, addressing fundamental questions about how organized biological systems could have emerged from dilute **prebiotic chemistry** environments on early Earth. The computational platform implements advanced stochastic simulations including heterogeneous diffusion, $\tau$-leaping reactions, molecular crowding effects, batch Monte Carlo analysis, and fully reproducible scientific computations to quantify the **interfacial driving forces** critical for **compartmentalization** and **proto-metabolic flux** generation.
+A comprehensive, modular MATLAB framework for investigating **protocell emergence** through computational modeling of mineral-guided molecular enrichment processes. This framework simulates two-step enzyme cascade reactions in 2D space with mineral-surface-localized enzymes, addressing fundamental questions about how organized biological systems could have emerged from dilute **prebiotic chemistry** environments on early Earth. The computational platform implements advanced stochastic simulations including heterogeneous diffusion, τ-leaping reactions, molecular crowding effects, batch Monte Carlo analysis, and fully reproducible scientific computations to quantify the **interfacial driving forces** critical for **compartmentalization** and **proto-metabolic flux** generation.
 
 ### Key Scientific Context
 
@@ -57,14 +57,14 @@ To quantitatively assess how mineral surface-mediated enrichment (MSE) serves as
 MSE localization creates concentration gradients that drive **proto-metabolic flux**, concentrating reacting species near mineral particles and dramatically enhancing encounter probabilities compared to bulk dispersion. This mechanism represents a plausible solution to how primitive reaction networks could have achieved the molecular organization necessary for autocatalytic processes under **early Earth conditions**, providing computational insights into the emergence of life from non-living matter.
 
 ### Scientific Framework
-- **Molecular Diffusion**: Follows Brownian motion with position updates $\Delta r = \sqrt{2D \Delta t} \eta$, where $\eta$ represents Gaussian white noise
-- **Heterogeneous Environment**: Diffusion coefficients are set to $D_{\text{bulk}} = 1000 \text{ nm}^2/\text{s}$ for bulk regions and $D_{\text{film}} = 10 \text{ nm}^2/\text{s}$ within the enzyme film layer
+- **Molecular Diffusion**: Follows Brownian motion with position updates Δr = sqrt(2D Δt) η, where η represents Gaussian white noise
+- **Heterogeneous Environment**: Diffusion coefficients are set to D_bulk = 1000 nm²/s for bulk regions and D_film = 10 nm²/s within the enzyme film layer
 - **Spatial Confinement**: 2D abstraction approximates a thin surface film as a ring [r_p, r_p + f_t] around a central particle (enzymes fixed in MSE; free placement in bulk)
 
 ### Reaction System
 - **Two-step cascade**: S -(GOx)-> I -(HRP)-> P with enzymes split GOx/HRP (default 50/50 via `gox_hrp_split`)
-- **$\tau$-leaping kinetics**: Reaction probability follows $P = 1 - \exp(-k_{\text{cat}} \Delta t)$, where $k_{\text{cat}} = 100 \text{ s}^{-1}$ for both enzymes
-- **Crowding effects**: Local enzyme density modulates effective catalytic rates according to $\text{inhibition} = I_{\text{max}} \times \max(0, 1 - n_{\text{local}}/n_{\text{sat}})$, with $I_{\text{max}} = 0.8$ and $n_{\text{sat}} = 5$
+- **τ-leaping kinetics**: Reaction probability follows P = 1 - exp(-k_cat Δt), where k_cat = 100 s⁻¹ for both enzymes
+- **Crowding effects**: Local enzyme density modulates effective catalytic rates according to inhibition = I_max × max(0, 1 - n_local/n_sat), with I_max = 0.8 and n_sat = 5
 
 ### Key Comparisons
 The framework systematically compares two fundamental configurations representing distinct stages of **prebiotic evolution**:
@@ -81,7 +81,7 @@ The framework systematically compares two fundamental configurations representin
   - **MSE Mode**: Enzymes localized to a ring film around a central mineral particle, modeling **mineral-guided molecular enrichment** and **protocell emergence** pathways
   - **Bulk Mode**: Enzymes uniformly distributed throughout the domain, representing dilute **prebiotic chemistry** environments
 - **Interfacial Driving Forces**: Heterogeneous diffusion coefficients capturing **early Earth conditions** with different molecular mobility in film vs bulk regions
-- **Prebiotic Reaction Kinetics**: $\tau$-leaping methodology with probabilistic reaction events modeling stochastic molecular encounters under primitive conditions
+- **Prebiotic Reaction Kinetics**: τ-leaping methodology with probabilistic reaction events modeling stochastic molecular encounters under primitive conditions
 - **Molecular Crowding Physics**: Local density effects on catalytic efficiency, simulating **compartmentalization** effects critical for **proto-metabolic flux** generation
 
 ### 🔬 Scientific Rigor
@@ -112,9 +112,9 @@ Key entrypoints:
 - **Molecular species**: Substrate (S), Intermediate (I), and Product (P) undergo free diffusion; enzymes remain spatially fixed
 
 ### Diffusion (Brownian step)
-For each particle position $x \in \mathbb{R}^2$:
+For each particle position x ∈ ℝ²:
 
-$x \leftarrow x + \sqrt{2 D(x) \Delta t} \cdot \eta$, where $\eta \sim N(0, I_2)$
+x ← x + sqrt(2 D(x) Δt) · η, where η ~ N(0, I₂)
 
 D(x) is piecewise:
 - MSE mode: D = D_film inside the film ring; D = D_bulk elsewhere
@@ -124,16 +124,16 @@ D(x) is piecewise:
 - Box reflection (mirror)
 - Central particle reflection to a target radius > r_p for stability
 
-### Reactions ($\tau$-leaping per $\Delta t$)
+### Reactions (τ-leaping per Δt)
 
 Two independent channels per step:
 
-- S + GOx $\rightarrow$ I, $P_{\text{GOx}} = 1 - \exp(-k_{\text{cat,GOx}} (1 - \text{inhibition}_{\text{GOx}}) \Delta t)$
-- I + HRP $\rightarrow$ P, $P_{\text{HRP}} = 1 - \exp(-k_{\text{cat,HRP}} (1 - \text{inhibition}_{\text{HRP}}) \Delta t)$
+- S + GOx → I, P_GOx = 1 - exp(-k_cat,GOx (1 - inhibition_GOx) Δt)
+- I + HRP → P, P_HRP = 1 - exp(-k_cat,HRP (1 - inhibition_HRP) Δt)
 
 Inhibition from local crowding (per enzyme):
 
-$\text{inhibition} = I_{\text{max}} \times \max(0, 1 - n_{\text{local}} / n_{\text{sat}})$
+inhibition = I_max × max(0, 1 - n_local / n_sat)
 
 MSE mode additionally restricts events to film ring.
 
@@ -490,10 +490,10 @@ config.simulation_params.simulation_mode = 'MSE'; % 'MSE' or 'bulk'
 ```matlab
 config.particle_params.num_enzymes = 200;
 config.particle_params.num_substrate = 1000;
-config.particle_params.diff_coeff_bulk = 1000;   % $\text{nm}^2/\text{s}$
-config.particle_params.diff_coeff_film = 10;     % $\text{nm}^2/\text{s}$
-config.particle_params.k_cat_GOx = 100;          % $\text{s}^{-1}$
-config.particle_params.k_cat_HRP = 100;          % $\text{s}^{-1}$
+config.particle_params.diff_coeff_bulk = 1000;   % nm²/s
+config.particle_params.diff_coeff_film = 10;     % nm²/s
+config.particle_params.k_cat_GOx = 100;          % s⁻¹
+config.particle_params.k_cat_HRP = 100;          % s⁻¹
 ```
 
 #### Geometry Parameters
