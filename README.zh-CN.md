@@ -104,11 +104,9 @@
 
 **反应通道**：
 
-1. $\mathrm{S} + \mathrm{GOx} \rightarrow \mathrm{I}$，反应概率：
-   $P_{\mathrm{GOx}} = 1 - \exp\bigl(-k_{\text{cat,GOx}}\,\Delta t\,(1 - \text{inhibition}_{\mathrm{GOx}})\bigr)$
+1. $\mathrm{S} + \mathrm{GOx} \rightarrow \mathrm{I}$，反应概率：$P_{\mathrm{GOx}} = 1 - \exp\bigl(-k_{\mathrm{cat,GOx}} (1 - \text{inhibition}_{\mathrm{GOx}}) \Delta t\bigr)$
 
-2. $\mathrm{I} + \mathrm{HRP} \rightarrow \mathrm{P}$，反应概率：
-   $P_{\mathrm{HRP}} = 1 - \exp\bigl(-k_{\text{cat,HRP}}\,\Delta t\,(1 - \text{inhibition}_{\mathrm{HRP}})\bigr)$
+2. $\mathrm{I} + \mathrm{HRP} \rightarrow \mathrm{P}$，反应概率：$P_{\mathrm{HRP}} = 1 - \exp\bigl(-k_{\mathrm{cat,HRP}} (1 - \text{inhibition}_{\mathrm{HRP}}) \Delta t\bigr)$
 
 拥挤抑制（按酶局部密度）：
 

@@ -128,9 +128,8 @@ D($\mathbf{x}$) is piecewise:
 
 Two independent channels per step:
 
-$\mathrm{S} + \mathrm{GOx} \rightarrow \mathrm{I}, \quad P_{\mathrm{GOx}} = 1 - \exp\bigl(-k_{\text{cat,GOx}}\,\Delta t\bigr)\bigl(1 - \text{inhibition}_{\mathrm{GOx}}\bigr)$
-
-$\mathrm{I} + \mathrm{HRP} \rightarrow \mathrm{P}, \quad P_{\mathrm{HRP}} = 1 - \exp\bigl(-k_{\text{cat,HRP}}\,\Delta t\bigr)\bigl(1 - \text{inhibition}_{\mathrm{HRP}}\bigr)$
+- $\mathrm{S} + \mathrm{GOx} \rightarrow \mathrm{I}$, $P_{\mathrm{GOx}} = 1 - \exp\bigl(-k_{\mathrm{cat,GOx}} (1 - \text{inhibition}_{\mathrm{GOx}}) \Delta t\bigr)$
+- $\mathrm{I} + \mathrm{HRP} \rightarrow \mathrm{P}$, $P_{\mathrm{HRP}} = 1 - \exp\bigl(-k_{\mathrm{cat,HRP}} (1 - \text{inhibition}_{\mathrm{HRP}}) \Delta t\bigr)$
 
 Inhibition from local crowding (per enzyme):
 

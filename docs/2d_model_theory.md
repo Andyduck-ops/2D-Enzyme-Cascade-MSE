@@ -32,9 +32,9 @@ Language / 语言: [English](2d_model_theory.en.md) | [中文](2d_model_theory.m
   - 底物 S 随机扩散；GOx、HRP 固定位于膜区（MSE 模式）或分布于体相（bulk 模式）。
   - 级联反应：$\mathrm{S} \xrightarrow{\mathrm{GOx}} \mathrm{I} \xrightarrow{\mathrm{HRP}} \mathrm{P}$。
   - 关键参数（默认值见配置）：
-  - 扩散系数：$D_{\text{bulk}} = 1000\,\text{nm}^2\!\,/\text{s}$，$D_{\text{film}} = 10\,\text{nm}^2\!\,/\text{s}$。
-  - 速率常数：$k_{\text{cat,GOx}} = 100\,\text{s}^{-1}$，$k_{\text{cat,HRP}} = 100\,\text{s}^{-1}$。
-  - 拥挤抑制：范围 $R_{\text{inhibit}} = 10\,\text{nm}$，饱和阈值 $n_{\text{sat}} = 5$，最大抑制 $I_{\max} = 0.8$。
+    - 扩散系数：$D_{\text{bulk}} = 1000\,\text{nm}^2\!\,/\text{s}$，$D_{\text{film}} = 10\,\text{nm}^2\!\,/\text{s}$。
+    - 速率常数：$k_{\text{cat,GOx}} = 100\,\text{s}^{-1}$，$k_{\text{cat,HRP}} = 100\,\text{s}^{-1}$。
+    - 拥挤抑制：范围 $R_{\text{inhibit}} = 10\,\text{nm}$，饱和阈值 $n_{\text{sat}} = 5$，最大抑制 $I_{\max} = 0.8$。
 - 配置入口：
   - [2D/modules/config/default_config.m](../modules/config/default_config.m)
   - [2D/modules/config/interactive_config.m](../modules/config/interactive_config.m)
@@ -98,15 +98,12 @@ Language / 语言: [English](2d_model_theory.en.md) | [中文](2d_model_theory.m
 
 ### 3.5 数据累计与时间积分
 
-- 速率：
-
-**反应速率公式**：
-- $r_{\mathrm{GOx}}(t) = n_{\mathrm{GOx,step}}/\Delta t$
-- $r_{\mathrm{HRP}}(t) = n_{\mathrm{HRP,step}}/\Delta t$
+- 速率（每步统计）：
+  - $r_{\mathrm{GOx}}(t) = n_{\mathrm{GOx,step}}/\Delta t$
+  - $r_{\mathrm{HRP}}(t) = n_{\mathrm{HRP,step}}/\Delta t$
 
 - 产物曲线：
-
-**产物积分公式**：$P(t) \approx \sum r_{\mathrm{HRP}}(t)\,\Delta t$
+  - $P(t) \approx \sum r_{\mathrm{HRP}}(t)\,\Delta t$
 
 - 快照/分层/轨迹按配置选择性记录。
 
