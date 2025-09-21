@@ -22,7 +22,7 @@
 
 ## 🎯 项目概览
 
-一个全面、模块化的MATLAB框架，用于在二维空间中模拟矿物表面局域化酶的两步级联反应。该框架实现了先进的随机模拟，包括异质扩散、$\tau$-跳跃反应、拥挤抑制、批量蒙特卡洛分析和完全可复现的科学计算。
+一个全面、模块化的MATLAB框架，用于在二维空间中模拟矿物表面局域化酶的两步级联反应。该框架实现了先进的随机模拟，包括异质扩散、 $\tau$ -跳跃反应、拥挤抑制、批量蒙特卡洛分析和完全可复现的科学计算。
 
 ### 核心科学背景
 
@@ -49,9 +49,9 @@
 ## 背景（为何比较 MSE 与 bulk）
 
 - 科学动机：矿物表面酶（MSE）局域化使底物/中间体在颗粒附近富集，相遇概率显著高于体相（bulk）分散体系，从而提升级联效率。
-- 2D 抽象：用环区 $[r_p, r_p + f_t]$ 近似中心颗粒周围的表面薄膜，酶在 MSE 模式固定于环区，bulk 模式则在盒域均匀分布。默认参数体现强扩散对比（如 $D_{\text{film}} = 10$ 与 $D_{\text{bulk}} = 1000 \text{ nm}^2/\text{s}$）与适中的膜厚（$f_t = 5 \text{ nm}$），见 [modules/config/default_config.m](modules/config/default_config.m)。
-- 反应语境：两步级联 S -(GOx)$\rightarrow$ I -(HRP)$\rightarrow$ P；酶数量按比例 `gox_hrp_split`（默认 50/50）划分 GOx 与 HRP。
-- 模型假设（范围）：酶不移动；S/I/P 扩散；盒域与颗粒边界为镜面反射；固定步长 $\tau$‑跳跃；无吸附/解吸；MSE 下仅接受薄膜环区内的反应事件。
+- 2D 抽象：用环区 $[r_p, r_p + f_t]$ 近似中心颗粒周围的表面薄膜，酶在 MSE 模式固定于环区，bulk 模式则在盒域均匀分布。默认参数体现强扩散对比（如 $D_{\text{film}} = 10$ 与 $D_{\text{bulk}} = 1000 \text{ nm}^2/\text{s}$ ）与适中的膜厚（ $f_t = 5 \text{ nm}$ ），见 [modules/config/default_config.m](modules/config/default_config.m)。
+- 反应语境：两步级联 S -(GOx) $\rightarrow$ I -(HRP) $\rightarrow$ P；酶数量按比例 `gox_hrp_split`（默认 50/50）划分 GOx 与 HRP。
+- 模型假设（范围）：酶不移动；S/I/P 扩散；盒域与颗粒边界为镜面反射；固定步长 $\tau$ ‑跳跃；无吸附/解吸；MSE 下仅接受薄膜环区内的反应事件。
 - 面向论文的输出：MSE vs bulk 的产物优势、反应速率曲线、空间事件图、示踪轨迹；批量 CSV 用于均值/方差等统计汇总。可视化入口： [modules/viz/plot_event_map.m](modules/viz/plot_event_map.m)、[modules/viz/plot_tracers.m](modules/viz/plot_tracers.m)、[modules/viz/plot_product_curve.m](modules/viz/plot_product_curve.m)。
 
 ## ⚡ 核心功能
@@ -62,7 +62,7 @@
   - **MSE模式**: 酶局域于中心颗粒周围的薄膜环区
   - **Bulk模式**: 酶在模拟盒中均匀分布
 - **异质扩散**: 薄膜与体相区域的不同扩散系数
-- **随机反应**: 基于概率的$\tau$-跳跃反应事件
+- **随机反应**: 基于概率的 $\tau$ -跳跃反应事件
 - **拥挤抑制**: 局部密度对催化效率的影响
 
 ### 🔬 科学严谨性
@@ -86,7 +86,7 @@
 - 物种：S、I、P 为可扩散粒子；酶固定在其位置（MSE 模式局域在环区，bulk 模式均匀分布）
 
 ### 扩散（布朗步进）
-对每个粒子位置 $x \in \mathbb{R}^2$：
+对每个粒子位置 $x \in \mathbb{R}^2$ ：
 
 **布朗步进公式**： $x_{t+\Delta t} = x_t + \sqrt{2 D(x_t) \Delta t} \cdot \eta$，其中 $\eta \sim N(0, I_2)$。
 
@@ -99,7 +99,7 @@
 - 盒域边界：镜面反射，见 [boundary_reflection()](modules/sim_core/boundary_reflection.m)
 
 
-### 反应（每步 $\tau$-跳跃）
+### 反应（每步 $\tau$ -跳跃）
 每步存在两条独立通道：
 
 **反应通道**：
@@ -128,7 +128,7 @@ MSE 模式同时要求反应位置在薄膜环区内。
 时间循环：
 ```
 for step = 1..N
-  扩散 $\rightarrow$ 边界反射 $\rightarrow$（可选）轨迹更新
+  扩散 $\rightarrow$ 边界反射 $\rightarrow$ （可选）轨迹更新
   GOx/HRP 反应 $\rightarrow$ 记录
 end
 ```

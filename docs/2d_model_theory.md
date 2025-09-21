@@ -58,14 +58,14 @@ $$
 说明：
 
 - $\nabla^2 = \frac{\partial^2}{\partial x^2} + \frac{\partial^2}{\partial y^2}$。
-- 在 MSE 模式，[GOx] 与 [HRP] 等效集中在膜环区域（$r \in [r_p, r_p + f_t]$），呈强非均匀源项。
+- 在 MSE 模式，[GOx] 与 [HRP] 等效集中在膜环区域（ $r \in [r_p, r_p + f_t]$ ），呈强非均匀源项。
 - 非线性、奇异边界导致解析解困难，因此采用随机粒子/蒙特卡洛方法进行数值近似。
 
 ---
 
 ## 3. 随机粒子模拟（蒙特卡洛 BD + 事件驱动）
 
-本模型采用布朗动力学（Brownian Dynamics）离散扩散，配合固定步长的随机反应判定（$\tau$-leaping 近似）。
+本模型采用布朗动力学（Brownian Dynamics）离散扩散，配合固定步长的随机反应判定（ $\tau$ -leaping 近似）。
 
 ### 3.1 扩散离散（Brownian step）
 
