@@ -80,7 +80,7 @@
 ## 算法说明
 
 ### 几何与状态
-- 域：$L \times L$ 的二维正方形
+- 域： $L \times L$ 的二维正方形
 - 中心颗粒：半径 r_p
 - 薄膜环区：MSE 模式下的 [r_p, r_p + f_t]
 - 物种：S、I、P 为可扩散粒子；酶固定在其位置（MSE 模式局域在环区，bulk 模式均匀分布）
@@ -88,7 +88,7 @@
 ### 扩散（布朗步进）
 对每个粒子位置 $x \in \mathbb{R}^2$：
 
-**布朗步进公式**：$x_{t+\Delta t} = x_t + \sqrt{2 D(x_t) \Delta t} \cdot \eta$，其中 $\eta \sim N(0, I_2)$。
+**布朗步进公式**： $x_{t+\Delta t} = x_t + \sqrt{2 D(x_t) \Delta t} \cdot \eta$，其中 $\eta \sim N(0, I_2)$。
 
 - MSE：环区内 D = D_film，环区外 D = D_bulk
 - Bulk：全域 D = D_bulk
@@ -104,13 +104,13 @@
 
 **反应通道**：
 
-1. S + GOx $\rightarrow$ I，反应概率：$P_{\text{GOx}} = 1 - \exp(-k_{\text{cat,GOx}} (1 - \text{inhibition}_{\text{GOx}}) \Delta t)$
+1. S + GOx $\rightarrow$ I，反应概率： $P_{\text{GOx}} = 1 - \exp(-k_{\text{cat,GOx}} (1 - \text{inhibition}_{\text{GOx}}) \Delta t)$
 
-2. I + HRP $\rightarrow$ P，反应概率：$P_{\text{HRP}} = 1 - \exp(-k_{\text{cat,HRP}} (1 - \text{inhibition}_{\text{HRP}}) \Delta t)$
+2. I + HRP $\rightarrow$ P，反应概率： $P_{\text{HRP}} = 1 - \exp(-k_{\text{cat,HRP}} (1 - \text{inhibition}_{\text{HRP}}) \Delta t)$
 
 拥挤抑制（按酶局部密度）：
 
-**拥挤抑制公式**：$\text{inhibition} = I_{\text{max}} \times \max(0, 1 - n_{\text{local}}/n_{\text{sat}})$
+**拥挤抑制公式**： $\text{inhibition} = I_{\text{max}} \times \max(0, 1 - n_{\text{local}}/n_{\text{sat}})$
 
 MSE 模式同时要求反应位置在薄膜环区内。
 实现：[reaction_step()](modules/sim_core/reaction_step.m)

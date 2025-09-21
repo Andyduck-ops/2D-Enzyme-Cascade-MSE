@@ -32,8 +32,8 @@ Language / 语言: [English](2d_model_theory.en.md) | [中文](2d_model_theory.m
   - 底物 S 随机扩散；GOx、HRP 固定位于膜区（MSE 模式）或分布于体相（bulk 模式）。
   - 级联反应：S -(GOx)-> I -(HRP)-> P。
   - 关键参数（默认值见配置）：
-    - 扩散系数：$D_{\text{bulk}} = 1000 \text{ nm}^2/\text{s}$，$D_{\text{film}} = 10 \text{ nm}^2/\text{s}$。
-    - 速率常数：$k_{\text{cat,GOx}} = 100 \text{ s}^{-1}$，$k_{\text{cat,HRP}} = 100 \text{ s}^{-1}$。
+    - 扩散系数： $D_{\text{bulk}} = 1000 \text{ nm}^2/\text{s}$， $D_{\text{film}} = 10 \text{ nm}^2/\text{s}$。
+    - 速率常数： $k_{\text{cat,GOx}} = 100 \text{ s}^{-1}$， $k_{\text{cat,HRP}} = 100 \text{ s}^{-1}$。
     - 拥挤抑制：范围 R_inhibit = 10 nm，饱和阈值 n_sat = 5，最大抑制 I_max = 0.8。
 - 配置入口：
   - [2D/modules/config/default_config.m](../modules/config/default_config.m)
@@ -71,7 +71,7 @@ $$
 
 #### 理论
 
-**布朗步进公式**：$\Delta r = \sqrt{2 D \Delta t} \cdot \eta$，其中 $\eta \sim N(0, I_2)$
+**布朗步进公式**： $\Delta r = \sqrt{2 D \Delta t} \cdot \eta$，其中 $\eta \sim N(0, I_2)$
 
 代码对应：高斯位移叠加到粒子位置（bulk/film 选择 D）。
 
@@ -80,16 +80,16 @@ $$
 ### 3.2 边界与膜区约束
 
 - 盒子与颗粒表面镜面反射：法向分量取反。
-- MSE 模式：反应位点与可行相遇被限制在膜环 $r \in [r_p, r_p + f_t]$。
+- MSE 模式：反应位点与可行相遇被限制在膜环 $r \in [r_p, r_p + f_t]$ 。
 - 文件： [2D/modules/sim_core/boundary_reflection.m](../modules/sim_core/boundary_reflection.m)，膜环约束在 [2D/modules/sim_core/reaction_step.m](../modules/sim_core/reaction_step.m)
 
 ### 3.3 反应概率与事件采样（Gillespie 风格）
 
 #### 单步反应概率
 
-**反应概率公式**：$p = 1 - \exp(-k_{\text{eff}} \cdot \Delta t)$，其中 $k_{\text{eff}} = k_{\text{cat}} \cdot (1 - \text{inhibition})$
+**反应概率公式**： $p = 1 - \exp(-k_{\text{eff}} \cdot \Delta t)$，其中 $k_{\text{eff}} = k_{\text{cat}} \cdot (1 - \text{inhibition})$
 
-判定：采样 $u \sim U(0,1)$，若 $u < p$，则发生反应事件（S$\rightarrow$I 或 I$\rightarrow$P）。事件坐标：在相遇对（酶-底物）局部附近采样并记录，用于事件热力图。
+判定：采样 $u \sim U(0,1)$，若 $u < p$，则发生反应事件（S $\rightarrow$ I 或 I $\rightarrow$ P）。事件坐标：在相遇对（酶-底物）局部附近采样并记录，用于事件热力图。
 
 文件： [2D/modules/sim_core/reaction_step.m](../modules/sim_core/reaction_step.m)
 
@@ -97,7 +97,7 @@ $$
 
 近邻半径内（R_inhibit）统计局部拥挤度 n_local，形成抑制权重：
 
-**拥挤抑制公式**：$\text{inhibition} = I_{\text{max}} \times \max(0, 1 - n_{\text{local}} / n_{\text{sat}})$
+**拥挤抑制公式**： $\text{inhibition} = I_{\text{max}} \times \max(0, 1 - n_{\text{local}} / n_{\text{sat}})$
 
 文件： [2D/modules/sim_core/precompute_inhibition.m](../modules/sim_core/precompute_inhibition.m)
 
@@ -127,8 +127,8 @@ $$
 
 - 建议：
 
-  - 验证/调参阶段：$M \approx 5-10$；
-  - 报告/区间估计：$M \geq 30$，并输出均值 $\pm$ 置信区间。
+  - 验证/调参阶段： $M \approx 5-10$ ；
+  - 报告/区间估计： $M \geq 30$ ，并输出均值 $\pm$ 置信区间。
 
 - 文件： [2D/modules/batch/run_batches.m](../modules/batch/run_batches.m)，种子策略见 [2D/modules/seed_utils/get_batch_seeds.m](../modules/seed_utils/get_batch_seeds.m)
 
