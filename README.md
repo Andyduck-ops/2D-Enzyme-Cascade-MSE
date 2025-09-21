@@ -166,6 +166,7 @@ Seeds: [get_batch_seeds()](modules/seed_utils/get_batch_seeds.m)
 - [Key Features](#-key-features)
 - [Installation](#-installation)
 - [Quick Start](#-quick-start)
+- [Quick Reproduction](#-quick-reproduction)
 - [Examples](#-examples)
 - [Reproducibility](#-reproducibility)
 - [Algorithm Details](#-algorithm)
@@ -242,6 +243,78 @@ config.ui_controls.visualize_enabled = true;
 % Run single simulation
 result = simulate_once(config, 1234);
 fprintf('MSE mode produced %d products\n', result.products_final);
+```
+
+## 🔄 Quick Reproduction
+
+### Using Reproducibility Seeds
+
+For rapid reproduction of documented experimental results, use the seeds recorded in [`复现seed.txt`](复现seed.txt):
+
+#### Method 1: Single Experiment Reproduction
+```matlab
+% Reproduce a specific documented experiment
+config = default_config();
+
+% Example: Reproduce MSE Enhancement Study
+config.simulation_params.simulation_mode = 'MSE';
+config.particle_params.num_enzymes = 200;
+config.particle_params.diff_coeff_film = 10;
+config.simulation_params.total_time = 1.0;
+
+% Use documented seed for exact reproduction
+documented_seed = 1234;  % From 复现seed.txt
+result = simulate_once(config, documented_seed);
+
+fprintf('Reproduced result: %d products\n', result.products_final);
+```
+
+#### Method 2: Batch Reproduction with Seed Range
+```matlab
+% Reproduce batch experiments using consecutive seeds
+config = default_config();
+config.simulation_params.simulation_mode = 'MSE';
+config.batch.batch_count = 30;
+
+% Define seed range from documented experiment
+base_seed = 1234;
+seed_range = base_seed + (0:29);  % 30 consecutive seeds
+
+% Run batch with specific seed sequence
+batch_results = run_batches(config, seed_range);
+
+% Compare with documented results
+mean_products = mean(batch_results.products_final);
+fprintf('Batch reproduction: %.1f ± %.1f products\n', ...
+    mean_products, std(batch_results.products_final));
+```
+
+#### Method 3: Automated Seed Loading
+```matlab
+% Future enhancement: Load seeds directly from 复现seed.txt
+% This functionality will be added as experiments are documented
+
+function reproduce_experiment(experiment_name)
+    % Load parameters from 复现seed.txt
+    % Apply configuration automatically
+    % Run reproduction and validate results
+end
+```
+
+### Recording New Experiments
+
+When you discover significant results, document them in [`复现seed.txt`](复现seed.txt):
+
+```txt
+[Your_Experiment_Name]
+seed = 1234
+simulation_mode = MSE
+batch_count = 30
+key_parameters = num_enzymes=200, diff_coeff_film=10, total_time=1.0
+description = Brief description of your findings
+results_summary = Key numerical results (e.g., mean±std)
+date_recorded = 2024-09-21
+researcher = YourName
 ```
 
 ## 💡 Examples

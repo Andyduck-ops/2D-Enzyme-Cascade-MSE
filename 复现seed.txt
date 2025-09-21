@@ -35,3 +35,36 @@
 
 # [Add your experimental records below]
 # [在下方添加您的实验记录]
+
+# Example entries for reference:
+# 参考示例条目：
+
+# [MSE_Baseline_Study]
+# seed = 1234
+# simulation_mode = MSE
+# batch_count = 30
+# key_parameters = num_enzymes=200, diff_coeff_film=10, total_time=1.0
+# description = Baseline MSE performance study with standard parameters
+# results_summary = Expected: mean=150±15 products, enhancement=3.2x vs bulk
+# date_recorded = 2024-09-21
+# researcher = [To_Be_Filled]
+
+# [Bulk_Control_Study]
+# seed = 2000
+# simulation_mode = bulk
+# batch_count = 30
+# key_parameters = num_enzymes=200, total_time=1.0
+# description = Control study for bulk enzyme distribution
+# results_summary = Expected: mean=47±8 products, baseline for comparison
+# date_recorded = 2024-09-21
+# researcher = [To_Be_Filled]
+
+# [Enzyme_Concentration_Series]
+# seed = 3000
+# simulation_mode = MSE
+# batch_count = 50
+# key_parameters = num_enzymes=[50,100,200,400,800], diff_coeff_film=10
+# description = Systematic study of enzyme concentration effects
+# results_summary = Expected: linear scaling with enzyme count
+# date_recorded = 2024-09-21
+# researcher = [To_Be_Filled]

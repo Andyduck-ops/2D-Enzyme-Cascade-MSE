@@ -148,6 +148,7 @@ RNG 设置：[setup_rng()](modules/rng/setup_rng.m)
 - [核心功能](#-核心功能)
 - [安装指南](#-安装指南)
 - [快速入门](#-快速入门)
+- [快速复现](#-快速复现)
 - [示例代码](#-示例代码)
 - [算法原理](#-算法说明)
 - [配置说明](#-配置说明)
@@ -223,6 +224,78 @@ config.ui_controls.visualize_enabled = true;
 % 运行单次模拟
 result = simulate_once(config, 1234);
 fprintf('MSE模式产生了%d个产物\n', result.products_final);
+```
+
+## 🔄 快速复现
+
+### 使用复现种子
+
+使用记录在 [`复现seed.txt`](复现seed.txt) 中的种子快速复现已记录的实验结果：
+
+#### 方法1：单个实验复现
+```matlab
+% 复现特定的已记录实验
+config = default_config();
+
+% 示例：复现MSE增强研究
+config.simulation_params.simulation_mode = 'MSE';
+config.particle_params.num_enzymes = 200;
+config.particle_params.diff_coeff_film = 10;
+config.simulation_params.total_time = 1.0;
+
+% 使用已记录的种子进行精确复现
+documented_seed = 1234;  % 来自 复现seed.txt
+result = simulate_once(config, documented_seed);
+
+fprintf('复现结果: %d 个产物\n', result.products_final);
+```
+
+#### 方法2：批量复现使用种子范围
+```matlab
+% 使用连续种子复现批量实验
+config = default_config();
+config.simulation_params.simulation_mode = 'MSE';
+config.batch.batch_count = 30;
+
+% 定义来自已记录实验的种子范围
+base_seed = 1234;
+seed_range = base_seed + (0:29);  % 30个连续种子
+
+% 使用特定种子序列运行批量实验
+batch_results = run_batches(config, seed_range);
+
+% 与已记录结果比较
+mean_products = mean(batch_results.products_final);
+fprintf('批量复现: %.1f ± %.1f 个产物\n', ...
+    mean_products, std(batch_results.products_final));
+```
+
+#### 方法3：自动种子加载
+```matlab
+% 未来增强功能：直接从 复现seed.txt 加载种子
+% 此功能将在实验记录完成后添加
+
+function reproduce_experiment(experiment_name)
+    % 从 复现seed.txt 加载参数
+    % 自动应用配置
+    % 运行复现并验证结果
+end
+```
+
+### 记录新实验
+
+当你发现重要结果时，请在 [`复现seed.txt`](复现seed.txt) 中记录：
+
+```txt
+[你的实验名称]
+seed = 1234
+simulation_mode = MSE
+batch_count = 30
+key_parameters = num_enzymes=200, diff_coeff_film=10, total_time=1.0
+description = 你的发现的简要描述
+results_summary = 关键数值结果（如 mean±std）
+date_recorded = 2024-09-21
+researcher = 你的姓名
 ```
 
 ## 💡 示例代码
