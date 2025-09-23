@@ -201,11 +201,6 @@ else
     results.reaction_rate_hrp = [];
     results.product_curve = [];
 end
-    results.time_axis = (1:num_steps)' * dt;
-    results.reaction_rate_gox = [];
-    results.reaction_rate_hrp = [];
-    results.product_curve = [];
-end
 
 
 % Snapshots and layering
