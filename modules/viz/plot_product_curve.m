@@ -1,16 +1,16 @@
 function fig = plot_product_curve(results, config)
-% PLOT_PRODUCT_CURVE 绘制产物生成曲线
-% 用法:
+% PLOT_PRODUCT_CURVE Plot cumulative product counts over time.
+% Usage:
 %   fig = plot_product_curve(results, config)
-% 依赖:
-%   - 美学规范: [viz_style()](./viz_style.m:1)
-% 输入:
-%   - results: [simulate_once()](../sim_core/simulate_once.m:1) 的输出
-%   - config:  全局配置 [default_config()](../config/default_config.m:1)
+% Dependencies:
+%   - viz_style() (./viz_style.m:1)
+% Inputs:
+%   - results: output struct from simulate_once() (../sim_core/simulate_once.m:1)
+%   - config: configuration struct from default_config()/interactive_config()
 %
-% 回退策略:
-%   - 若 results.product_curve 为空, 尝试由 reaction_rate_hrp 积分得到
-%   - 若仍为空, 则直接绘制 products_final 的水平线作为占位
+% Post-processing:
+%   - If results.product_curve is empty, integrate reaction_rate_hrp when available.
+%   - Otherwise use products_final as a horizontal placeholder.
 
 time_axis = getfield_or(results, 'time_axis', []);
 product_curve = getfield_or(results, 'product_curve', []);
@@ -26,15 +26,15 @@ if isempty(product_curve)
     end
 end
 
-% 创建图
+% Create figure
 fig = figure('Name', 'Product Curve', 'Color', 'w', 'Position', [100, 500, 600, 400]);
 ax = axes(fig); hold(ax, 'on');
 
-% 应用美学
+% Apply visualization theme
 viz_theme = getfield_or(config, {'ui_controls','theme'}, 'light');
 viz_style(ax, config.font_settings, viz_theme, config.plot_colors); % [viz_style()](./viz_style.m:1)
 
-% 绘图
+% Plot curve
 if ~isempty(time_axis) && ~isempty(product_curve)
     plot(ax, time_axis, product_curve, 'LineWidth', 2, 'Color', config.plot_colors.Product);
     xlabel(ax, 'Time (s)');
@@ -42,7 +42,7 @@ if ~isempty(time_axis) && ~isempty(product_curve)
     title(ax, 'Product Generation Kinetics');
     grid(ax, 'on');
 else
-    % 占位: 无时间信息, 仅显示最终产物数
+    % Placeholder: no curve data, show final count only
     y = getfield_or(results, 'products_final', NaN);
     if ~isnan(y)
         bar(ax, 1, y, 'FaceColor', config.plot_colors.Product);

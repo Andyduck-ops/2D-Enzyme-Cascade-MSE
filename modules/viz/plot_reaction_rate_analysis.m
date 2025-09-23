@@ -1,29 +1,29 @@
 function fig = plot_reaction_rate_analysis(results, config)
-% PLOT_REACTION_RATE_ANALYSIS 绘制反应速率分析图
-% 用法:
+% PLOT_REACTION_RATE_ANALYSIS Plot reaction rate diagnostics.
+% Usage:
 %   fig = plot_reaction_rate_analysis(results, config)
-% 依赖:
-%   - 美学规范: [viz_style()](./viz_style.m:1)
-% 输入:
-%   - results: [simulate_once()](../sim_core/simulate_once.m:1) 的输出
-%   - config:  全局配置 [default_config()](../config/default_config.m:1)
+% Dependencies:
+%   - viz_style() (./viz_style.m:1)
+% Inputs:
+%   - results: output struct from simulate_once() (../sim_core/simulate_once.m:1)
+%   - config: configuration struct from default_config()/interactive_config()
 %
-% 行为:
-%   - 上半部分: 绘制GOx与HRP的平滑瞬时速率曲线
-%   - 下半部分: 对HRP速率尝试指数衰减拟合 y = A*exp(-k*t)，无法拟合时降级为原始曲线展示
+% Panels:
+%   - Upper panel: smoothed instantaneous GOx and HRP reaction rates.
+%   - Lower panel: exponential decay fit y = A*exp(-k*t) on HRP rate (fallback to raw data when fitting fails).
 
 time_axis = getfield_or(results, 'time_axis', []);
 rate_gox  = getfield_or(results, 'reaction_rate_gox', []); 
 rate_hrp  = getfield_or(results, 'reaction_rate_hrp', []);
 
 fig = figure('Name', 'Reaction Rate Analysis', 'Color', 'w', 'Position', [100, 50, 700, 800]); 
-% 使用 subplot 提升版本兼容性
-figure(fig); % 确保当前图为 fig
-ax1 = subplot(2, 1, 1); % 上半区
+% Arrange subplots for the analysis views
+figure(fig); % Ensure the target figure is active
+ax1 = subplot(2, 1, 1); % Upper panel
 
 viz_theme = getfield_or(config, {'ui_controls','theme'}, 'light'); 
 
-% ---------------- 上: 平滑瞬时速率 ----------------
+% ---------------- Upper: instantaneous rates ----------------
 % ax1 = nexttile(tlo, 1);
 viz_style(ax1, config.font_settings, viz_theme, config.plot_colors); % [viz_style()](./viz_style.m:1)
 hold(ax1, 'on');
@@ -43,9 +43,9 @@ else
 end
 hold(ax1, 'off'); 
 
-% ---------------- 下: HRP指数拟合 ----------------
+% ---------------- Lower: HRP exponential fit ----------------
 figure(fig);
-ax2 = subplot(2, 1, 2);
+ax2 = subplot(2, 1, 2); % Lower panel
 
 viz_style(ax2, config.font_settings, viz_theme, config.plot_colors);
 
@@ -56,13 +56,13 @@ if enable_fit && ~isempty(time_axis) && ~isempty(rate_hrp)
     scatter(ax2, time_axis, rate_hrp_s, 16, 'MarkerFaceColor', config.plot_colors.HRP, ...
         'MarkerEdgeColor', 'none', 'MarkerFaceAlpha', 0.6, 'DisplayName', 'Smoothed HRP Rate'); 
 
-    % 拟合 y = A*exp(-k*t)
+    % Fit y = A*exp(-k*t)
     did_fit = false; Afit = NaN; kfit = NaN;
     try
-        % 尝试使用 Curve Fitting Toolbox
+        % Prefer Curve Fitting Toolbox when available
         fit_model = fittype('A*exp(-k*x)', 'independent', 'x', 'dependent', 'y');
         x = time_axis(:); y = rate_hrp_s(:);
-        % 过滤非正数据以避免log问题:
+        % Guard against log transform issues
         y(y < 0) = 0;
         startA = max(y);
         if ~isfinite(startA) || startA <= 0, startA = 1; end
@@ -74,10 +74,10 @@ if enable_fit && ~isempty(time_axis) && ~isempty(rate_hrp)
         did_fit = true;
     catch
 
-        % 回退到对数线性近似拟合
+        % Fallback: use log-linear least squares
         try
             x = time_axis(:); y = rate_hrp_s(:);
-            % 仅使用正的y点
+            % Keep only positive rate values
             mask = y > max(1e-9, 0); 
             x = x(mask); y = y(mask);
             if numel(x) >= 3
@@ -89,12 +89,12 @@ if enable_fit && ~isempty(time_axis) && ~isempty(rate_hrp)
                 did_fit = true;
             end
         catch
-            % 继续降级
+            % Fitting failed
         end
     end
 
     if ~did_fit
-        % 无法拟合则仅绘制平滑曲线
+        % Fit unavailable; plot HRP rate only
         plot(ax2, time_axis, rate_hrp_s, 'Color', config.plot_colors.HRP, 'LineWidth', 1.5, 'DisplayName', 'HRP Rate'); 
     end
 
@@ -110,14 +110,14 @@ end
 
 end
 
-% ---------------- 辅助: 平滑函数 ----------------
+% ---------------- Helper: smoothing ----------------
 function y = local_smooth(x)
-% 优先使用 smooth, 不可用则用 movmean 51点窗口
+% Use smooth when available; otherwise fall back to movmean with a 51-point window
 x = x(:);
 try
     y = smooth(x, 51);
 catch
-    w = min(51, max(3, 2*floor(numel(x)/20)+1)); % 自适应奇数窗口
+    w = min(51, max(3, 2*floor(numel(x)/20)+1)); % Choose window size relative to data length
     y = movmean(x, w);
 end
 end

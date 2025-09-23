@@ -3,9 +3,9 @@ function main_2d_pipeline()
 % Workflow:
 %   1) Load default configuration [default_config()](modules/config/default_config.m:1)
 %   2) Interactive input override [interactive_config()](modules/config/interactive_config.m:1)
-%   3) Generate batch seeds [get_batch_seeds()](modules/seed_utils/get_batch_seeds.m:1) → output seeds.csv
+%   3) Generate batch seeds [get_batch_seeds()](modules/seed_utils/get_batch_seeds.m:1) -> output seeds.csv
 %   4) Batch execution [run_batches()](modules/batch/run_batches.m:1)
-%   5) Write report [write_report_csv()](modules/io/write_report_csv.m:1) → batch_results.csv
+%   5) Write report [write_report_csv()](modules/io/write_report_csv.m:1) -> batch_results.csv
 %
 % Notes:
 %   - Current version defaults to serial execution, visualization controlled by interactive switches; future extensions may include parfor and GPU optimization

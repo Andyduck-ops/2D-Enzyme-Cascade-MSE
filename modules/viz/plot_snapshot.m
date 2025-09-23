@@ -1,16 +1,16 @@
 function figs = plot_snapshot(results, config)
-% PLOT_SNAPSHOT 绘制选择性的2D快照帧
-% 用法:
+% PLOT_SNAPSHOT Plot selected 2D simulation snapshots.
+% Usage:
 %   figs = plot_snapshot(results, config)
-% 输入:
-%   - results: [simulate_once()](../sim_core/simulate_once.m:1) 的输出, 需包含 results.snapshots {K x 3}
-%              snapshots{i,1}=GOx pos, {i,2}=HRP pos, {i,3}=Product pos
-%   - config:  全局配置 [default_config()](../config/default_config.m:1)
-% 行为:
-%   - 每个快照建立一个新图: 绘制 GOx/HRP/Product 散点，按 [plot_colors](../config/default_config.m:1) 着色
-%   - surface 模式下，叠加中心颗粒与薄膜边界圆
-% 返回:
-%   - figs: 长度为有效快照帧数的图句柄数组
+% Inputs:
+%   - results: simulate_once() output with results.snapshots {K x 3} (../sim_core/simulate_once.m:1)
+%             snapshots{i,1}=GOx, {i,2}=HRP, {i,3}=Products
+%   - config: configuration struct from default_config()/interactive_config()
+% Behavior:
+%   - Generates one figure per snapshot with GOx/HRP/Product scatter points using plot_colors.
+%   - In surface mode, draws inorganic particle and film boundaries.
+% Output:
+%   - figs: array of figure handles for successfully rendered snapshots.
 
 snapshots = [];
 if isfield(results, 'snapshots')
@@ -18,28 +18,28 @@ if isfield(results, 'snapshots')
 end
 if isempty(snapshots)
     figs = gobjects(0);
-    warning('plot_snapshot: 无可用快照数据。');
+    warning('plot_snapshot: no snapshot data available.');
     return;
 end
 
-% 读取必要配置
+% Extract key settings
 L = getfield_or(config, {'simulation_params','box_size'}, 500);
 mode = getfield_or(config, {'simulation_params','simulation_mode'}, 'surface');
 font_settings = config.font_settings;
 plot_colors   = config.plot_colors;
 theme         = getfield_or(config, {'ui_controls','theme'}, 'light');
 
-% 快照时间标签(若存在)
+% Determine snapshot labels (fall back to index labels)
 snapshot_times = getfield_or(config, {'plotting_controls','snapshot_times'}, []);
 K = size(snapshots, 1);
 if numel(snapshot_times) < K
-    % 若时间数量与快照帧不一致, 进行长度对齐或忽略
+    % Ensure labels cover all snapshots
     t_labels = arrayfun(@(i) sprintf('t #%d', i), 1:K, 'UniformOutput', false);
 else
     t_labels = arrayfun(@(x) sprintf('t = %.2f s', x), snapshot_times(1:K), 'UniformOutput', false);
 end
 
-% 圆形边界(只在surface模式绘制)
+% Draw particle and film boundaries when in surface mode
 particle_center = [L/2, L/2];
 pr  = getfield_or(config, {'geometry_params','particle_radius'}, 20);
 ft  = getfield_or(config, {'geometry_params','film_thickness'}, 5);
@@ -57,7 +57,7 @@ for i = 1:K
     ax = axes(figs(i)); hold(ax, 'on');
     viz_style(ax, font_settings, theme, plot_colors); % [viz_style()](./viz_style.m:1)
 
-    % 依序绘制 GOx / HRP / Product
+    % Plot GOx / HRP / Product scatter layers
     labels = {'GOx','HRP','Product'};
     colors = {plot_colors.GOx, plot_colors.HRP, plot_colors.Product};
     for j = 1:3
@@ -69,7 +69,7 @@ for i = 1:K
         end
     end
 
-    % surface 模式几何
+    % Surface mode overlays
     if strcmpi(mode, 'surface')
         plot(ax, x_particle, y_particle, '--', 'Color', plot_colors.Particle, 'LineWidth', 2, 'DisplayName', 'Inorganic Particle');
         plot(ax, x_film, y_film, ':', 'Color', [0 0 0], 'LineWidth', 1, 'DisplayName', 'Film Boundary');
@@ -86,7 +86,7 @@ end
 
 end
 
-% 读取字段或默认值
+% Helper: safe nested field lookup
 function v = getfield_or(s, key, default)
 v = default;
 try

@@ -1,14 +1,14 @@
 function fig = plot_event_map(results, config)
-% PLOT_EVENT_MAP 绘制反应事件空间分布图
-% 用法:
+% PLOT_EVENT_MAP Plot the spatial distribution of reaction events.
+% Usage:
 %   fig = plot_event_map(results, config)
-% 依赖:
-%   - 美学规范: [viz_style()](./viz_style.m:1)
-% 输入:
-%   - results: [simulate_once()](../sim_core/simulate_once.m:1) 的输出
-%              优先使用: results.reaction_coords_gox, results.reaction_coords_hrp
-%              回退: 若二者为空, 尝试使用最后一帧 snapshots 的 Product 数据
-%   - config:  全局配置 [default_config()](../config/default_config.m:1)
+% Dependencies:
+%   - viz_style() (./viz_style.m:1)
+% Inputs:
+%   - results: output struct from simulate_once() (../sim_core/simulate_once.m:1)
+%               consumes results.reaction_coords_gox and results.reaction_coords_hrp
+%               fallback: if empty, use the final snapshot product positions
+%   - config: global configuration struct (default_config()/interactive_config())
 
 mode = getfield_or(config, {'simulation_params','simulation_mode'}, 'MSE');
 L    = getfield_or(config, {'simulation_params','box_size'}, 500);
@@ -16,17 +16,18 @@ font_settings = config.font_settings;
 plot_colors   = config.plot_colors;
 theme         = getfield_or(config, {'ui_controls','theme'}, 'light');
 
-% 事件坐标
+% Reaction event coordinates
 rc_gox = getfield_fallback(results, 'reaction_coords_gox', []);
 rc_hrp = getfield_fallback(results, 'reaction_coords_hrp', []);
 
-% 回退: 使用最后一帧快照的 Product 分布
+% Fallback: try the last snapshot for product positions when events are empty
 if isempty(rc_gox) && isempty(rc_hrp)
     if isfield(results, 'snapshots') && ~isempty(results.snapshots)
         last = results.snapshots(end, :);
         prod_pos = last{1,3};
         if ~isempty(prod_pos)
-            rc_hrp = prod_pos; % 用产品位置作为事件近似
+            % Treat product coordinates as surrogate events
+            rc_hrp = prod_pos;
         end
     end
 end
@@ -35,7 +36,7 @@ fig = figure('Name', 'Reaction Event Map', 'Color', 'w', 'Position', [1400, 100,
 ax = axes(fig); hold(ax, 'on');
 viz_style(ax, font_settings, theme, plot_colors); % [viz_style()](./viz_style.m:1)
 
-% MSE 模式叠加薄膜边界（兼容 surface）
+% Draw enzyme film boundary for MSE/surface modes
 is_mse = any(strcmpi(mode, {'MSE','surface'}));
 if is_mse
      pr  = getfield_or(config, {'geometry_params','particle_radius'}, 20);
@@ -48,7 +49,7 @@ if is_mse
      plot(ax, xf, yf, '--', 'Color', plot_colors.Particle, 'LineWidth', 2, 'DisplayName', 'Enzyme Film');
 end
 
-% 绘制事件
+% Plot events
 has_any = false;
 if ~isempty(rc_gox)
     scatter(ax, rc_gox(:,1), rc_gox(:,2), 24, plot_colors.GOx, 'filled', 'DisplayName', 'GOx Reactions');
@@ -72,7 +73,7 @@ hold(ax, 'off');
 
 end
 
-% ---------------- 工具 ----------------
+% ---------------- Utilities ----------------
 function v = getfield_or(s, path, default)
 v = default;
 try

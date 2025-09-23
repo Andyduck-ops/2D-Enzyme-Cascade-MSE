@@ -1,20 +1,22 @@
 function figs = plot_tracers(results, config)
-% PLOT_TRACERS 绘制示踪粒子轨迹
-% 用法:
+% PLOT_TRACERS Visualize tracer particle trajectories.
+% Usage:
 %   figs = plot_tracers(results, config)
-% 依赖:
-%   - 美学规范: [viz_style()](./viz_style.m:1)
-% 输入:
-%   - results: [simulate_once()](../sim_core/simulate_once.m:1) 的输出
-%              需包含 results.tracer_paths {N x 1}，每个单元为 [T_i x 2] 轨迹
-%   - config:  全局配置 [default_config()](../config/default_config.m:1)
+% Dependencies:
+%   - viz_style() (./viz_style.m:1)
+% Inputs:
+%   - results: simulate_once() output (../sim_core/simulate_once.m:1)
+%              expects results.tracer_paths {N x 1} with [T_i x 2] positions
+%   - config: configuration struct from default_config()/interactive_config()
+% Output:
+%   - figs: array of figure handles (empty when no tracers)
 %
-% 行为:
-%   - 将所有示踪轨迹绘制在同一张图上
-%   - MSE 模式(兼容 surface)叠加中心颗粒轮廓
-%   - 若无轨迹数据则友好提示并返回空句柄数组
+% Behavior:
+%   - Plots each trajectory in shared axes with unique color.
+%   - MSE/surface modes overlay the inorganic particle boundary.
+%   - Missing paths trigger a friendly warning.
 
-% 读取必要配置
+% Extract key configuration values
 L = getfield_or(config, {'simulation_params','box_size'}, 500);
 mode = getfield_or(config, {'simulation_params','simulation_mode'}, 'MSE');
 font_settings = config.font_settings;
@@ -28,11 +30,11 @@ end
 
 if isempty(paths)
     figs = gobjects(0);
-    warning('plot_tracers: 无示踪轨迹数据可绘制。');
+    warning('plot_tracers: no tracer path data available.');
     return;
 end
 
-% 颜色表: 优先使用配置中的 TracerColormap
+% Build colormap (fall back to default lines map)
 try 
     cmap_name = plot_colors.TracerColormap;
 catch 
@@ -42,16 +44,15 @@ try
     cmap = feval(cmap_name, numel(paths));
 catch
     cmap = lines(numel(paths));
-
 end
 
-% 创建图
+% Create figure
 figs = gobjects(1,1);
 figs(1) = figure('Name', 'Particle Tracers', 'Color', 'w', 'Position', [1400, 650, 700, 500]);
 ax = axes(figs(1)); hold(ax, 'on');
 viz_style(ax, font_settings, theme, plot_colors); % [viz_style()](./viz_style.m:1)
 
-% 绘制轨迹
+% Plot trajectories
 for i = 1:numel(paths)
     P = paths{i};
     if isempty(P) || size(P,2) ~= 2, continue; end 
@@ -66,7 +67,7 @@ for i = 1:numel(paths)
     end
 end
 
-% MSE 模式叠加中心颗粒（兼容 surface）
+% MSE mode overlays the inorganic particle boundary
 is_mse = any(strcmpi(mode, {'MSE','surface'}));
 if is_mse
     pr = getfield_or(config, {'geometry_params','particle_radius'}, 20);
@@ -87,7 +88,7 @@ hold(ax, 'off');
 
 end
 
-% 读取字段或默认值
+% Helper: nested field lookup
 function v = getfield_or(s, path, default)
 v = default;
 try
