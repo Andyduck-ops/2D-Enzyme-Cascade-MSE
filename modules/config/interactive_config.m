@@ -185,3 +185,37 @@ fprintf('Output directory: %s\n', config.io.outdir);
 fprintf('----------------------------------------\n');
 
 end
+
+% ----------------- Utility Functions ---------------
+function t = tf(b)
+% Convert boolean to ON/OFF string
+if b, t = 'ON'; else, t = 'OFF'; end
+end
+
+function result = is_yes(str)
+% Check if string represents yes/true
+str = lower(strtrim(str));
+result = any(strcmp(str, {'y','yes','true','1','on'}));
+end
+
+function nums = parse_list_to_int(str)
+% Parse comma-separated string to integer array
+nums = [];
+try
+    parts = strsplit(str, ',');
+    nums = cellfun(@(x) round(str2double(strtrim(x))), parts);
+    nums = nums(isfinite(nums)); % Remove NaN values
+catch
+    nums = [];
+end
+end
+
+function str = join_ints(nums)
+% Join integer array to comma-separated string
+if isempty(nums)
+    str = '';
+else
+    str = sprintf('%d,', nums);
+    str = str(1:end-1); % Remove trailing comma
+end
+end

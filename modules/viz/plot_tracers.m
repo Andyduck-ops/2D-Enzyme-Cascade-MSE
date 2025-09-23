@@ -71,7 +71,7 @@ is_mse = any(strcmpi(mode, {'MSE','surface'}));
 if is_mse
     pr = getfield_or(config, {'geometry_params','particle_radius'}, 20);
     th = linspace(0, 2*pi, 200);
-    pc = [L/2, L/2]; n
+    pc = [L/2, L/2];
     xp = pc(1) + pr * cos(th);
     yp = pc(2) + pr * sin(th);
     plot(ax, xp, yp, '--', 'Color', 'k', 'LineWidth', 2, 'DisplayName', 'Inorganic Particle');

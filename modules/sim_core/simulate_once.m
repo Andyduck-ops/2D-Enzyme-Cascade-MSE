@@ -196,8 +196,11 @@ if accum.enable_rate
     results.reaction_rate_hrp = accum.reaction_rate_hrp;
     results.product_curve = cumsum(accum.reaction_rate_hrp) * dt;
 else
--    results.time_axis = (1:num_steps)' * dt;
--    results.reaction_rate_gox = [];    results.reaction_rate_hrp = [];    results.product_curve = []; end
+    results.time_axis = (1:num_steps)' * dt;
+    results.reaction_rate_gox = [];
+    results.reaction_rate_hrp = [];
+    results.product_curve = [];
+end
     results.time_axis = (1:num_steps)' * dt;
     results.reaction_rate_gox = [];
     results.reaction_rate_hrp = [];
