@@ -63,7 +63,7 @@ Explanation:
 
 ## 3. Stochastic Particle Simulation (Monte Carlo BD + Event-Driven)
 
-This model uses Brownian Dynamics for discrete diffusion, combined with fixed-step stochastic reaction determination ($\tau$-leaping approximation).
+This model uses Brownian Dynamics for discrete diffusion, combined with fixed-step stochastic reaction determination ($\tau$ -leaping approximation).
 
 ### 3.1 Diffusion Discretization (Brownian Step)
 
@@ -190,5 +190,5 @@ graph TD;
 ## 7. Terminology and Reference
 
 - Brownian Dynamics: Discrete Wiener process simulation of diffusion through $\Delta r = \sqrt{2D \Delta t} \eta$.
-- Gillespie/$\tau$-leaping: Fixed-step event probability approximation using $p = 1 - \exp(-k \Delta t)$.
+- Gillespie/$\tau$ -leaping: Fixed-step event probability approximation using $p = 1 - \exp(-k \Delta t)$.
 - Smoluchowski Encounter Theory: Encounter rates for diffusion-controlled reactions, expressed differently in 2D/3D.

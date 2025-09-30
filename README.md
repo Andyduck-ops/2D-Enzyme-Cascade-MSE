@@ -26,7 +26,7 @@
 
 ## 🎯 Project Overview
 
-A comprehensive, modular MATLAB framework for comparing **Mineral-Surface Enzyme (MSE) localization** versus **bulk distribution** in two-step enzyme cascade reactions. This framework quantifies the **spatial proximity advantages** of co-localized enzymes through reduced intermediate diffusion distances, while accounting for the dual mechanism at high enzyme densities: **bulk systems' superior first-step reaction flux** and **MSE crowding inhibition**. The computational platform implements advanced stochastic simulations including heterogeneous diffusion, $\tau$-leaping reactions, and fully reproducible scientific computations to systematically evaluate **concentration-dependent kinetic trade-offs** in enzyme spatial organization.
+A comprehensive, modular MATLAB framework for comparing **Mineral-Surface Enzyme (MSE) localization** versus **bulk distribution** in two-step enzyme cascade reactions. This framework quantifies the **spatial proximity advantages** of co-localized enzymes through reduced intermediate diffusion distances, while accounting for the dual mechanism at high enzyme densities: **bulk systems' superior first-step reaction flux** and **MSE crowding inhibition**. The computational platform implements advanced stochastic simulations including heterogeneous diffusion, $\tau$ -leaping reactions, and fully reproducible scientific computations to systematically evaluate **concentration-dependent kinetic trade-offs** in enzyme spatial organization.
 
 ### Key Scientific Context
 
@@ -67,7 +67,7 @@ MSE localization provides kinetic advantages by **reducing intermediate diffusio
 
 ### Reaction System
 - **Two-step cascade**: S -(GOx)-> I -(HRP)-> P with enzymes split GOx/HRP (default 50/50 via `gox_hrp_split`)
-- **$\tau$-leaping kinetics**: Reaction probability follows $P = 1 - \exp(-k_{\text{cat}} \Delta t)$, where $k_{\text{cat}} = 100 \text{ s}^{-1}$ for both enzymes
+- **$\tau$ -leaping kinetics**: Reaction probability follows $P = 1 - \exp(-k_{\text{cat}} \Delta t)$, where $k_{\text{cat}} = 100 \text{ s}^{-1}$ for both enzymes
 - **Crowding effects**: Local enzyme density modulates effective catalytic rates according to $\text{inhibition factor} = 1 - I_{\text{max}} \times \min(n_{\text{local}}/n_{\text{sat}}, 1)$, with $I_{\text{max}} = 0.8$ and $n_{\text{sat}} = 5$
 
 ### Key Comparisons
@@ -85,7 +85,7 @@ The framework systematically compares two fundamental configurations representin
   - **MSE Mode**: Enzymes localized to a ring film around a central mineral particle, modeling **mineral-surface spatial organization** and **protocell emergence** pathways
   - **Bulk Mode**: Enzymes uniformly distributed throughout the domain, representing dilute **prebiotic chemistry** environments
 - **Interfacial Driving Forces**: Heterogeneous diffusion coefficients capturing **early Earth conditions** with different molecular mobility in film vs bulk regions
-- **Prebiotic Reaction Kinetics**: $\tau$-leaping methodology with probabilistic reaction events modeling stochastic molecular encounters under primitive conditions
+- **Prebiotic Reaction Kinetics**: $\tau$ -leaping methodology with probabilistic reaction events modeling stochastic molecular encounters under primitive conditions
 - **Molecular Crowding Physics**: Local density effects on catalytic efficiency, simulating **compartmentalization** effects critical for **proto-metabolic flux** generation
 
 ### 🔬 Scientific Rigor
@@ -129,7 +129,7 @@ D(x) is piecewise:
 - Box reflection (mirror)
 - Central particle reflection to a target radius > r_p for stability
 
-### Reactions ($\tau$-leaping per $\Delta t$)
+### Reactions ($\tau$ -leaping per $\Delta t$)
 
 Two independent channels per step:
 

@@ -32,8 +32,8 @@ Language / 语言: [English](2d_model_theory.en.md) | [中文](2d_model_theory.m
   - 底物 S 随机扩散；GOx、HRP 固定位于膜区（MSE 模式）或分布于体相（bulk 模式）。
   - 级联反应：S -(GOx)-> I -(HRP)-> P。
   - 关键参数（默认值见配置）：
-    - 扩散系数： $D_{\text{bulk}} = 1000 \text{ nm}^2/\text{s}$， $D_{\text{film}} = 10 \text{ nm}^2/\text{s}$。
-    - 速率常数： $k_{\text{cat,GOx}} = 100 \text{ s}^{-1}$， $k_{\text{cat,HRP}} = 100 \text{ s}^{-1}$。
+    - 扩散系数： $D_{\text{bulk}} = 1000 \text{ nm}^2/\text{s}$ ， $D_{\text{film}} = 10 \text{ nm}^2/\text{s}$ 。
+    - 速率常数： $k_{\text{cat,GOx}} = 100 \text{ s}^{-1}$ ， $k_{\text{cat,HRP}} = 100 \text{ s}^{-1}$ 。
     - 拥挤抑制：范围 R_inhibit = 10 nm，饱和阈值 n_sat = 5，最大抑制 I_max = 0.8。
 - 配置入口：
   - [2D/modules/config/default_config.m](../modules/config/default_config.m)
@@ -57,7 +57,7 @@ $$
 
 说明：
 
-- $\nabla^2 = \frac{\partial^2}{\partial x^2} + \frac{\partial^2}{\partial y^2}$。
+- $\nabla^2 = \frac{\partial^2}{\partial x^2} + \frac{\partial^2}{\partial y^2}$ 。
 - 在 MSE 模式，[GOx] 与 [HRP] 等效集中在膜环区域（ $r \in [r_p, r_p + f_t]$ ），呈强非均匀源项。
 - 非线性、奇异边界导致解析解困难，因此采用随机粒子/蒙特卡洛方法进行数值近似。
 
@@ -71,7 +71,7 @@ $$
 
 #### 理论
 
-**布朗步进公式**： $\Delta r = \sqrt{2 D \Delta t} \cdot \eta$，其中 $\eta \sim N(0, I_2)$
+**布朗步进公式**： $\Delta r = \sqrt{2 D \Delta t} \cdot \eta$ ，其中 $\eta \sim N(0, I_2)$
 
 代码对应：高斯位移叠加到粒子位置（bulk/film 选择 D）。
 
@@ -87,9 +87,9 @@ $$
 
 #### 单步反应概率
 
-**反应概率公式**： $p = 1 - \exp(-k_{\text{eff}} \cdot \Delta t)$，其中 $k_{\text{eff}} = k_{\text{cat}} \cdot (1 - \text{inhibition})$
+**反应概率公式**： $p = 1 - \exp(-k_{\text{eff}} \cdot \Delta t)$ ，其中 $k_{\text{eff}} = k_{\text{cat}} \cdot (1 - \text{inhibition})$
 
-判定：采样 $u \sim U(0,1)$，若 $u < p$，则发生反应事件（S $\rightarrow$ I 或 I $\rightarrow$ P）。事件坐标：在相遇对（酶-底物）局部附近采样并记录，用于事件热力图。
+判定：采样 $u \sim U(0,1)$ ，若 $u < p$ ，则发生反应事件（S $\rightarrow$ I 或 I $\rightarrow$ P）。事件坐标：在相遇对（酶-底物）局部附近采样并记录，用于事件热力图。
 
 文件： [2D/modules/sim_core/reaction_step.m](../modules/sim_core/reaction_step.m)
 
@@ -197,5 +197,5 @@ graph TD;
 ## 7. 术语与参考
 
 - Brownian Dynamics（布朗动力学）：通过 $\Delta r = \sqrt{2D \Delta t} \eta$ 离散维纳过程模拟扩散。
-- Gillespie/$\tau$-leaping：固定步长下用 $p = 1 - \exp(-k \Delta t)$ 近似事件发生概率。
+- Gillespie/$\tau$ -leaping：固定步长下用 $p = 1 - \exp(-k \Delta t)$ 近似事件发生概率。
 - Smoluchowski 相遇理论：扩散控制反应的相遇率，在 2D/3D 下表达不同。
