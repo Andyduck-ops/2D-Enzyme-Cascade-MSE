@@ -516,6 +516,24 @@ reaction_rates_HRP = result.reaction_rates_HRP;
 - **特性**: 具有扩散模式的示踪可视化
 - **文件**: `modules/viz/plot_tracers.m`
 
+#### 4. 快照动画生成（新功能 ✨）
+- **目的**: 从仿真快照生成 MP4 视频
+- **特性**:
+  - 零额外仿真成本（<5% 渲染开销）
+  - MPEG-4/H.264 编码，默认 10fps，质量 95
+  - 1920x1080 高清输出，带时间标签和进度指示
+  - 内存高效的逐帧渲染
+- **文件**: `modules/viz/animate_snapshots.m`
+- **用法**:
+  ```matlab
+  config = default_config();
+  config.ui_controls.visualize_enabled = true;
+  config.ui_controls.enable_animation = true;  % 启用动画
+  results = simulate_once(config, 12345);
+  % 动画自动保存到 out/animation_seed_12345.mp4
+  ```
+- **注意**: 仅适用于单次运行可视化（不适用于批次运行）
+
 ### 自定义可视化示例
 ```matlab
 % 创建自定义分析图

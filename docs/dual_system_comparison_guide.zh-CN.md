@@ -29,7 +29,6 @@ main_2d_pipeline
 在配置过程中，选择:
 - **问题 5**: 输入 `y` 启用 "Enable visualization" (生成对比图)
 - **问题 5b**: 输入 `y` 选择 "Run dual-system comparison (bulk vs MSE)"
-- **问题 5c**: 输入 `y` 启用 "Enable snapshot animation generation" (生成MP4动画视频，可选)
 
 这将会:
 1. 提示交互式配置
@@ -47,10 +46,6 @@ main_2d_pipeline
     - 增强因子演化（含置信区间）
     - 蒙特卡洛收敛分析（Bulk 和 MSE）
     - 批次时间序列热力图与异常检测（Bulk 和 MSE）
-
-- **动画** (若启用):
-  - `animation_seed_XXXXX.mp4` - 基于快照的粒子分布演化MP4视频
-  - 特性: MPEG-4/H.264编码, 默认10fps, 质量95, 零额外仿真成本
 
 - **数据**:
   - `batch_results_bulk.csv` - Bulk 系统批次统计
@@ -237,7 +232,6 @@ fig = plot_batch_timeseries_heatmap(mse_data, config, 'MSE');
 | `modules/viz/plot_batch_distribution.m` | 分布对比（箱线图 + 直方图）|
 | `modules/viz/plot_enhancement_factor.m` | 增强因子演化可视化 |
 | `modules/viz/plot_batch_timeseries_heatmap.m` | 批次时间序列热力图与异常检测 |
-| `modules/viz/animate_snapshots.m` | 基于快照的MP4动画生成（零仿真成本）|
 | `modules/batch/run_dual_system_comparison.m` | 两种系统的批量执行 |
 | `main_2d_pipeline.m` | 集成双体系的主交互式工作流 |
 | `modules/config/interactive_config.m` | 双体系模式的交互式配置 |

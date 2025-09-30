@@ -29,7 +29,6 @@ main_2d_pipeline
 During configuration, select:
 - **Question 5**: `y` for "Enable visualization" (to generate comparison plot)
 - **Question 5b**: `y` for "Run dual-system comparison (bulk vs MSE)"
-- **Question 5c**: `y` for "Enable snapshot animation generation" (to generate MP4 animation video, optional)
 
 This will:
 1. Prompt for interactive configuration
@@ -47,10 +46,6 @@ This will:
     - Enhancement factor evolution with confidence intervals
     - Monte Carlo convergence analysis (Bulk & MSE)
     - Batch timeseries heatmaps with anomaly detection (Bulk & MSE)
-
-- **Animation** (if enabled):
-  - `animation_seed_XXXXX.mp4` - Snapshot-based particle distribution evolution MP4 video
-  - Features: MPEG-4/H.264 encoding, default 10fps, quality 95, zero additional simulation cost
 
 - **Data**:
   - `batch_results_bulk.csv` - Bulk system batch statistics
@@ -237,7 +232,6 @@ fig = plot_batch_timeseries_heatmap(mse_data, config, 'MSE');
 | `modules/viz/plot_batch_distribution.m` | Distribution comparison (box + histogram) |
 | `modules/viz/plot_enhancement_factor.m` | Enhancement factor evolution visualization |
 | `modules/viz/plot_batch_timeseries_heatmap.m` | Batch timeseries heatmap with anomaly detection |
-| `modules/viz/animate_snapshots.m` | Snapshot-based MP4 animation generation (zero simulation cost) |
 | `modules/batch/run_dual_system_comparison.m` | Batch execution for both systems |
 | `main_2d_pipeline.m` | Main interactive workflow with dual-system integration |
 | `modules/config/interactive_config.m` | Interactive configuration for dual-system mode |
