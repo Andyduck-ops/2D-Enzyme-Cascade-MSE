@@ -84,6 +84,16 @@ if ~isempty(val)
     config.ui_controls.dual_system_comparison = is_yes(val);
 end
 
+% Animation generation toggle
+if ~isfield(config.ui_controls, 'enable_animation')
+    config.ui_controls.enable_animation = false;
+end
+def_anim = config.ui_controls.enable_animation;
+val = input(sprintf('5c) Enable snapshot animation generation [y/n] [default=%s]: ', tf(def_anim)), 's');
+if ~isempty(val)
+    config.ui_controls.enable_animation = is_yes(val);
+end
+
 % -----------------------------
 % Batch and RNG strategy
 % -----------------------------

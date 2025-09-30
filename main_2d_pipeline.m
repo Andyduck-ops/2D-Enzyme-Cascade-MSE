@@ -166,6 +166,19 @@ if getfield_or(config, {'ui_controls','visualize_enabled'}, false)
             fprintf('Failed to save images: %s\n', ME.message);
         end
     end
+
+    % Generate snapshot animation (if enabled)
+    if getfield_or(config, {'ui_controls','enable_animation'}, false)
+        try
+            fprintf('\n--- Generating Snapshot Animation ---\n');
+            video_path = animate_snapshots(results_viz, config); % [animate_snapshots()](modules/viz/animate_snapshots.m:1)
+            if ~isempty(video_path)
+                fprintf('Animation saved: %s\n', video_path);
+            end
+        catch ME
+            fprintf('animate_snapshots warning: %s\n', ME.message);
+        end
+    end
 end
 
 % --- Dual-System Comparison Plot (Independent of visualize_enabled) ---
