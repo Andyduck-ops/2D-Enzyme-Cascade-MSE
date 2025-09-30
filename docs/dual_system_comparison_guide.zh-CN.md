@@ -8,6 +8,11 @@
 
 - ✅ **双体系批量仿真**: 使用相同种子运行 bulk 和 MSE 配置
 - ✅ **统计可视化**: 显示 mean±S.D. 曲线和阴影误差带
+- ✅ **高级统计图表**:
+  - 蒙特卡洛收敛分析
+  - 批次结果分布对比（箱线图 + 直方图）
+  - 增强因子随时间演化
+  - 批次时间序列热力图与异常检测
 - ✅ **可配置参数**: 轻松控制酶数量和批次数量
 - ✅ **专业样式**: 与现有 `viz_style()` 主题保持一致
 - ✅ **导出功能**: 保存图表(PNG, PDF, FIG)和 CSV 报告
@@ -35,13 +40,19 @@ main_2d_pipeline
 ### 预期输出
 
 - **图表**:
-  - `dual_comparison_enzymes_400.png` - 高分辨率对比图
-  - `dual_comparison_enzymes_400.pdf` - 出版级矢量图形
-  - `dual_comparison_enzymes_400.fig` - 可编辑的 MATLAB 图形
+  - `dual_comparison_enzymes_400.{png,pdf,fig}` - Mean±S.D. 对比图
+  - `stats_enzymes_400_*.{png,pdf,fig}` - 高级统计图表：
+    - 批次分布对比（箱线图 + 直方图）
+    - 增强因子演化（含置信区间）
+    - 蒙特卡洛收敛分析（Bulk 和 MSE）
+    - 批次时间序列热力图与异常检测（Bulk 和 MSE）
 
 - **数据**:
-  - `bulk_batch_results.csv` - Bulk 系统统计数据
-  - `mse_batch_results.csv` - MSE 系统统计数据
+  - `batch_results_bulk.csv` - Bulk 系统批次统计
+  - `batch_results_mse.csv` - MSE 系统批次统计
+  - `batch_results.csv` - 默认模式批次结果（兼容性）
+  - `mc_summary_bulk.csv` - Bulk 蒙特卡洛置信区间
+  - `mc_summary_mse.csv` - MSE 蒙特卡洛置信区间
   - `seeds.csv` - 用于可重现性的种子记录
 
 ## 配置说明
@@ -126,6 +137,90 @@ bulk_at_50s = mean(bulk_data.product_curves(time_idx, :));
 mse_at_50s = mean(mse_data.product_curves(time_idx, :));
 ```
 
+## 高级统计可视化
+
+### 1. 蒙特卡洛收敛分析
+
+**目的**: 评估统计估计的稳定性和可靠性
+
+**特性**:
+- 累积均值收敛曲线
+- 累积标准差演化
+- 95% 置信区间宽度缩减
+
+**解读**:
+- 显示需要多少批次才能得到稳定结果
+- 识别额外批次带来边际收益递减的临界点
+- 最终参考线指示收敛值
+
+**用法**:
+```matlab
+fig = plot_mc_convergence(batch_table, config, 'Bulk');
+```
+
+### 2. 批次分布对比
+
+**目的**: 比较 Bulk 和 MSE 系统的统计分布差异
+
+**特性**:
+- 箱线图配合单个数据点（抖动散点图）
+- 叠加半透明直方图
+- 统计显著性检验（t 检验 p 值）
+- 增强因子标注
+
+**解读**:
+- 箱线图显示中位数、四分位数和异常值
+- 直方图叠加揭示分布形态（偏度、峰度）
+- 散点显示单个批次的变异性
+
+**用法**:
+```matlab
+fig = plot_batch_distribution(bulk_data, mse_data, config);
+```
+
+### 3. 增强因子演化
+
+**目的**: 可视化时间依赖的增强动力学（MSE/Bulk 比值）
+
+**特性**:
+- 平均增强因子轨迹配 95% 置信区间
+- 各批次终态增强因子（散点）
+- EF=1 参考线（无增强）
+- 统计标注框（均值、标准差、最大值）
+
+**解读**:
+- EF > 1：MSE 系统显示动力学优势
+- EF < 1：Bulk 系统更高效
+- 时间依赖趋势揭示瞬态 vs 稳态效应
+- 散点显示批次间增强的变异性
+
+**用法**:
+```matlab
+fig = plot_enhancement_factor(bulk_data, mse_data, config);
+```
+
+### 4. 批次时间序列热力图
+
+**目的**: 将所有批次的产物演化可视化为 2D 颜色图（不是粒子轨迹图）
+
+**特性**:
+- 2D 热力图：时间（x 轴）vs 批次索引（y 轴）
+- 颜色强度代表产物数量
+- 叠加平均轨迹参考线
+- 异常批次标记（>2σ 偏差）
+
+**解读**:
+- 水平模式表示批次间一致行为
+- 垂直条纹暗示时间依赖事件
+- 异常批次（红色标记）突出离群值
+- 颜色刻度揭示绝对产物浓度
+
+**用法**:
+```matlab
+fig = plot_batch_timeseries_heatmap(bulk_data, config, 'Bulk');
+fig = plot_batch_timeseries_heatmap(mse_data, config, 'MSE');
+```
+
 ## 模块文件
 
 ### 核心函数
@@ -133,6 +228,10 @@ mse_at_50s = mean(mse_data.product_curves(time_idx, :));
 | 文件 | 用途 |
 |------|------|
 | `modules/viz/plot_dual_system_comparison.m` | 带 mean±S.D. 绘图的可视化函数 |
+| `modules/viz/plot_mc_convergence.m` | 蒙特卡洛收敛分析图 |
+| `modules/viz/plot_batch_distribution.m` | 分布对比（箱线图 + 直方图）|
+| `modules/viz/plot_enhancement_factor.m` | 增强因子演化可视化 |
+| `modules/viz/plot_batch_timeseries_heatmap.m` | 批次时间序列热力图与异常检测 |
 | `modules/batch/run_dual_system_comparison.m` | 两种系统的批量执行 |
 | `main_2d_pipeline.m` | 集成双体系的主交互式工作流 |
 | `modules/config/interactive_config.m` | 双体系模式的交互式配置 |

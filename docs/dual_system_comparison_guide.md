@@ -8,6 +8,11 @@ This guide explains how to use the dual-system comparison module to visualize an
 
 - ✅ **Dual-system batch simulations**: Runs both bulk and MSE configurations with identical seeds
 - ✅ **Statistical visualization**: Displays mean±S.D. curves with shaded error bands
+- ✅ **Advanced statistical plots**:
+  - Monte Carlo convergence analysis
+  - Batch distribution comparison (box plots + histograms)
+  - Enhancement factor evolution over time
+  - Batch timeseries heatmaps with anomaly detection
 - ✅ **Configurable parameters**: Easy control of enzyme quantity and batch count
 - ✅ **Professional styling**: Consistent with existing `viz_style()` themes
 - ✅ **Export capabilities**: Saves figures (PNG, PDF, FIG) and CSV reports
@@ -35,13 +40,19 @@ This will:
 ### Expected Output
 
 - **Figures**:
-  - `dual_comparison_enzymes_400.png` - High-resolution comparison plot
-  - `dual_comparison_enzymes_400.pdf` - Publication-ready vector graphics
-  - `dual_comparison_enzymes_400.fig` - Editable MATLAB figure
+  - `dual_comparison_enzymes_400.{png,pdf,fig}` - Mean±S.D. comparison plot
+  - `stats_enzymes_400_*.{png,pdf,fig}` - Advanced statistical plots:
+    - Batch distribution comparison (box plot + histogram)
+    - Enhancement factor evolution with confidence intervals
+    - Monte Carlo convergence analysis (Bulk & MSE)
+    - Batch timeseries heatmaps with anomaly detection (Bulk & MSE)
 
 - **Data**:
-  - `bulk_batch_results.csv` - Bulk system statistics
-  - `mse_batch_results.csv` - MSE system statistics
+  - `batch_results_bulk.csv` - Bulk system batch statistics
+  - `batch_results_mse.csv` - MSE system batch statistics
+  - `batch_results.csv` - Default mode batch results (for compatibility)
+  - `mc_summary_bulk.csv` - Bulk Monte Carlo confidence intervals
+  - `mc_summary_mse.csv` - MSE Monte Carlo confidence intervals
   - `seeds.csv` - Seed records for reproducibility
 
 ## Configuration
@@ -126,6 +137,90 @@ bulk_at_50s = mean(bulk_data.product_curves(time_idx, :));
 mse_at_50s = mean(mse_data.product_curves(time_idx, :));
 ```
 
+## Advanced Statistical Visualizations
+
+### 1. Monte Carlo Convergence Analysis
+
+**Purpose**: Assess the stability and reliability of statistical estimates
+
+**Features**:
+- Cumulative mean convergence curve
+- Cumulative standard deviation evolution
+- 95% confidence interval width reduction
+
+**Interpretation**:
+- Shows how many batches are needed for stable results
+- Identifies the point where additional batches provide diminishing returns
+- Final reference lines indicate converged values
+
+**Usage**:
+```matlab
+fig = plot_mc_convergence(batch_table, config, 'Bulk');
+```
+
+### 2. Batch Distribution Comparison
+
+**Purpose**: Compare statistical distributions between Bulk and MSE systems
+
+**Features**:
+- Box plots with individual data points (jittered scatter)
+- Overlaid semi-transparent histograms
+- Statistical significance testing (t-test p-value)
+- Enhancement factor annotation
+
+**Interpretation**:
+- Box plot shows median, quartiles, and outliers
+- Histogram overlay reveals distribution shape (skewness, modality)
+- Scatter points show individual batch variability
+
+**Usage**:
+```matlab
+fig = plot_batch_distribution(bulk_data, mse_data, config);
+```
+
+### 3. Enhancement Factor Evolution
+
+**Purpose**: Visualize time-dependent enhancement dynamics (MSE/Bulk ratio)
+
+**Features**:
+- Mean enhancement factor trajectory with 95% confidence intervals
+- Per-batch final enhancement factors (scatter)
+- Reference line at EF=1 (no enhancement)
+- Statistical annotation box (mean, std, max)
+
+**Interpretation**:
+- EF > 1: MSE system shows kinetic advantage
+- EF < 1: Bulk system more efficient
+- Time-dependent trends reveal transient vs steady-state effects
+- Scatter shows batch-to-batch variability in enhancement
+
+**Usage**:
+```matlab
+fig = plot_enhancement_factor(bulk_data, mse_data, config);
+```
+
+### 4. Batch Timeseries Heatmap
+
+**Purpose**: Visualize product evolution across all batches as a 2D color map (NOT particle trajectories)
+
+**Features**:
+- 2D heatmap: time (x-axis) vs batch index (y-axis)
+- Color intensity represents product count
+- Overlaid mean trajectory reference line
+- Anomalous batch markers (>2σ deviation)
+
+**Interpretation**:
+- Horizontal patterns indicate consistent behavior across batches
+- Vertical stripes suggest time-dependent events
+- Anomalous batches (red markers) highlight outliers
+- Color scale reveals absolute product concentrations
+
+**Usage**:
+```matlab
+fig = plot_batch_timeseries_heatmap(bulk_data, config, 'Bulk');
+fig = plot_batch_timeseries_heatmap(mse_data, config, 'MSE');
+```
+
 ## Module Files
 
 ### Core Functions
@@ -133,6 +228,10 @@ mse_at_50s = mean(mse_data.product_curves(time_idx, :));
 | File | Purpose |
 |------|---------|
 | `modules/viz/plot_dual_system_comparison.m` | Visualization function with mean±S.D. plotting |
+| `modules/viz/plot_mc_convergence.m` | Monte Carlo convergence analysis plots |
+| `modules/viz/plot_batch_distribution.m` | Distribution comparison (box + histogram) |
+| `modules/viz/plot_enhancement_factor.m` | Enhancement factor evolution visualization |
+| `modules/viz/plot_batch_timeseries_heatmap.m` | Batch timeseries heatmap with anomaly detection |
 | `modules/batch/run_dual_system_comparison.m` | Batch execution for both systems |
 | `main_2d_pipeline.m` | Main interactive workflow with dual-system integration |
 | `modules/config/interactive_config.m` | Interactive configuration for dual-system mode |

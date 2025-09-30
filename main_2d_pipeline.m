@@ -51,7 +51,20 @@ if getfield_or(config, {'ui_controls','dual_system_comparison'}, false)
     % Run dual-system comparison
     [bulk_data, mse_data] = run_dual_system_comparison(config, seeds);
 
-    % Use bulk or MSE batch table based on original mode
+    % ✅ FIX: Save BOTH system results separately
+    fprintf('\n--- Saving Dual-System Batch Results ---\n');
+
+    % Save bulk system results
+    report_basename_bulk = 'batch_results_bulk';
+    bulk_csv = write_report_csv(bulk_data.batch_table, config.io.outdir, report_basename_bulk);
+    fprintf('Bulk system results: %s\n', bulk_csv);
+
+    % Save MSE system results
+    report_basename_mse = 'batch_results_mse';
+    mse_csv = write_report_csv(mse_data.batch_table, config.io.outdir, report_basename_mse);
+    fprintf('MSE system results: %s\n', mse_csv);
+
+    % Use bulk or MSE batch table based on original mode (for legacy compatibility)
     if strcmpi(config.simulation_params.simulation_mode, 'bulk')
         batch_table = bulk_data.batch_table;
     else
@@ -182,6 +195,86 @@ if isfield(config, 'dual_comparison_data') && ~isempty(config.dual_comparison_da
     catch ME
         fprintf('plot_dual_system_comparison warning: %s\n', ME.message);
     end
+
+    % ✅ NEW: Generate additional statistical plots for dual-system comparison
+    fprintf('\n====================================================\n');
+    fprintf(' Generating Advanced Statistical Plots\n');
+    fprintf('====================================================\n');
+
+    figs_stats = gobjects(0,1);
+
+    % 1. Batch distribution comparison
+    try
+        fprintf('Creating batch distribution comparison plot...\n');
+        f_dist = plot_batch_distribution(config.dual_comparison_data.bulk, ...
+                                        config.dual_comparison_data.mse, ...
+                                        config); % [plot_batch_distribution()](modules/viz/plot_batch_distribution.m:1)
+        if ishghandle(f_dist), figs_stats(end+1,1) = f_dist; end
+    catch ME
+        fprintf('plot_batch_distribution warning: %s\n', ME.message);
+    end
+
+    % 2. Enhancement factor evolution
+    try
+        fprintf('Creating enhancement factor evolution plot...\n');
+        f_ef = plot_enhancement_factor(config.dual_comparison_data.bulk, ...
+                                      config.dual_comparison_data.mse, ...
+                                      config); % [plot_enhancement_factor()](modules/viz/plot_enhancement_factor.m:1)
+        if ishghandle(f_ef), figs_stats(end+1,1) = f_ef; end
+    catch ME
+        fprintf('plot_enhancement_factor warning: %s\n', ME.message);
+    end
+
+    % 3. MC convergence analysis (Bulk)
+    try
+        fprintf('Creating Monte Carlo convergence analysis (Bulk)...\n');
+        f_mc_bulk = plot_mc_convergence(bulk_data.batch_table, config, 'Bulk'); % [plot_mc_convergence()](modules/viz/plot_mc_convergence.m:1)
+        if ishghandle(f_mc_bulk), figs_stats(end+1,1) = f_mc_bulk; end
+    catch ME
+        fprintf('plot_mc_convergence (Bulk) warning: %s\n', ME.message);
+    end
+
+    % 4. MC convergence analysis (MSE)
+    try
+        fprintf('Creating Monte Carlo convergence analysis (MSE)...\n');
+        f_mc_mse = plot_mc_convergence(mse_data.batch_table, config, 'MSE'); % [plot_mc_convergence()](modules/viz/plot_mc_convergence.m:1)
+        if ishghandle(f_mc_mse), figs_stats(end+1,1) = f_mc_mse; end
+    catch ME
+        fprintf('plot_mc_convergence (MSE) warning: %s\n', ME.message);
+    end
+
+    % 5. Batch timeseries heatmap (Bulk)
+    try
+        fprintf('Creating batch timeseries heatmap (Bulk)...\n');
+        f_hm_bulk = plot_batch_timeseries_heatmap(bulk_data, config, 'Bulk'); % [plot_batch_timeseries_heatmap()](modules/viz/plot_batch_timeseries_heatmap.m:1)
+        if ishghandle(f_hm_bulk), figs_stats(end+1,1) = f_hm_bulk; end
+    catch ME
+        fprintf('plot_batch_timeseries_heatmap (Bulk) warning: %s\n', ME.message);
+    end
+
+    % 6. Batch timeseries heatmap (MSE)
+    try
+        fprintf('Creating batch timeseries heatmap (MSE)...\n');
+        f_hm_mse = plot_batch_timeseries_heatmap(mse_data, config, 'MSE'); % [plot_batch_timeseries_heatmap()](modules/viz/plot_batch_timeseries_heatmap.m:1)
+        if ishghandle(f_hm_mse), figs_stats(end+1,1) = f_hm_mse; end
+    catch ME
+        fprintf('plot_batch_timeseries_heatmap (MSE) warning: %s\n', ME.message);
+    end
+
+    % Save statistical plots
+    if getfield_or(config, {'ui_controls','enable_fig_save'}, false) && ~isempty(figs_stats)
+        formats = {'fig','png','pdf'};
+        base_name = sprintf('stats_enzymes_%d', config.particle_params.num_enzymes);
+        try
+            saved_paths = save_figures(figs_stats, config.io.outdir, base_name, formats);
+            fprintf('Statistical plots saved: %d files\n', numel(saved_paths));
+        catch ME
+            fprintf('Failed to save statistical plots: %s\n', ME.message);
+        end
+    end
+
+    fprintf('Advanced statistical plots generation complete\n');
+    fprintf('====================================================\n');
 end
 
 % --- Summary output ---
@@ -194,47 +287,28 @@ fprintf('Batch count: %d | Mode: %s | Visualization switch: %s\n', ...
     height(batch_table), config.simulation_params.simulation_mode, tf(config.ui_controls.visualize_enabled));
 
 % --- Monte Carlo confidence interval statistics (based on batch products_final) ---
-try
-    pf = batch_table.products_final;
-    valid_mask = isfinite(pf);
-    n_total = height(batch_table);
-    n_eff = sum(valid_mask);
-    if n_eff >= 1
-        pf_valid = pf(valid_mask);
-        % Use sample standard deviation (n-1)
-        mu = mean(pf_valid);
-        sd = std(pf_valid, 0);
-        se = sd / sqrt(n_eff);
-        if n_eff >= 2 
-            if exist('tinv', 'file') == 2
-                tcrit = tinv(0.975, n_eff - 1);
-                dist_name = 't';
-            else
-                tcrit = 1.96;  % Normal approximation
-                dist_name = 'normal';
-            end
-            ci_lower = mu - tcrit * se;
-            ci_upper = mu + tcrit * se;
-        else
-            ci_lower = NaN; ci_upper = NaN; dist_name = 'NA';
-        end
-        fprintf(['Monte Carlo statistics (products_final): Valid batches=%d/%d | Mean=%.3f | Std=%.3f | ' ...
-                 '95%%CI=[%.3f, %.3f] (%s)\n'], n_eff, n_total, mu, sd, ci_lower, ci_upper, dist_name);
-        % Write summary CSV
-        summary_tbl = table(n_total, n_eff, mu, sd, se, ci_lower, ci_upper, 0.95, string(dist_name), ...
-            'VariableNames', {'n_total','n_valid','mean','std','se','ci_lower','ci_upper','ci_level','dist'});
-        mc_csv = fullfile(config.io.outdir, 'mc_summary.csv');
-        try
-            writetable(summary_tbl, mc_csv);
-            fprintf('MC confidence intervals written: %s\n', mc_csv);
-        catch ME
-            fprintf('Failed to write mc_summary.csv: %s\n', ME.message);
-        end
-    else
-        fprintf('Monte Carlo statistics: No valid products_final, skipping confidence interval calculation.\n');
+% ✅ FIX: Generate separate statistics for dual-system comparison
+if isfield(config, 'dual_comparison_data') && ~isempty(config.dual_comparison_data)
+    fprintf('\n--- Dual-System Monte Carlo Statistics ---\n');
+    % Bulk system statistics
+    try
+        write_mc_stats(bulk_data.batch_table, config.io.outdir, 'mc_summary_bulk.csv', 'Bulk');
+    catch ME
+        fprintf('Bulk MC statistics error: %s\n', ME.message);
     end
-catch ME
-    fprintf('Monte Carlo statistics error: %s\n', ME.message);
+    % MSE system statistics
+    try
+        write_mc_stats(mse_data.batch_table, config.io.outdir, 'mc_summary_mse.csv', 'MSE');
+    catch ME
+        fprintf('MSE MC statistics error: %s\n', ME.message);
+    end
+else
+    % Standard single-mode statistics
+    try
+        write_mc_stats(batch_table, config.io.outdir, 'mc_summary.csv', '');
+    catch ME
+        fprintf('Monte Carlo statistics error: %s\n', ME.message);
+    end
 end
 fprintf('====================================================\n');
 end
@@ -259,4 +333,57 @@ end
 
 function t = tf(b)
 if b, t = 'ON'; else, t = 'OFF'; end
+end
+
+function write_mc_stats(batch_table, outdir, filename, system_label)
+% WRITE_MC_STATS Write Monte Carlo confidence interval statistics to CSV
+% Inputs:
+%   - batch_table: table with products_final column
+%   - outdir: output directory
+%   - filename: output CSV filename
+%   - system_label: optional label ('Bulk', 'MSE', or '')
+try
+    pf = batch_table.products_final;
+    valid_mask = isfinite(pf);
+    n_total = height(batch_table);
+    n_eff = sum(valid_mask);
+    if n_eff >= 1
+        pf_valid = pf(valid_mask);
+        % Use sample standard deviation (n-1)
+        mu = mean(pf_valid);
+        sd = std(pf_valid, 0);
+        se = sd / sqrt(n_eff);
+        if n_eff >= 2
+            if exist('tinv', 'file') == 2
+                tcrit = tinv(0.975, n_eff - 1);
+                dist_name = 't';
+            else
+                tcrit = 1.96;  % Normal approximation
+                dist_name = 'normal';
+            end
+            ci_lower = mu - tcrit * se;
+            ci_upper = mu + tcrit * se;
+        else
+            ci_lower = NaN; ci_upper = NaN; dist_name = 'NA';
+        end
+        % Print statistics
+        if ~isempty(system_label)
+            prefix = sprintf('[%s] ', system_label);
+        else
+            prefix = '';
+        end
+        fprintf(['%sMonte Carlo statistics (products_final): Valid batches=%d/%d | Mean=%.3f | Std=%.3f | ' ...
+                 '95%%CI=[%.3f, %.3f] (%s)\n'], prefix, n_eff, n_total, mu, sd, ci_lower, ci_upper, dist_name);
+        % Write summary CSV
+        summary_tbl = table(n_total, n_eff, mu, sd, se, ci_lower, ci_upper, 0.95, string(dist_name), ...
+            'VariableNames', {'n_total','n_valid','mean','std','se','ci_lower','ci_upper','ci_level','dist'});
+        mc_csv = fullfile(outdir, filename);
+        writetable(summary_tbl, mc_csv);
+        fprintf('%sMC confidence intervals written: %s\n', prefix, mc_csv);
+    else
+        fprintf('%sMonte Carlo statistics: No valid products_final, skipping confidence interval calculation.\n', prefix);
+    end
+catch ME
+    rethrow(ME);
+end
 end
