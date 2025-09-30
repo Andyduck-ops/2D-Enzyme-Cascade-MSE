@@ -32,15 +32,6 @@ This will:
 4. Create comparison plot with mean±S.D. visualization
 5. Save results to `out/` directory
 
-### Standalone Demo (Deprecated)
-
-```matlab
-% Legacy standalone demo (not recommended)
-demo_dual_system_comparison
-```
-
-⚠️ **Note**: The standalone demo script is deprecated. Use the interactive workflow via `main_2d_pipeline` for integrated experience.
-
 ### Expected Output
 
 - **Figures**:
@@ -57,26 +48,16 @@ demo_dual_system_comparison
 
 ### Enzyme Quantity
 
-Modify enzyme count in the demo script or configuration:
-
-```matlab
-% In demo_dual_system_comparison.m (line ~45)
-config.particle_params.num_enzymes = 400;  % Default: 400
-```
+Enzyme count is configured during the interactive workflow. When prompted in `main_2d_pipeline`, specify the desired number of enzymes.
 
 **Recommended values**:
-- Low density: 100-200 enzymes
-- Medium density: 300-500 enzymes
-- High density: 600-1000 enzymes
+- Low density: 10-20 enzymes
+- Medium density: 40-60 enzymes
+- High density: 90-100 enzymes
 
 ### Batch Count
 
-Control Monte Carlo sample size:
-
-```matlab
-% In demo_dual_system_comparison.m (line ~48)
-config.batch.batch_count = 20;  % Default: 20
-```
+Batch count is configured during the interactive workflow. When prompted in `main_2d_pipeline`, specify the desired number of batches.
 
 **Guidelines**:
 - Quick test: 5-10 batches
@@ -87,12 +68,7 @@ config.batch.batch_count = 20;  % Default: 20
 
 ### Simulation Time
 
-Adjust total simulation time:
-
-```matlab
-% In demo_dual_system_comparison.m (line ~51)
-config.simulation_params.total_time = 100;  % seconds
-```
+Simulation time is configured during the interactive workflow. When prompted in `main_2d_pipeline`, specify the desired total time in seconds.
 
 ## Advanced Usage
 
@@ -158,8 +134,8 @@ mse_at_50s = mean(mse_data.product_curves(time_idx, :));
 |------|---------|
 | `modules/viz/plot_dual_system_comparison.m` | Visualization function with mean±S.D. plotting |
 | `modules/batch/run_dual_system_comparison.m` | Batch execution for both systems |
-| `demo_dual_system_comparison.m` | Demonstration script with default settings |
-| `test_dual_system_syntax.m` | Syntax validation and unit tests |
+| `main_2d_pipeline.m` | Main interactive workflow with dual-system integration |
+| `modules/config/interactive_config.m` | Interactive configuration for dual-system mode |
 
 ### Dependencies
 

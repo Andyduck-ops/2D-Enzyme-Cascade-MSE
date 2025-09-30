@@ -142,20 +142,6 @@ if getfield_or(config, {'ui_controls','visualize_enabled'}, false)
         fprintf('plot_shell_dynamics warning: %s\n', ME.message);
     end
 
-    % Dual-system comparison plot (if comparison mode was enabled)
-    if isfield(config, 'dual_comparison_data') && ~isempty(config.dual_comparison_data)
-        try
-            fprintf('Generating dual-system comparison plot...\n');
-            f = plot_dual_system_comparison(config.dual_comparison_data.bulk, ...
-                                           config.dual_comparison_data.mse, ...
-                                           config);
-            if ishghandle(f), figs_all(end+1,1) = f; end
-            fprintf('Dual-system comparison plot generated successfully\n');
-        catch ME
-            fprintf('plot_dual_system_comparison warning: %s\n', ME.message);
-        end
-    end
-
     % Save images
     if getfield_or(config, {'ui_controls','enable_fig_save'}, false)
         formats = {'fig','png','pdf'};
@@ -166,6 +152,35 @@ if getfield_or(config, {'ui_controls','visualize_enabled'}, false)
         catch ME
             fprintf('Failed to save images: %s\n', ME.message);
         end
+    end
+end
+
+% --- Dual-System Comparison Plot (Independent of visualize_enabled) ---
+% This is a Monte Carlo statistical visualization and should generate
+% regardless of single-run visualization settings
+if isfield(config, 'dual_comparison_data') && ~isempty(config.dual_comparison_data)
+    try
+        fprintf('\n====================================================\n');
+        fprintf(' Generating Dual-System Comparison Plot\n');
+        fprintf('====================================================\n');
+        f_dual = plot_dual_system_comparison(config.dual_comparison_data.bulk, ...
+                                       config.dual_comparison_data.mse, ...
+                                       config);
+
+        % Save dual-system comparison plot
+        if getfield_or(config, {'ui_controls','enable_fig_save'}, false) && ishghandle(f_dual)
+            formats = {'fig','png','pdf'};
+            base_name = sprintf('dual_comparison_enzymes_%d', config.particle_params.num_enzymes);
+            try
+                saved_paths = save_figures(f_dual, config.io.outdir, base_name, formats);
+                fprintf('Dual-system comparison plot saved: %d files\n', numel(saved_paths));
+            catch ME
+                fprintf('Failed to save dual-system comparison plot: %s\n', ME.message);
+            end
+        end
+        fprintf('Dual-system comparison plot generated successfully\n');
+    catch ME
+        fprintf('plot_dual_system_comparison warning: %s\n', ME.message);
     end
 end
 

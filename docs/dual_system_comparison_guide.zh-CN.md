@@ -32,15 +32,6 @@ main_2d_pipeline
 4. 创建 mean±S.D. 可视化对比图
 5. 保存结果到 `out/` 目录
 
-### 独立演示脚本（已弃用）
-
-```matlab
-% 旧版独立演示脚本（不推荐）
-demo_dual_system_comparison
-```
-
-⚠️ **注意**: 独立演示脚本已弃用。请使用 `main_2d_pipeline` 的交互式工作流以获得集成体验。
-
 ### 预期输出
 
 - **图表**:
@@ -57,26 +48,16 @@ demo_dual_system_comparison
 
 ### 酶数量
 
-在演示脚本或配置中修改酶数量:
-
-```matlab
-% 在 demo_dual_system_comparison.m (第 ~45 行)
-config.particle_params.num_enzymes = 400;  % 默认: 400
-```
+酶数量在交互式工作流中配置。在 `main_2d_pipeline` 提示时，指定所需的酶数量。
 
 **推荐值**:
-- 低密度: 100-200 个酶
-- 中密度: 300-500 个酶
-- 高密度: 600-1000 个酶
+- 低密度: 10-20 个酶
+- 中密度: 40-60 个酶
+- 高密度: 90-100 个酶
 
 ### 批次数量
 
-控制蒙特卡洛样本量:
-
-```matlab
-% 在 demo_dual_system_comparison.m (第 ~48 行)
-config.batch.batch_count = 20;  % 默认: 20
-```
+批次数量在交互式工作流中配置。在 `main_2d_pipeline` 提示时，指定所需的批次数量。
 
 **指导原则**:
 - 快速测试: 5-10 批次
@@ -87,12 +68,7 @@ config.batch.batch_count = 20;  % 默认: 20
 
 ### 仿真时间
 
-调整总仿真时间:
-
-```matlab
-% 在 demo_dual_system_comparison.m (第 ~51 行)
-config.simulation_params.total_time = 100;  % 秒
-```
+仿真时间在交互式工作流中配置。在 `main_2d_pipeline` 提示时，指定所需的总时间（秒）。
 
 ## 高级用法
 
@@ -158,8 +134,8 @@ mse_at_50s = mean(mse_data.product_curves(time_idx, :));
 |------|------|
 | `modules/viz/plot_dual_system_comparison.m` | 带 mean±S.D. 绘图的可视化函数 |
 | `modules/batch/run_dual_system_comparison.m` | 两种系统的批量执行 |
-| `demo_dual_system_comparison.m` | 默认设置的演示脚本 |
-| `test_dual_system_syntax.m` | 语法验证和单元测试 |
+| `main_2d_pipeline.m` | 集成双体系的主交互式工作流 |
+| `modules/config/interactive_config.m` | 双体系模式的交互式配置 |
 
 ### 依赖关系
 
