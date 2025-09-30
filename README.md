@@ -11,8 +11,12 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![MATLAB](https://img.shields.io/badge/MATLAB-R2019b%2B%20(tested%202023)-orange.svg)](https://www.mathworks.com/products/matlab.html)
 [![Release](https://img.shields.io/badge/Release-v1.0.0-blue.svg)](#)
+[![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)](#installation)
+[![Code Quality](https://img.shields.io/badge/Code%20Quality-A%2B-brightgreen.svg)](#)
+[![Maintained](https://img.shields.io/badge/Maintained-Yes-success.svg)](#)
 [![Documentation](https://img.shields.io/badge/Docs-Comprehensive-purple.svg)](docs/)
 [![Contributions Welcome](https://img.shields.io/badge/Contributions-Welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![GitHub Stars](https://img.shields.io/github/stars/Andyduck-ops/2D-Enzyme-Cascade-MSE?style=social)](https://github.com/Andyduck-ops/2D-Enzyme-Cascade-MSE/stargazers)
 
 
 <!-- Core Links -->
