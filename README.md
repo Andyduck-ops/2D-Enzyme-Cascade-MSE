@@ -92,6 +92,7 @@ The framework systematically compares two fundamental configurations representin
 
 ### 📊 Comprehensive Analysis
 - **Real-time Visualization**: Product curves, event maps, and tracer trajectories
+- **Dual-System Comparison** (NEW ✨): Automated bulk vs MSE comparison with mean±S.D. visualization, configurable enzyme quantities, and professional error band plotting ([docs/dual_system_comparison_guide.md](docs/dual_system_comparison_guide.md))
 - **Statistical Reporting**: Automatic CSV exports including batch results (`batch_results.csv`), seed records (`seeds.csv`), and statistical summaries (`mc_summary.csv`) with means, variances, and confidence intervals
 - **Spatial Analysis**: Heat maps of reaction events and particle distributions
 - **Performance Metrics**: Reaction rates, yields, and efficiency factors
@@ -339,6 +340,40 @@ bulk_result = simulate_once(config, 1234);
 % Calculate enhancement factor
 enhancement = mse_result.products_final / max(bulk_result.products_final, 1);
 fprintf('MSE enhancement factor: %.2fx\n', enhancement);
+```
+
+### Example 1.5: Dual-System Comparison with Statistical Visualization (NEW ✨)
+```matlab
+% NEW FEATURE: Automated dual-system comparison with mean±S.D. visualization
+% This module runs both bulk and MSE simulations with Monte Carlo sampling
+% and generates professional comparison plots with error bands
+
+% Quick start - use demo script with default settings
+demo_dual_system_comparison
+
+% Advanced usage - custom configuration
+config = default_config();
+config.particle_params.num_enzymes = 500;  % Configurable enzyme count
+config.batch.batch_count = 30;             % Monte Carlo samples
+config.batch.seed_mode = 'incremental';
+config.batch.seed_base = 6000;
+
+% Generate seeds and run comparison
+[seeds, ~] = get_batch_seeds(config);
+[bulk_data, mse_data] = run_dual_system_comparison(config, seeds);
+
+% Visualize with mean±S.D. error bands
+fig = plot_dual_system_comparison(bulk_data, mse_data, config);
+
+% Extract statistics
+fprintf('Bulk:  %.1f ± %.1f products\n', ...
+    mean(bulk_data.product_curves(end,:)), std(bulk_data.product_curves(end,:), 0));
+fprintf('MSE:   %.1f ± %.1f products\n', ...
+    mean(mse_data.product_curves(end,:)), std(mse_data.product_curves(end,:), 0));
+fprintf('Enhancement: %.2fx\n', ...
+    mean(mse_data.product_curves(end,:)) / mean(bulk_data.product_curves(end,:)));
+
+% For detailed usage, see: docs/dual_system_comparison_guide.md
 ```
 
 ### Example 2: Enzyme Concentration Study

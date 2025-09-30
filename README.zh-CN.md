@@ -322,6 +322,40 @@ enhancement = mse_result.products_final / max(bulk_result.products_final, 1);
 fprintf('MSE增强因子: %.2fx\n', enhancement);
 ```
 
+### 示例1.5：双体系对比统计可视化（新功能 ✨）
+```matlab
+% 新功能：自动化双体系对比，配合 mean±S.D. 可视化
+% 本模块运行 bulk 与 MSE 两种模式的蒙特卡洛采样
+% 并生成专业的对比图表，包含误差带
+
+% 快速开始 - 使用演示脚本和默认设置
+demo_dual_system_comparison
+
+% 高级用法 - 自定义配置
+config = default_config();
+config.particle_params.num_enzymes = 500;  % 可配置酶数量
+config.batch.batch_count = 30;             % 蒙特卡洛采样数
+config.batch.seed_mode = 'incremental';
+config.batch.seed_base = 6000;
+
+% 生成种子并运行对比
+[seeds, ~] = get_batch_seeds(config);
+[bulk_data, mse_data] = run_dual_system_comparison(config, seeds);
+
+% 使用 mean±S.D. 误差带可视化
+fig = plot_dual_system_comparison(bulk_data, mse_data, config);
+
+% 提取统计信息
+fprintf('Bulk:  %.1f ± %.1f 个产物\n', ...
+    mean(bulk_data.product_curves(end,:)), std(bulk_data.product_curves(end,:), 0));
+fprintf('MSE:   %.1f ± %.1f 个产物\n', ...
+    mean(mse_data.product_curves(end,:)), std(mse_data.product_curves(end,:), 0));
+fprintf('增强倍数: %.2fx\n', ...
+    mean(mse_data.product_curves(end,:)) / mean(bulk_data.product_curves(end,:)));
+
+% 详细使用说明请参考: docs/dual_system_comparison_guide.md
+```
+
 ### 示例2：酶浓度研究
 ```matlab
 % 测试不同酶浓度
