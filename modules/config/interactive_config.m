@@ -74,6 +74,16 @@ if ~isempty(val)
     config.ui_controls.visualize_enabled = is_yes(val);
 end
 
+% Dual-system comparison mode
+if ~isfield(config.ui_controls, 'dual_system_comparison')
+    config.ui_controls.dual_system_comparison = false;
+end
+def_dual = config.ui_controls.dual_system_comparison;
+val = input(sprintf('5b) Run dual-system comparison (bulk vs MSE) [y/n] [default=%s]: ', tf(def_dual)), 's');
+if ~isempty(val)
+    config.ui_controls.dual_system_comparison = is_yes(val);
+end
+
 % -----------------------------
 % Batch and RNG strategy
 % -----------------------------

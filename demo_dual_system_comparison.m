@@ -1,4 +1,14 @@
 %% DEMO_DUAL_SYSTEM_COMPARISON
+% DEPRECATED: This standalone demo script is deprecated.
+%
+% RECOMMENDED USAGE:
+%   Run the main interactive pipeline instead:
+%   >> main_2d_pipeline
+%
+%   Then select "y" for dual-system comparison when prompted.
+%
+% ---------------------------------------------------------------------
+% LEGACY DEMONSTRATION SCRIPT (Kept for reference)
 % Demonstration script for dual-system (Bulk vs MSE) comparison visualization
 %
 % Features:
@@ -7,14 +17,14 @@
 %   - Mean±S.D. visualization with shaded error bands
 %   - Statistical comparison and enhancement factor calculation
 %
-% Usage:
-%   Simply run this script in MATLAB:
-%   >> demo_dual_system_comparison
-%
-% Output:
-%   - Comparison plot saved to out/ directory
-%   - CSV reports for both systems
-%   - Console summary statistics
+% Note: This script bypasses the interactive configuration system.
+%       For integrated workflow, use main_2d_pipeline.m instead.
+% ---------------------------------------------------------------------
+
+fprintf('\n⚠️  WARNING: This is a deprecated standalone demo script.\n');
+fprintf('   Recommended: Use main_2d_pipeline.m for interactive workflow.\n\n');
+fprintf('   Press Ctrl+C to cancel, or any key to continue with demo...\n');
+pause;
 
 clc; clear; close all;
 

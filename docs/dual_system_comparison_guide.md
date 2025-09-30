@@ -14,19 +14,32 @@ This guide explains how to use the dual-system comparison module to visualize an
 
 ## Quick Start
 
-### Basic Usage
+### Interactive Workflow (Recommended)
 
 ```matlab
-% Run the demo script
+% Run the main interactive pipeline
+main_2d_pipeline
+```
+
+During configuration, select:
+- **Question 5b**: `y` for "Run dual-system comparison (bulk vs MSE)"
+- **Question 5**: `y` for "Enable visualization" (to generate comparison plot)
+
+This will:
+1. Prompt for interactive configuration
+2. Generate random seeds for Monte Carlo sampling
+3. Execute bulk and MSE simulations automatically
+4. Create comparison plot with mean±S.D. visualization
+5. Save results to `out/` directory
+
+### Standalone Demo (Deprecated)
+
+```matlab
+% Legacy standalone demo (not recommended)
 demo_dual_system_comparison
 ```
 
-This will:
-1. Load default configuration
-2. Generate random seeds for Monte Carlo sampling
-3. Execute bulk and MSE simulations in parallel workflows
-4. Create comparison plot with mean±S.D. visualization
-5. Save results to `out/` directory
+⚠️ **Note**: The standalone demo script is deprecated. Use the interactive workflow via `main_2d_pipeline` for integrated experience.
 
 ### Expected Output
 

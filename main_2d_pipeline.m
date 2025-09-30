@@ -42,7 +42,30 @@ config = interactive_config(config);
 fprintf('Seed file: %s\n', seeds_csv);
 
 % --- 4) Batch execution ---
-batch_table = run_batches(config, seeds);
+% Check if dual-system comparison mode is enabled
+if getfield_or(config, {'ui_controls','dual_system_comparison'}, false)
+    fprintf('\n====================================================\n');
+    fprintf(' Dual-System Comparison Mode Enabled\n');
+    fprintf('====================================================\n');
+
+    % Run dual-system comparison
+    [bulk_data, mse_data] = run_dual_system_comparison(config, seeds);
+
+    % Use bulk or MSE batch table based on original mode
+    if strcmpi(config.simulation_params.simulation_mode, 'bulk')
+        batch_table = bulk_data.batch_table;
+    else
+        batch_table = mse_data.batch_table;
+    end
+
+    % Store comparison data for visualization
+    config.dual_comparison_data.bulk = bulk_data;
+    config.dual_comparison_data.mse = mse_data;
+
+else
+    % Standard single-mode execution
+    batch_table = run_batches(config, seeds);
+end
 
 % --- 5) Write report ---
 report_basename = getfield_or(config, {'batch','report_basename'}, 'batch_results');
@@ -117,6 +140,20 @@ if getfield_or(config, {'ui_controls','visualize_enabled'}, false)
         if ishghandle(f), figs_all(end+1,1) = f; end
     catch ME
         fprintf('plot_shell_dynamics warning: %s\n', ME.message);
+    end
+
+    % Dual-system comparison plot (if comparison mode was enabled)
+    if isfield(config, 'dual_comparison_data') && ~isempty(config.dual_comparison_data)
+        try
+            fprintf('Generating dual-system comparison plot...\n');
+            f = plot_dual_system_comparison(config.dual_comparison_data.bulk, ...
+                                           config.dual_comparison_data.mse, ...
+                                           config);
+            if ishghandle(f), figs_all(end+1,1) = f; end
+            fprintf('Dual-system comparison plot generated successfully\n');
+        catch ME
+            fprintf('plot_dual_system_comparison warning: %s\n', ME.message);
+        end
     end
 
     % Save images

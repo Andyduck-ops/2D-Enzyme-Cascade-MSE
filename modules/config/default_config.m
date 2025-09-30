@@ -94,6 +94,7 @@ config.font_settings.axis_font_size = 10;
 config.ui_controls.visualize_enabled = false;           % Batch processing defaults to visualization off
 config.ui_controls.enable_fig_save = false;             % Default no image saving (can be decided by main control)
 config.ui_controls.theme = 'light';                     % Theme placeholder: 'light' | 'dark'
+config.ui_controls.dual_system_comparison = false;      % Dual-system comparison mode (bulk vs MSE)
 
 % -------------------------------------------------------------------------
 % K. Batch and Random Number Strategies

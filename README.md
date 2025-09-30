@@ -344,19 +344,23 @@ fprintf('MSE enhancement factor: %.2fx\n', enhancement);
 
 ### Example 1.5: Dual-System Comparison with Statistical Visualization (NEW ✨)
 ```matlab
-% NEW FEATURE: Automated dual-system comparison with mean±S.D. visualization
-% This module runs both bulk and MSE simulations with Monte Carlo sampling
-% and generates professional comparison plots with error bands
+% NEW FEATURE: Integrated dual-system comparison with mean±S.D. visualization
+% Runs both bulk and MSE simulations with Monte Carlo sampling via interactive workflow
 
-% Quick start - use demo script with default settings
-demo_dual_system_comparison
+% Interactive workflow (RECOMMENDED)
+main_2d_pipeline
+% Then select:
+%   5b) Run dual-system comparison (bulk vs MSE) [y/n]: y
+%   5)  Enable visualization [y/n]: y
 
-% Advanced usage - custom configuration
+% Programmatic usage - custom configuration
 config = default_config();
 config.particle_params.num_enzymes = 500;  % Configurable enzyme count
 config.batch.batch_count = 30;             % Monte Carlo samples
 config.batch.seed_mode = 'incremental';
 config.batch.seed_base = 6000;
+config.ui_controls.dual_system_comparison = true;  % Enable comparison mode
+config.ui_controls.visualize_enabled = true;       % Enable visualization
 
 % Generate seeds and run comparison
 [seeds, ~] = get_batch_seeds(config);
