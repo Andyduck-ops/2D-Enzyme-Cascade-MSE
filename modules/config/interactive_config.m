@@ -137,6 +137,16 @@ if ~isempty(val)
     config.ui_controls.dual_system_comparison = is_yes(val);
 end
 
+% Figure saving toggle
+if ~isfield(config.ui_controls, 'enable_fig_save')
+    config.ui_controls.enable_fig_save = false;
+end
+def_fig_save = config.ui_controls.enable_fig_save;
+val = input(sprintf('5c) Enable figure saving (save plots to files) [y/n] [default=%s]: ', tf(def_fig_save)), 's');
+if ~isempty(val)
+    config.ui_controls.enable_fig_save = is_yes(val);
+end
+
 % -----------------------------
 % Batch and RNG strategy
 % -----------------------------
