@@ -39,28 +39,65 @@ num_sub     = config.particle_params.num_substrate;
 dt          = config.simulation_params.time_step;
 T_total     = config.simulation_params.total_time;
 
+% Check if parallel execution is enabled
+use_parfor = getfield_or(config, {'batch','use_parfor'}, false);
+use_gpu_mode = getfield_or(config, {'batch','use_gpu'}, 'auto');
+
 fprintf('Starting batch execution: %d jobs\n', batch_count);
-for b = 1:batch_count
-    s = seeds(b);
-    % Initialize RNG for this batch
-    setup_rng(s, getfield_or(config, {'batch','use_gpu'}, 'auto')); % [setup_rng()](../rng/setup_rng.m:1)    
-    
-    % Execute simulation
-    results = simulate_once(config, s); % [simulate_once()](../sim_core/simulate_once.m:1)
-    
-    % Capture summary fields
-    seed_col(b)       = s;
-    prod_col(b)       = getfield_or(results, {'products_final'}, NaN);
-    mode_col(b)       = string(sim_mode);
-    enz_col(b)        = N_total;
-    gox_col(b)        = gox_n;
-    hrp_col(b)        = hrp_n;
-    substrate_col(b)  = num_sub;
-    dt_col(b)         = dt;
-    total_time_col(b) = T_total;
-    
-    fprintf('  > %d/%d | Seed=%d | Products=%g | Mode=%s\n', ...
-        b, batch_count, s, prod_col(b), sim_mode);
+if use_parfor
+    fprintf('Parallel mode: ENABLED (using parfor)\n');
+else
+    fprintf('Parallel mode: DISABLED (using serial for loop)\n');
+end
+
+if use_parfor && batch_count > 1
+    % Parallel execution with parfor
+    parfor b = 1:batch_count
+        s = seeds(b);
+        % Initialize RNG for this batch
+        setup_rng(s, use_gpu_mode); % [setup_rng()](../rng/setup_rng.m:1)    
+        
+        % Execute simulation
+        results = simulate_once(config, s); % [simulate_once()](../sim_core/simulate_once.m:1)
+        
+        % Capture summary fields
+        seed_col(b)       = s;
+        prod_col(b)       = getfield_or(results, {'products_final'}, NaN);
+        mode_col(b)       = string(sim_mode);
+        enz_col(b)        = N_total;
+        gox_col(b)        = gox_n;
+        hrp_col(b)        = hrp_n;
+        substrate_col(b)  = num_sub;
+        dt_col(b)         = dt;
+        total_time_col(b) = T_total;
+        
+        fprintf('  > %d/%d | Seed=%d | Products=%g | Mode=%s\n', ...
+            b, batch_count, s, prod_col(b), sim_mode);
+    end
+else
+    % Serial execution with regular for loop
+    for b = 1:batch_count
+        s = seeds(b);
+        % Initialize RNG for this batch
+        setup_rng(s, use_gpu_mode); % [setup_rng()](../rng/setup_rng.m:1)    
+        
+        % Execute simulation
+        results = simulate_once(config, s); % [simulate_once()](../sim_core/simulate_once.m:1)
+        
+        % Capture summary fields
+        seed_col(b)       = s;
+        prod_col(b)       = getfield_or(results, {'products_final'}, NaN);
+        mode_col(b)       = string(sim_mode);
+        enz_col(b)        = N_total;
+        gox_col(b)        = gox_n;
+        hrp_col(b)        = hrp_n;
+        substrate_col(b)  = num_sub;
+        dt_col(b)         = dt;
+        total_time_col(b) = T_total;
+        
+        fprintf('  > %d/%d | Seed=%d | Products=%g | Mode=%s\n', ...
+            b, batch_count, s, prod_col(b), sim_mode);
+    end
 end
 
 % Assemble table

@@ -56,6 +56,25 @@ switch lower(mode)
         end
         seeds = (base + (0:count-1))';
 
+    case 'from_file'
+        % Load seeds from config.batch.seed_list (pre-loaded by interactive_config)
+        list = getfield_or(config, {'batch','seed_list'}, []);
+        if isempty(list)
+            warning('from_file mode missing seed_list; falling back to fixed seed 1234.');
+            seeds = repmat(1234, count, 1);
+        else
+            list = list(:);
+            if numel(list) >= count
+                seeds = list(1:count);
+            else
+                % This shouldn't happen if load_seeds_from_file was used correctly
+                warning('from_file mode seed_list shorter than batch_count; repeating seeds.');
+                reps = ceil(count / numel(list));
+                seeds = repmat(list, reps, 1);
+                seeds = seeds(1:count);
+            end
+        end
+
     otherwise
         warning('Unknown seed_mode=%s; defaulting to fixed seed 1234.', mode);
         seeds = repmat(1234, count, 1);
@@ -63,6 +82,11 @@ end
 
 % ---- Write CSV ----
 outdir = getfield_or(config, {'io','outdir'}, fullfile('2D','out'));
+% For timestamped structure, use data_dir if available
+if isfield(config, 'io') && isfield(config.io, 'data_dir') && ~isempty(config.io.data_dir)
+    outdir = config.io.data_dir;
+end
+
 if ~exist(outdir, 'dir')
     mkdir(outdir);
 end
@@ -72,6 +96,14 @@ fid = fopen(csv_path, 'w');
 if fid == -1
     warning('Unable to write %s; skipping CSV export.', csv_path);
 else
+    % Add comment header for from_file mode
+    if strcmp(mode, 'from_file') && isfield(config, 'batch') && isfield(config.batch, 'seed_source')
+        seed_source = config.batch.seed_source;
+        fprintf(fid, '# Seeds loaded from: %s\n', seed_source.source_run);
+        fprintf(fid, '# Original count: %d | Adjustment: %s\n', ...
+                seed_source.original_count, seed_source.adjustment);
+    end
+    
     fprintf(fid, 'batch_index,seed\n');
     for i = 1:numel(seeds)
         fprintf(fid, '%d,%d\n', i, seeds(i));

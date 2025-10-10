@@ -115,6 +115,9 @@ config.batch.report_basename = 'batch_results';         % Report file prefix
 % -------------------------------------------------------------------------
 % Convention: out directory located under project 2D/out; main control script can override this path
 config.io.outdir = fullfile('2D', 'out');
+config.io.output_structure = 'timestamped';             % 'timestamped' | 'legacy'
+config.io.save_timeseries = true;                       % Save time-series product data
+config.io.write_metadata = true;                        % Write run metadata JSON
 
 % Metadata
 config.meta.version = 'v0.1-skeleton';

@@ -134,7 +134,7 @@ num_sub = config.particle_params.num_substrate;
 dt = config.simulation_params.time_step;
 T_total = config.simulation_params.total_time;
 
-% Main simulation loop
+% Main simulation loop (serial - dual system already runs bulk+mse in parallel)
 for b = 1:n_batches
     s = seeds(b);
     setup_rng(s, getfield_or(config, {'batch','use_gpu'}, 'auto'));

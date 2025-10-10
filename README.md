@@ -101,6 +101,29 @@ The framework systematically compares two fundamental configurations representin
 - **Spatial Analysis**: Heat maps of reaction events and particle distributions
 - **Performance Metrics**: Reaction rates, yields, and efficiency factors
 
+### 📂 Data Management & Comparison (NEW ✨)
+- **Timestamped Output Structure**: Organized directory hierarchy with automatic timestamping for easy data management
+  - `out/single/` and `out/batch/` directories with timestamped subdirectories
+  - Automatic `latest` shortcuts/symlinks to most recent runs
+  - Structured subdirectories: `data/`, `figures/`, `single_viz/`
+- **Historical Data Import**: Load and compare results from previous simulation runs
+  - Interactive run selection interface
+  - Support for both single-mode and dual-mode historical data
+  - Automatic metadata extraction and validation
+- **Multi-Dataset Comparison**: Visualize and compare multiple historical runs simultaneously
+  - Publication-quality comparison plots with mean±S.D. curves
+  - Shaded error bands for statistical visualization
+  - Interactive legend with click-to-toggle visibility
+  - Automatic color and line style cycling for clarity
+- **Seed Import & Reproducibility**: Import seeds from historical runs for exact reproduction
+  - Load seeds from any previous batch run
+  - Automatic handling of seed count mismatches
+  - Full traceability with source information in metadata
+- **Comprehensive Metadata**: JSON-formatted run metadata for complete traceability
+  - Configuration parameters, seed information, output file manifest
+  - System information and runtime statistics
+  - Automatic generation and storage with each run
+
 Key entrypoints:
 - Runner: [main_2d_pipeline.m](main_2d_pipeline.m)
 - Single simulation: [simulate_once()](modules/sim_core/simulate_once.m)
@@ -221,7 +244,14 @@ main_2d_pipeline
 % At project root in MATLAB
 main_2d_pipeline
 % Follow the interactive prompts to configure and run simulations
+% NEW: Choose between running new simulations or importing historical data
 ```
+
+**New Features in Interactive Mode:**
+1. **Run Mode Selection**: Choose between running new simulations or importing historical data for comparison
+2. **Historical Data Import**: Select and compare multiple previous runs with interactive visualization
+3. **Seed Import**: Load seeds from previous runs for exact reproduction
+4. **Timestamped Outputs**: All results automatically organized in timestamped directories
 
 ### Programmatic Mode (Advanced Users)
 ```matlab
@@ -251,6 +281,64 @@ config.ui_controls.visualize_enabled = true;
 % Run single simulation
 result = simulate_once(config, 1234);
 fprintf('MSE mode produced %d products\n', result.products_final);
+```
+
+### Data Management & Historical Comparison (NEW ✨)
+
+#### Browse Historical Runs
+```matlab
+% View all historical runs
+browse_history_cli()
+
+% View only batch runs
+browse_history_cli('batch')
+
+% View only single runs
+browse_history_cli('single')
+```
+
+#### Import and Compare Historical Data
+```matlab
+% Interactive mode - select runs to compare
+main_2d_pipeline
+% Choose option [2] Import historical data for comparison
+% Select multiple runs from the list
+% Comparison plot will be generated automatically
+```
+
+#### Load Seeds from Previous Run
+```matlab
+% Interactive mode
+main_2d_pipeline
+% Choose option [1] Run new simulation
+% When asked for seed mode, select 'from_file'
+% Select a previous batch run to load seeds from
+```
+
+#### Output Directory Structure
+```
+out/
+├── single/                          # Single-run simulations
+│   ├── 20251010_143022_mse_enz400_sub3000_seed1234/
+│   │   ├── data/
+│   │   │   ├── run_metadata.json   # Complete run information
+│   │   │   └── batch_results.csv   # Results data
+│   │   └── figures/                # Generated plots
+│   └── latest.lnk                  # Shortcut to most recent run
+├── batch/                           # Batch simulations
+│   ├── 20251010_143530_dual_enz400_sub3000_n10/
+│   │   ├── data/
+│   │   │   ├── run_metadata.json
+│   │   │   ├── seeds.csv
+│   │   │   ├── batch_results_bulk.csv
+│   │   │   ├── batch_results_mse.csv
+│   │   │   ├── timeseries_products_bulk.csv
+│   │   │   └── timeseries_products_mse.csv
+│   │   ├── figures/                # Statistical plots
+│   │   └── single_viz/             # Single-run visualization
+│   └── latest.lnk
+└── comparisons/                     # Multi-dataset comparisons
+    └── comparison_20251010_150000_n3.png
 ```
 
 ## 🔄 Quick Reproduction

@@ -27,6 +27,44 @@ fprintf(' (Press Enter to use default values, input numbers or options to overri
 fprintf('====================================================\n');
 
 % -----------------------------
+% Run mode selection
+% -----------------------------
+fprintf('\nRun Mode:\n');
+fprintf('  [1] Run new simulation\n');
+fprintf('  [2] Import historical data for comparison\n');
+val = input('Select run mode [1-2] [default=1]: ', 's');
+if isempty(val)
+    val = '1';
+end
+
+run_mode = 'new';
+if strcmp(val, '2')
+    run_mode = 'import';
+end
+
+config.ui_controls.run_mode = run_mode;
+
+% If import mode, skip most simulation configuration
+if strcmp(run_mode, 'import')
+    fprintf('\n--- Import Mode: Selecting Historical Runs ---\n');
+    
+    % Call interactive run selector
+    selected_runs = select_runs_interactive('all', 'out');
+    
+    if isempty(selected_runs)
+        fprintf('No runs selected. Switching to new simulation mode.\n');
+        config.ui_controls.run_mode = 'new';
+    else
+        config.ui_controls.import_datasets = selected_runs;
+        fprintf('\n%d dataset(s) selected for comparison.\n', numel(selected_runs));
+        fprintf('Skipping simulation configuration...\n');
+        return;
+    end
+end
+
+fprintf('\n--- New Simulation Configuration ---\n');
+
+% -----------------------------
 % Basic scale settings
 % -----------------------------
 % Total enzyme count
@@ -111,11 +149,11 @@ end
 
 % RNG mode
 def_seed_mode = config.batch.seed_mode;
-val = input(sprintf(['7) Seed mode seed_mode [fixed/per_batch_random/manual_list/incremental]\n' ...
+val = input(sprintf(['7) Seed mode seed_mode [fixed/per_batch_random/manual_list/incremental/from_file]\n' ...
                      '   [default=%s]: '], def_seed_mode), 's');
 if ~isempty(val)
     v = lower(strtrim(val));
-    if any(strcmp(v, {'fixed','per_batch_random','manual_list','incremental'}))
+    if any(strcmp(v, {'fixed','per_batch_random','manual_list','incremental','from_file'}))
         config.batch.seed_mode = v;
     else
         fprintf('   Invalid input, keeping default: %s\n', def_seed_mode);
@@ -151,6 +189,22 @@ switch config.batch.seed_mode
         end
     case 'per_batch_random'
         % No additional parameters needed; get_batch_seeds() will use random strategy
+    case 'from_file'
+        % Load seeds from historical run
+        try
+            [loaded_seeds, seed_source] = load_seeds_from_file(config.batch.batch_count, 'out');
+            config.batch.seed_list = loaded_seeds(:).';
+            config.batch.seed_source = seed_source;
+            
+            % Adjust batch count if needed
+            if strcmp(seed_source.adjustment, 'batch_adjusted')
+                config.batch.batch_count = numel(loaded_seeds);
+            end
+        catch ME
+            fprintf('   Error loading seeds from file: %s\n', ME.message);
+            fprintf('   Falling back to fixed seed mode.\n');
+            config.batch.seed_mode = 'fixed';
+        end
 end
 
 % GPU strategy
