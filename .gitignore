@@ -27,6 +27,13 @@ backup_readme/
 
 # Workflow files
 .spec-workflow/
+.claude/
+.workflow/
+
+# Test and demo files
+demo_*.m
+test_*.m
+TESTING_GUIDE.md
 
 # PDF documents
 *.pdf
