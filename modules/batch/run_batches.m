@@ -39,17 +39,26 @@ num_sub     = config.particle_params.num_substrate;
 dt          = config.simulation_params.time_step;
 T_total     = config.simulation_params.total_time;
 
-% Auto-configure parallel execution based on CPU cores
-use_gpu_mode = getfield_or(config, {'batch','use_gpu'}, 'auto');
+% Extract GPU mode
+use_gpu_mode = 'auto';
+if isfield(config, 'batch') && isfield(config.batch, 'use_gpu')
+    use_gpu_mode = config.batch.use_gpu;
+end
 
 fprintf('Starting batch execution: %d jobs\n', batch_count);
 
-% Automatically detect and configure parallel pool
-pool_config = auto_configure_parallel(config); % [auto_configure_parallel()](auto_configure_parallel.m:1)
-use_parfor = pool_config.use_parfor;
-
-if ~use_parfor
-    fprintf('Parallel mode: DISABLED (using serial for loop)\n');
+% Only use parallel for multiple batches
+if batch_count == 1
+    fprintf('Single batch: using serial execution (parallel not needed)\n');
+    use_parfor = false;
+else
+    % Automatically detect and configure parallel pool
+    pool_config = auto_configure_parallel(config); % [auto_configure_parallel()](auto_configure_parallel.m:1)
+    use_parfor = pool_config.use_parfor;
+    
+    if ~use_parfor
+        fprintf('Parallel mode: DISABLED (using serial for loop)\n');
+    end
 end
 
 if use_parfor && batch_count > 1
@@ -65,7 +74,11 @@ if use_parfor && batch_count > 1
         
         % Capture summary fields
         seed_col(b)       = s;
-        prod_col(b)       = getfield_or(results, {'products_final'}, NaN);
+        if isfield(results, 'products_final')
+            prod_col(b) = results.products_final;
+        else
+            prod_col(b) = NaN;
+        end
         mode_col(b)       = string(sim_mode);
         enz_col(b)        = N_total;
         gox_col(b)        = gox_n;
@@ -89,7 +102,11 @@ else
         
         % Capture summary fields
         seed_col(b)       = s;
-        prod_col(b)       = getfield_or(results, {'products_final'}, NaN);
+        if isfield(results, 'products_final')
+            prod_col(b) = results.products_final;
+        else
+            prod_col(b) = NaN;
+        end
         mode_col(b)       = string(sim_mode);
         enz_col(b)        = N_total;
         gox_col(b)        = gox_n;
@@ -109,23 +126,5 @@ batch_table = table(...
     substrate_col, dt_col, total_time_col, ...
     'VariableNames', {'batch_index','seed','products_final','mode','num_enzymes','gox_count','hrp_count','num_substrate','dt','total_time'} ...
 );
-
-    function v = getfield_or(s, path, default)
-        % Inline helper to read nested struct fields with a default fallback
-        v = default;
-        try
-            for k = 1:numel(path)
-                key = path{k};
-                if isstruct(s) && isfield(s, key)
-                    s = s.(key);
-                else
-                    return;
-                end
-            end
-            v = s;
-        catch
-            v = default;
-        end
-    end
 
 end

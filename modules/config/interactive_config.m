@@ -57,6 +57,17 @@ if strcmp(run_mode, 'import')
     else
         config.ui_controls.import_datasets = selected_runs;
         fprintf('\n%d dataset(s) selected for comparison.\n', numel(selected_runs));
+        
+        % Ask about figure saving for comparison plot
+        if ~isfield(config.ui_controls, 'enable_fig_save')
+            config.ui_controls.enable_fig_save = false;
+        end
+        def_fig_save = config.ui_controls.enable_fig_save;
+        val = input(sprintf('Save comparison plot to file? [y/n] [default=%s]: ', tf(def_fig_save)), 's');
+        if ~isempty(val)
+            config.ui_controls.enable_fig_save = is_yes(val);
+        end
+        
         fprintf('Skipping simulation configuration...\n');
         return;
     end
