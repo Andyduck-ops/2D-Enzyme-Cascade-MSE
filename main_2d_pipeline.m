@@ -413,14 +413,21 @@ if isfield(config, 'dual_comparison_data') && ~isempty(config.dual_comparison_da
 
     % Save statistical plots
     if getfield_or(config, {'ui_controls','enable_fig_save'}, false) && ~isempty(figs_stats)
-        formats = {'fig','png','pdf'};
-        base_name = sprintf('stats_enzymes_%d', config.particle_params.num_enzymes);
-        try
-            saved_paths = save_figures(figs_stats, config.io.figures_dir, base_name, formats);
-            fprintf('Statistical plots saved: %d files\n', numel(saved_paths));
-            output_files.figures = [output_files.figures; saved_paths(:)];
-        catch ME
-            fprintf('Failed to save statistical plots: %s\n', ME.message);
+        % Filter out invalid handles
+        valid_figs = figs_stats(ishghandle(figs_stats));
+        
+        if ~isempty(valid_figs)
+            formats = {'fig','png','pdf'};
+            base_name = sprintf('stats_enzymes_%d', config.particle_params.num_enzymes);
+            try
+                saved_paths = save_figures(valid_figs, config.io.figures_dir, base_name, formats);
+                fprintf('Statistical plots saved: %d files\n', numel(saved_paths));
+                output_files.figures = [output_files.figures; saved_paths(:)];
+            catch ME
+                fprintf('Failed to save statistical plots: %s\n', ME.message);
+            end
+        else
+            fprintf('Warning: No valid statistical plot handles to save\n');
         end
     end
 

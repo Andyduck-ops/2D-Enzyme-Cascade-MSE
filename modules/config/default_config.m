@@ -107,7 +107,8 @@ config.batch.fixed_seed = 1234;                         % Fixed seed
 config.batch.seed_base = 1000;                          % Base for incremental mode
 config.batch.seed_list = [];                            % Manual seed list for manual_list mode
 config.batch.use_gpu = 'auto';                          % 'auto' | 'on' | 'off'
-config.batch.use_parfor = false;                        % Default parallel off, can be enabled later
+config.batch.use_parfor = true;                         % Auto-enable parallel for better performance
+config.batch.num_workers = 'auto';                      % Always auto-detect CPU cores (cores - 1)
 config.batch.report_basename = 'batch_results';         % Report file prefix
 
 % -------------------------------------------------------------------------

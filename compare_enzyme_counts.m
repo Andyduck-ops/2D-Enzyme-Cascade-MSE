@@ -28,10 +28,44 @@ end
 
 % ========== Browse Historical Runs ==========
 fprintf('\nSearching for dual-mode batch runs...\n');
+
+% Check if out directory exists
+if ~exist('out', 'dir')
+    fprintf('\n');
+    fprintf('====================================================\n');
+    fprintf(' No Historical Data Found\n');
+    fprintf('====================================================\n');
+    fprintf('The ''out/'' directory does not exist yet.\n');
+    fprintf('\n');
+    fprintf('To use this tool, you need to:\n');
+    fprintf('1. Run main_2d_pipeline at least twice\n');
+    fprintf('2. Use dual-system comparison mode (answer ''y'' to question 5b)\n');
+    fprintf('3. Use different enzyme counts for each run\n');
+    fprintf('\n');
+    fprintf('Example workflow:\n');
+    fprintf('  >> main_2d_pipeline\n');
+    fprintf('     Enzymes = 400, Dual = y, Batches = 10\n');
+    fprintf('  >> main_2d_pipeline\n');
+    fprintf('     Enzymes = 20, Dual = y, Batches = 10\n');
+    fprintf('  >> compare_enzyme_counts\n');
+    fprintf('====================================================\n');
+    return;
+end
+
 history_table = browse_history('batch', 'out');
 
 if isempty(history_table)
-    error('No historical batch runs found. Please run some dual-mode simulations first.');
+    fprintf('\n');
+    fprintf('====================================================\n');
+    fprintf(' No Batch Runs Found\n');
+    fprintf('====================================================\n');
+    fprintf('No batch simulation runs found in out/batch/\n');
+    fprintf('\n');
+    fprintf('Please run some dual-mode batch simulations first:\n');
+    fprintf('  >> main_2d_pipeline\n');
+    fprintf('     Select dual-system comparison mode\n');
+    fprintf('====================================================\n');
+    return;
 end
 
 % Filter for dual-mode runs only

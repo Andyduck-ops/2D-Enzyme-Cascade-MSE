@@ -229,11 +229,18 @@ if ~isempty(val)
     end
 end
 
-% parfor
+% parfor - auto-enabled by default, user can disable if needed
 def_pf = config.batch.use_parfor;
-val = input(sprintf('9) Enable parallel parfor [y/n] [default=%s]: ', tf(def_pf)), 's');
+val = input(sprintf('9) Enable parallel computing (auto-detects CPU cores) [y/n] [default=%s]: ', tf(def_pf)), 's');
 if ~isempty(val)
     config.batch.use_parfor = is_yes(val);
+end
+
+% Always use auto mode for worker count - no manual input needed
+config.batch.num_workers = 'auto';
+if config.batch.use_parfor
+    num_cores = feature('numcores');
+    fprintf('   Auto mode: will use %d workers (detected %d CPU cores)\n', max(1, num_cores - 1), num_cores);
 end
 
 % -----------------------------
@@ -268,8 +275,12 @@ switch config.batch.seed_mode
     case 'per_batch_random'
         fprintf('  per-batch will auto-generate random seeds\n');
 end
-fprintf('GPU: %s | parfor: %s | Visualization: %s\n', ...
-    upper(config.batch.use_gpu), tf(config.batch.use_parfor), tf(config.ui_controls.visualize_enabled));
+fprintf('GPU: %s | parfor: %s', upper(config.batch.use_gpu), tf(config.batch.use_parfor));
+if config.batch.use_parfor
+    num_cores = feature('numcores');
+    fprintf(' (auto: %d workers)', max(1, num_cores - 1));
+end
+fprintf(' | Visualization: %s\n', tf(config.ui_controls.visualize_enabled));
 fprintf('Output directory: %s\n', config.io.outdir);
 fprintf('----------------------------------------\n');
 

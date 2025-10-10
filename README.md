@@ -94,6 +94,14 @@ The framework systematically compares two fundamental configurations representin
 - **Boundary Conditions**: Reflect particles at box walls and particle surface
 - **Physical Validation**: Models based on established biophysical principles
 
+### ⚡ High-Performance Computing (NEW ✨)
+- **Auto CPU Core Detection**: Automatically detects and utilizes available CPU cores for optimal performance
+- **Intelligent Parallel Processing**: Smart worker allocation (CPU cores - 1) to maintain system responsiveness
+- **Flexible Worker Configuration**: Choose between auto mode or manually specify worker count
+- **Parallel Pool Management**: Automatic parallel pool creation and optimization
+- **Performance Scaling**: Near-linear speedup for large batch simulations (6-7x faster on 8-core systems)
+- **See**: [Parallel Computing Guide](docs/parallel_computing_guide.md) for detailed configuration and performance tips
+
 ### 📊 Comprehensive Analysis
 - **Real-time Visualization**: Product curves, event maps, and tracer trajectories
 - **Dual-System Comparison** (NEW ✨): Automated bulk vs MSE comparison with mean±S.D. visualization, configurable enzyme quantities, and professional error band plotting ([docs/dual_system_comparison_guide.md](docs/dual_system_comparison_guide.md))

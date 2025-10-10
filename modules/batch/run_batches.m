@@ -39,30 +39,16 @@ num_sub     = config.particle_params.num_substrate;
 dt          = config.simulation_params.time_step;
 T_total     = config.simulation_params.total_time;
 
-% Check if parallel execution is enabled
-use_parfor = getfield_or(config, {'batch','use_parfor'}, false);
+% Auto-configure parallel execution based on CPU cores
 use_gpu_mode = getfield_or(config, {'batch','use_gpu'}, 'auto');
 
 fprintf('Starting batch execution: %d jobs\n', batch_count);
-if use_parfor
-    fprintf('Parallel mode: ENABLED (using parfor)\n');
-    
-    % Check and start parallel pool if needed
-    try
-        pool = gcp('nocreate');
-        if isempty(pool)
-            fprintf('Starting parallel pool...\n');
-            pool = parpool();
-            fprintf('Parallel pool started with %d workers\n', pool.NumWorkers);
-        else
-            fprintf('Using existing parallel pool with %d workers\n', pool.NumWorkers);
-        end
-    catch ME
-        warning('Failed to start parallel pool: %s', ME.message);
-        fprintf('Falling back to serial execution\n');
-        use_parfor = false;
-    end
-else
+
+% Automatically detect and configure parallel pool
+pool_config = auto_configure_parallel(config); % [auto_configure_parallel()](auto_configure_parallel.m:1)
+use_parfor = pool_config.use_parfor;
+
+if ~use_parfor
     fprintf('Parallel mode: DISABLED (using serial for loop)\n');
 end
 
