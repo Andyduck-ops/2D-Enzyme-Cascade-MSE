@@ -123,13 +123,10 @@ if ~exist(figures_dir, 'dir')
     mkdir(figures_dir);
 end
 
-% Create single_viz subdirectory only for batch runs
+% Don't create single_viz subdirectory - it's deprecated
+% Batch runs should only have statistical plots in figures/
+% Single runs have their visualization in figures/
 single_viz_dir = '';
-if strcmp(run_type, 'batch')
-    single_viz_dir = fullfile(run_dir, 'single_viz');
-    % Note: We don't create this directory yet - it will be created on demand
-    % when visualization is actually needed
-end
 
 % ========== Create 'latest' Shortcut/Symlink ==========
 latest_link = fullfile(type_dir, 'latest');

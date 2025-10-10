@@ -211,19 +211,14 @@ output_files.batch_results = report_csv;
 
 
 % --- Additional visualization and image saving integration ---
-if getfield_or(config, {'ui_controls','visualize_enabled'}, false)
-    % Create single_viz directory if needed (batch mode only)
-    if strcmp(run_type, 'batch') && ~isempty(config.io.single_viz_dir)
-        if ~exist(config.io.single_viz_dir, 'dir')
-            mkdir(config.io.single_viz_dir);
-        end
-        viz_outdir = config.io.single_viz_dir;
-    else
-        viz_outdir = config.io.figures_dir;
-    end
+% Only run single-run visualization for single runs (batch_count == 1)
+% For batch runs, skip single-run visualization (use statistical plots instead)
+if getfield_or(config, {'ui_controls','visualize_enabled'}, false) && config.batch.batch_count == 1
+    % Single run visualization
+    viz_outdir = config.io.figures_dir;
     
     viz_seed = seeds(1);
-    fprintf('Visualization enabled: Using first batch seed Seed=%d to execute single simulation for image generation...\n', viz_seed);
+    fprintf('Visualization enabled: Single run visualization for Seed=%d\n', viz_seed);
     % To ensure trajectory plots are generated, force enable particle tracing for visualization single simulation
     viz_config = config;
     if ~isfield(viz_config, 'ui_controls'), viz_config.ui_controls = struct(); end
@@ -295,7 +290,7 @@ if getfield_or(config, {'ui_controls','visualize_enabled'}, false)
         formats = {'fig','png','pdf'};
         base_name = sprintf('viz_seed_%d', viz_seed);
         try
-            saved_paths = save_figures(figs_all, viz_outdir, base_name, formats); % [save_figures()](modules/io/save_figures.m:1)
+            saved_paths = save_figures(figs_all, config.io.figures_dir, base_name, formats); % [save_figures()](modules/io/save_figures.m:1)
             fprintf('Number of saved image files: %d\n', numel(saved_paths));
             output_files.figures = [output_files.figures; saved_paths(:)];
         catch ME
@@ -309,7 +304,7 @@ if getfield_or(config, {'ui_controls','visualize_enabled'}, false)
             fprintf('\n--- Generating Snapshot Animation ---\n');
             % Temporarily update config.io.outdir for animation
             old_outdir = config.io.outdir;
-            config.io.outdir = viz_outdir;
+            config.io.outdir = config.io.figures_dir;  % Always save to figures dir
             video_path = animate_snapshots(results_viz, config); % [animate_snapshots()](modules/viz/animate_snapshots.m:1)
             config.io.outdir = old_outdir;
             if ~isempty(video_path)
