@@ -41,5 +41,10 @@ TESTING_GUIDE.md
 # Implementation summary documents (temporary)
 *_SUMMARY.md
 *_COMPLETE.md
+*_RECOMMENDATIONS.md
+*OPTIMIZATION*.md
+*BUGFIX*.md
+*CHECKPOINT*.md
 COMMIT_MESSAGE.txt
 IMPLEMENTATION_*.md
+FINAL_*.md
