@@ -634,46 +634,56 @@ end
 ## 📁 项目结构
 
 ```
-2D-Enzyme-Cascade-Simulation/
-├── 📄 main_2d_pipeline.m              # 主入口点
-├── 📄 README.md                       # 英文文档
-├── 📄 README.zh-CN.md                 # 中文文档
-├── 📄 LICENSE                         # MIT许可证
-├── 📄 CONTRIBUTING.md                 # 贡献指南
-├── 📁 modules/                        # 核心模拟模块
-│   ├── 📁 config/                     # 配置管理
-│   │   ├── 📄 default_config.m       # 默认参数
-│   │   └── 📄 interactive_config.m   # 交互式设置
-│   ├── 📁 sim_core/                  # 核心模拟算法
-│   │   ├── 📄 simulate_once.m        # 单次模拟协调器
-│   │   ├── 📄 init_positions.m       # 初始状态设置
-│   │   ├── 📄 diffusion_step.m       # 布朗动力学
-│   │   ├── 📄 boundary_reflection.m  # 边界条件
-│   │   ├── 📄 reaction_step.m        # 反应处理
-│   │   ├── 📄 precompute_inhibition.m # 拥挤效应
-│   │   └── 📄 record_data.m          # 数据记录
-│   ├── 📁 batch/                     # 批量处理
-│   │   └── 📄 run_batches.m          # 蒙特卡洛批次
-│   ├── 📁 viz/                       # 可视化工具
-│   │   ├── 📄 plot_product_curve.m   # 产物动力学
-│   │   ├── 📄 plot_event_map.m       # 空间事件
-│   │   └── 📄 plot_tracers.m         # 粒子追踪
-│   ├── 📁 io/                        # 输入输出工具
-│   │   └── 📄 write_report_csv.m     # 数据导出
-│   └── 📁 rng/                       # 随机数管理
-│       └── 📄 setup_rng.m            # RNG设置
-├── 📁 docs/                          # 文档
-│   ├── 📄 2d_model_theory.md         # 英文理论
-│   └── 📄 2d_model_theory.en.md      # 中文理论
-├── 📁 out/                           # 输出目录 (自动创建)
-│   ├── 📄 batch_results.csv          # 批量结果
-│   ├── 📄 seeds.csv                  # 批次种子记录
-│   ├── 📄 mc_summary.csv            # 统计摘要
-│   └── 📁 figures/                   # 生成的图
-└── 📁 tests/                         # 测试套件
-    ├── 📄 test_basic_simulation.m   # 基本功能测试
-    ├── 📄 test_batch_processing.m   # 批量处理测试
-    └── 📄 test_reproducibility.m    # 可复现性测试
+2D-Enzyme-Cascade-MSE/
+├── main_2d_pipeline.m              # 主入口
+├── run_simulation.m                # 启动脚本
+├── README.md / README.zh-CN.md     # 文档（英/中）
+├── LICENSE / CONTRIBUTING.md / AUTHORS.md / BUGFIX_SUMMARY.md
+├── docs/                           # 理论与指南
+│   ├── 2d_model_theory.en.md       # 英文理论
+│   └── 2d_model_theory.md          # 中文理论
+├── modules/
+│   ├── config/
+│   │   ├── default_config.m        # 默认参数（自动 dt、计算后端）
+│   │   └── interactive_config.m    # 交互设置（GPU 映射计算后端）
+│   ├── sim_core/
+│   │   ├── simulate_once.m         # 单次模拟协调器
+│   │   ├── init_positions.m        # 初始化
+│   │   ├── diffusion_step.m        # 布朗步进
+│   │   ├── boundary_reflection.m   # 边界反射
+│   │   ├── reaction_step.m         # 反应（连续计时器、邻域后端）
+│   │   ├── precompute_inhibition.m # 拥挤抑制
+│   │   ├── record_data.m           # 速率/曲线
+│   │   └── neighbor_search.m       # pdist2 / rangesearch / GPU
+│   ├── batch/
+│   │   ├── run_batches.m           # 批次蒙特卡洛
+│   │   └── auto_configure_parallel.m
+│   ├── viz/
+│   │   ├── viz_style.m
+│   │   ├── plot_product_curve.m
+│   │   ├── plot_event_map.m
+│   │   ├── plot_tracers.m
+│   │   ├── plot_reaction_rate_analysis.m
+│   │   ├── plot_dual_system_comparison.m
+│   │   ├── plot_batch_distribution.m
+│   │   └── plot_batch_timeseries_heatmap.m
+│   ├── rng/
+│   │   └── setup_rng.m
+│   ├── seed_utils/
+│   │   └── get_batch_seeds.m
+│   ├── data_import/
+│   │   ├── select_runs_interactive.m
+│   │   ├── load_seeds_from_file.m
+│   │   └── browse_history.m
+│   ├── io/
+│   │   ├── output_manager.m        # 根级 out/
+│   │   ├── write_report_csv.m / save_timeseries.m / save_figures.m
+│   │   └── write_metadata.m        # run_metadata.json（含 dt 自适应信息）
+│   └── utils/
+│       ├── timer_busy_update.m     # 连续计时器
+│       ├── auto_adjust_dt.m / config_sanity_checks.m
+│       └── getfield_or.m
+└── out/                            # 运行时创建（根目录）
 ```
 
 ## 🤝 贡献指南

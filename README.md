@@ -839,46 +839,56 @@ end
 ## 📁 Project Structure
 
 ```
-2D-Enzyme-Cascade-Simulation/
-├── 📄 main_2d_pipeline.m              # Main entry point
-├── 📄 README.md                       # English documentation
-├── 📄 README.zh-CN.md                 # Chinese documentation
-├── 📄 LICENSE                         # MIT license
-├── 📄 CONTRIBUTING.md                 # Contribution guidelines
-├── 📁 modules/                        # Core simulation modules
-│   ├── 📁 config/                     # Configuration management
-│   │   ├── 📄 default_config.m       # Default parameters
-│   │   └── 📄 interactive_config.m   # Interactive setup
-│   ├── 📁 sim_core/                  # Core simulation algorithms
-│   │   ├── 📄 simulate_once.m        # Single simulation orchestrator
-│   │   ├── 📄 init_positions.m       # Initial state setup
-│   │   ├── 📄 diffusion_step.m       # Brownian dynamics
-│   │   ├── 📄 boundary_reflection.m  # Boundary conditions
-│   │   ├── 📄 reaction_step.m        # Reaction processing
-│   │   ├── 📄 precompute_inhibition.m # Crowding effects
-│   │   └── 📄 record_data.m          # Data recording
-│   ├── 📁 batch/                     # Batch processing
-│   │   └── 📄 run_batches.m          # Monte Carlo batches
-│   ├── 📁 viz/                       # Visualization tools
-│   │   ├── 📄 plot_product_curve.m   # Product kinetics
-│   │   ├── 📄 plot_event_map.m       # Spatial events
-│   │   └── 📄 plot_tracers.m         # Particle tracking
-│   ├── 📁 io/                        # Input/output utilities
-│   │   └── 📄 write_report_csv.m     # Data export
-│   └── 📁 rng/                       # Random number management
-│       └── 📄 setup_rng.m            # RNG setup
-├── 📁 docs/                          # Documentation
-│   ├── 📄 2d_model_theory.md         # English theory
-│   └── 📄 2d_model_theory.en.md      # Chinese theory
-├── 📁 out/                           # Output directory (auto-created)
-│   ├── 📄 batch_results.csv          # Batch results
-│   ├── 📄 seeds.csv                  # Batch seed records
-│   ├── 📄 mc_summary.csv            # Statistical summary
-│   └── 📁 figures/                   # Generated plots
-└── 📁 tests/                         # Test suite
-    ├── 📄 test_basic_simulation.m   # Basic functionality
-    ├── 📄 test_batch_processing.m   # Batch processing
-    └── 📄 test_reproducibility.m    # Reproducibility tests
+2D-Enzyme-Cascade-MSE/
+├── main_2d_pipeline.m              # Entry point
+├── run_simulation.m                # Helper script
+├── README.md / README.zh-CN.md     # Documentation (EN/ZH)
+├── LICENSE / CONTRIBUTING.md / AUTHORS.md / BUGFIX_SUMMARY.md
+├── docs/                           # Theory & guides
+│   ├── 2d_model_theory.en.md       # English theory
+│   └── 2d_model_theory.md          # Chinese theory
+├── modules/
+│   ├── config/
+│   │   ├── default_config.m        # Defaults (auto-dt, compute options)
+│   │   └── interactive_config.m    # Interactive setup (GPU mapping)
+│   ├── sim_core/
+│   │   ├── simulate_once.m         # Orchestrator
+│   │   ├── init_positions.m        # Initialization
+│   │   ├── diffusion_step.m        # Brownian motion
+│   │   ├── boundary_reflection.m   # Reflective boundaries
+│   │   ├── reaction_step.m         # Reactions (continuous timers, neighbor)
+│   │   ├── precompute_inhibition.m # Crowding inhibition
+│   │   ├── record_data.m           # Rates & curves
+│   │   └── neighbor_search.m       # pdist2 / rangesearch / GPU
+│   ├── batch/
+│   │   ├── run_batches.m           # Batch Monte Carlo
+│   │   └── auto_configure_parallel.m
+│   ├── viz/
+│   │   ├── viz_style.m
+│   │   ├── plot_product_curve.m
+│   │   ├── plot_event_map.m
+│   │   ├── plot_tracers.m
+│   │   ├── plot_reaction_rate_analysis.m
+│   │   ├── plot_dual_system_comparison.m
+│   │   ├── plot_batch_distribution.m
+│   │   └── plot_batch_timeseries_heatmap.m
+│   ├── rng/
+│   │   └── setup_rng.m
+│   ├── seed_utils/
+│   │   └── get_batch_seeds.m
+│   ├── data_import/
+│   │   ├── select_runs_interactive.m
+│   │   ├── load_seeds_from_file.m
+│   │   └── browse_history.m
+│   ├── io/
+│   │   ├── output_manager.m        # root-level out/
+│   │   ├── write_report_csv.m / save_timeseries.m / save_figures.m
+│   │   └── write_metadata.m        # run_metadata.json (+dt auto info)
+│   └── utils/
+│       ├── timer_busy_update.m
+│       ├── auto_adjust_dt.m / config_sanity_checks.m
+│       └── getfield_or.m
+└── out/                            # Created at runtime (root-level)
 ```
 
 ## 🤝 Contributing
