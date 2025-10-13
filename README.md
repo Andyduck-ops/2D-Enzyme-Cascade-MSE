@@ -862,7 +862,7 @@ end
 │   │   └── neighbor_search.m       # pdist2 / rangesearch / GPU
 │   ├── batch/
 │   │   ├── run_batches.m           # Batch Monte Carlo
-│   │   └── auto_configure_parallel.m
+│   │   └── auto_configure_parallel.m # parfor pool management (auto workers)
 │   ├── viz/
 │   │   ├── viz_style.m
 │   │   ├── plot_product_curve.m

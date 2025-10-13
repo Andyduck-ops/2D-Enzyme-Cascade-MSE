@@ -657,7 +657,7 @@ end
 │   │   └── neighbor_search.m       # pdist2 / rangesearch / GPU
 │   ├── batch/
 │   │   ├── run_batches.m           # 批次蒙特卡洛
-│   │   └── auto_configure_parallel.m
+│   │   └── auto_configure_parallel.m # 自动配置 parfor 并行池（自动选择 workers）
 │   ├── viz/
 │   │   ├── viz_style.m
 │   │   ├── plot_product_curve.m
