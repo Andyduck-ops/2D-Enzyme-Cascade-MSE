@@ -37,3 +37,9 @@ TESTING_GUIDE.md
 
 # PDF documents
 *.pdf
+
+# Implementation summary documents (temporary)
+*_SUMMARY.md
+*_COMPLETE.md
+COMMIT_MESSAGE.txt
+IMPLEMENTATION_*.md
