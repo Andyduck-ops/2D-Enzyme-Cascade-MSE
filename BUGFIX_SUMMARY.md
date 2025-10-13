@@ -1,5 +1,98 @@
 # Bug Fix Summary
 
+## 修复的问题 (2025-10-13)
+
+### 1. ✅ 反应“冷却期”被放大与遍历偏置导致精度失真
+**问题描述：**
+- 忙碌/周转时间以“整步”计数，`dt`稍大时会被夸大（例如真实0.01s被量化为0.1s），总体速率偏低；
+- 固定酶遍历顺序引入“先手抢占”偏置；
+- 线性近似概率`k·dt`在大`dt`下可溢出到>1。
+
+**修复方案：**
+- 改为“连续时间计时器”，定时器按秒递减（每步减`dt`），避免整步放大；
+- 每步随机化酶遍历顺序（`randperm`）以消除顺序偏置；
+- 线性近似模式增加[0,1]安全钳制；
+- 新增`config_sanity_checks()`对`k_max·dt`与扩散步长σ给出警告；
+- 新增`auto_adjust_dt()`自动将`dt`回退减半直至满足精度门槛（并记录日志）。
+
+**影响文件：**
+- `modules/utils/timer_busy_update.m`（连续时间计时器）
+- `modules/sim_core/reaction_step.m`（随机遍历、概率钳制）
+- `modules/utils/config_sanity_checks.m`（精度体检）
+- `modules/utils/auto_adjust_dt.m`、`main_2d_pipeline.m`（自动dt与日志）
+
+---
+
+### 2. ✅ 单次计算热点未优化、GPU开关仅影响RNG（易误导）
+**问题描述：**
+- 每步两次`pdist2`全距阵搜索是主耗时；
+- 交互里的GPU开关仅影响RNG（`gpurng`），不影响计算，造成“开了GPU也不快”的体验。
+
+**修复方案：**
+- 抽象邻域搜索后端：`pdist2` / `rangesearch`（KD-tree）/ GPU 矩阵乘法；
+- 新增计算开关：`config.compute.neighbor_backend`、`config.compute.use_gpu`；
+- 交互中将`batch.use_gpu`联动映射至`compute.use_gpu`（保持用户简单心智）。
+
+**影响文件：**
+- `modules/sim_core/neighbor_search.m`（新）
+- `modules/sim_core/reaction_step.m`（接入可插拔后端）
+- `modules/config/default_config.m`（新增compute配置）
+- `modules/config/interactive_config.m`（GPU交互联动与摘要打印）
+
+---
+
+### 3. ✅ 可视化不优雅（主题适配、箱线图贴边与标注重叠）
+**问题描述：**
+- 参考线与注释框固定黑白色，暗色主题下突兀；
+- 箱线图上下贴边，离群点/箱须“挤在边界”；
+- 类目多时刻度/标注重叠；事件点过密不通透。
+
+**修复方案：**
+- 主题自适应：参考线/注释框使用前景/背景色；
+- 全局`axis padded`减少剪切；事件点半透明；
+- 箱线图自动上下预留：边距=min(200, max(1, 0.05·跨度))；
+- 根据分组数动态`xlim`并旋转刻度（20°）减少重叠；
+- 统一图例字号使用配置。
+
+**影响文件：**
+- `modules/viz/viz_style.m`（tight→padded）
+- `modules/viz/plot_enhancement_factor.m`（主题自适应参考线与注释）
+- `modules/viz/plot_event_map.m`（MarkerFaceAlpha、图例字号）
+- `modules/viz/plot_reaction_rate_analysis.m`（图例字号统一）
+- `modules/viz/plot_batch_distribution.m`（箱线图y轴预留、刻度旋转、动态xlim）
+- `modules/config/default_config.m`（箱线图边距配置项）
+
+---
+
+### 4. ✅ 可复现记录增强（dt自适应日志与元数据）
+**问题描述：**
+- 自动调整`dt`后需要完整记录过程以保证复现。
+
+**修复方案：**
+- 在`out/.../data/`写入`dt_history.txt`记录初始/最终dt与历史序列；
+- 在`run_metadata.json`新增：`auto_dt_enabled`、`dt_initial`、`dt_final`、`dt_history`、`kdt_final`、`sigma_final`与目标阈值等。
+
+**影响文件：**
+- `main_2d_pipeline.m`（写入日志）
+- `modules/io/write_metadata.m`（新增元数据字段）
+
+---
+
+### 5. 🧹 清理冗余
+**内容：** 移除不再需要的 `复现seed.txt`。
+
+---
+
+## 测试建议（本次变更）
+- dt 收敛：逐步减半`dt`，产物曲线变化<5% 判为可接受；
+- 邻域后端一致性：同一seed下`pdist2`/`rangesearch`/GPU统计一致（波动范围内）；
+- 箱线图：样本带离群点/极值时不再贴边；多组类目刻度不重叠。
+
+## 版本信息
+- 修复日期：2025-10-13
+- 修复版本：v1.2.0
+- 修复人员：Kiro AI Assistant
+
 ## 修复的问题 (2025-10-10)
 
 ### 1. ❌ 批次运行不应该有 single_viz 文件夹
