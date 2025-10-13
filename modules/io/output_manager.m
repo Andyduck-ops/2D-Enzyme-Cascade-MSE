@@ -67,7 +67,7 @@ end
 
 % ========== Create Base Directory Structure ==========
 % Get base output directory from config
-base_dir = getfield_or(config, {'io', 'outdir'}, fullfile('2D', 'out'));
+base_dir = getfield_or(config, {'io', 'outdir'}, 'out');
 if ~exist(base_dir, 'dir')
     mkdir(base_dir);
 end

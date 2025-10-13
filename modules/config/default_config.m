@@ -131,8 +131,8 @@ config.batch.report_basename = 'batch_results';         % Report file prefix
 % -------------------------------------------------------------------------
 % M. IO Settings
 % -------------------------------------------------------------------------
-% Convention: out directory located under project 2D/out; main control script can override this path
-config.io.outdir = fullfile('2D', 'out');
+% Convention: out directory located under project root 'out/' (main sets absolute path)
+config.io.outdir = 'out';
 config.io.output_structure = 'timestamped';             % 'timestamped' | 'legacy'
 config.io.save_timeseries = true;                       % Save time-series product data
 config.io.write_metadata = true;                        % Write run metadata JSON
