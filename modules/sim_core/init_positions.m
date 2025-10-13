@@ -15,7 +15,7 @@ function state = init_positions(config)
 
 % ---------------- Basic Parameters ----------------
 L   = config.simulation_params.box_size;                      % Box length nm
-dt  = config.simulation_params.time_step; %#ok<NASGU>
+dt  = config.simulation_params.time_step;
 mode = config.simulation_params.simulation_mode;              % 'MSE'|'bulk' (compatible with legacy 'surface')
 
 % Particle/enzyme and geometry
@@ -116,6 +116,7 @@ state.gox_busy   = gox_busy;
 state.hrp_busy   = hrp_busy;
 state.gox_timer  = gox_timer;
 state.hrp_timer  = hrp_timer;
+state.dt         = dt;  % store time step for continuous timers
 
 % Metadata (optional)
 state.meta = struct( ...

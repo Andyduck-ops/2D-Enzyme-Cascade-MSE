@@ -52,11 +52,13 @@ end
 % Plot events
 has_any = false;
 if ~isempty(rc_gox)
-    scatter(ax, rc_gox(:,1), rc_gox(:,2), 24, plot_colors.GOx, 'filled', 'DisplayName', 'GOx Reactions');
+    scatter(ax, rc_gox(:,1), rc_gox(:,2), 24, plot_colors.GOx, 'filled', ...
+        'MarkerFaceAlpha', 0.45, 'DisplayName', 'GOx Reactions');
     has_any = true;
 end
 if ~isempty(rc_hrp)
-    scatter(ax, rc_hrp(:,1), rc_hrp(:,2), 24, plot_colors.HRP, 'filled', 'DisplayName', 'HRP Reactions');
+    scatter(ax, rc_hrp(:,1), rc_hrp(:,2), 24, plot_colors.HRP, 'filled', ...
+        'MarkerFaceAlpha', 0.45, 'DisplayName', 'HRP Reactions');
     has_any = true;
 end
 
@@ -65,7 +67,10 @@ xlim(ax, [0 L]); ylim(ax, [0 L]);
 title(ax, sprintf('Spatial Map of Reaction Events (%s mode)', mode));
 xlabel(ax, 'X (nm)'); ylabel(ax, 'Y (nm)');
 if has_any
-    legend(ax, 'Location', 'northeast');
+    lgd = legend(ax, 'Location', 'northeast');
+    if isfield(font_settings, 'legend_font_size')
+        lgd.FontSize = font_settings.legend_font_size;
+    end
 else
     text(0.5, 0.5, 'No reaction event data. Showing nothing.', 'HorizontalAlignment', 'center', 'Parent', ax);
 end

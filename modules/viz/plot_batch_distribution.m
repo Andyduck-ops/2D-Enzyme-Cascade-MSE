@@ -80,6 +80,30 @@ ylabel(ax1, 'Final Products', 'FontSize', font_settings.label_font_size);
 title(ax1, 'Distribution Statistics', 'FontSize', font_settings.title_font_size);
 viz_style(ax1, font_settings, viz_theme, config.plot_colors);
 grid(ax1, 'on');
+% Ensure some horizontal margin and rotate tick labels to avoid overlap when many groups
+try
+    % Infer number of groups from categorical labels
+    cats = unique(string(group_labels));
+    n_groups = numel(cats);
+    xlim(ax1, [0.5, n_groups + 0.5]);
+catch
+    xlim(ax1, [0.5, 2.5]);
+end
+try, xtickangle(ax1, 20); catch, end
+ax1.TickLabelInterpreter = 'none';
+
+% Expand y-limits to avoid visual crowding at top/bottom (boxes/outliers stacking)
+all_vals = data_combined(isfinite(data_combined));
+if ~isempty(all_vals)
+    yr = [min(all_vals), max(all_vals)];
+    dr = max(yr(2) - yr(1), eps);
+    pad_frac = getfield_or(config, {'plotting_controls','boxplot_y_pad_frac'}, 0.05);
+    pad_min  = getfield_or(config, {'plotting_controls','boxplot_y_pad_min'}, 1);
+    pad_max  = getfield_or(config, {'plotting_controls','boxplot_y_pad_max'}, 200);
+    pad = min(pad_max, max(pad_min, pad_frac * dr));
+    new_ylim = [max(0, yr(1) - pad), yr(2) + pad];
+    try, ylim(ax1, new_ylim); catch, end
+end
 hold(ax1, 'off');
 
 % --- Subplot 2: Overlaid Histogram ---

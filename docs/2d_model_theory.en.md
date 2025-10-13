@@ -92,6 +92,11 @@ $$p = 1 - \exp(-k_{\text{eff}} \cdot \Delta t), \text{ where } k_{\text{eff}} = 
 
 - Event coordinates: Sampled and recorded near the encounter pair (enzyme-substrate) for event heatmaps.
 - File: [2D/modules/sim_core/reaction_step.m](../modules/sim_core/reaction_step.m)
+ 
+Key implementation notes (accuracy and acceleration):
+- Per-step probability uses `p = 1 - exp(-k Δt)` by default; the linear approximation `k·Δt` is clamped to [0,1] when enabled.
+- Busy/turnover uses a continuous-time timer (seconds). Timers are decremented by `Δt` each step, avoiding step-rounding artifacts that over-extend cooldowns.
+- Neighbor search is pluggable: CPU `pdist2`, KD-tree `rangesearch` (if available), or GPU matrix multiply backend. See [2D/modules/sim_core/neighbor_search.m](../modules/sim_core/neighbor_search.m).
 
 ### 3.4 Crowding Inhibition (Local Modulation)
 

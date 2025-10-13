@@ -36,7 +36,10 @@ if ~isempty(time_axis) && ~isempty(rate_gox) && ~isempty(rate_hrp)
     xlabel(ax1, 'Time (s)');	
     ylabel(ax1, 'Instantaneous Rate (reactions/s)'); 
     title(ax1, 'Instantaneous Reaction Rate (Smoothed)'); 
-    legend(ax1, 'Location', 'northeast');
+    lg1 = legend(ax1, 'Location', 'northeast');
+    if isfield(config, 'font_settings') && isfield(config.font_settings, 'legend_font_size')
+        lg1.FontSize = config.font_settings.legend_font_size;
+    end
 else
     text(0.5, 0.5, 'No rate data', 'HorizontalAlignment', 'center', 'Parent', ax1);
     axis(ax1, 'off'); 
@@ -101,7 +104,10 @@ if enable_fit && ~isempty(time_axis) && ~isempty(rate_hrp)
     xlabel(ax2, 'Time (s)');
     ylabel(ax2, 'Instantaneous Rate (reactions/s)'); 
     title(ax2, 'HRP Reaction Rate with Exponential Fit'); 
-    legend(ax2, 'Location', 'northeast');
+    lg2 = legend(ax2, 'Location', 'northeast');
+    if isfield(config, 'font_settings') && isfield(config.font_settings, 'legend_font_size')
+        lg2.FontSize = config.font_settings.legend_font_size;
+    end
     hold(ax2, 'off'); 
 else
     text(0.5, 0.5, 'Fitting disabled or no HRP data', 'HorizontalAlignment', 'center', 'Parent', ax2);

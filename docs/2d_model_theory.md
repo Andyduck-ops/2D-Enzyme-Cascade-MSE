@@ -91,7 +91,13 @@ $$
 
 判定：采样 $u \sim U(0,1)$ ，若 $u < p$ ，则发生反应事件（S $\rightarrow$ I 或 I $\rightarrow$ P）。事件坐标：在相遇对（酶-底物）局部附近采样并记录，用于事件热力图。
 
-文件： [2D/modules/sim_core/reaction_step.m](../modules/sim_core/reaction_step.m)
+实现要点：
+- 单步概率：`P = 1 - exp(-k * Δt)`（默认）或线性近似`k·Δt`（已钳制到[0,1]）。
+- 忙碌/周转：采用“连续时间计时器”（以秒为单位），每步减少`Δt`，避免整步取整导致的冷却期夸大。
+- 邻域搜索：使用可插拔后端（`pdist2`/KD-Tree `rangesearch`/GPU 矩阵乘法）在半径内筛选接触对。
+
+文件： [2D/modules/sim_core/reaction_step.m](../modules/sim_core/reaction_step.m)，
+[2D/modules/sim_core/neighbor_search.m](../modules/sim_core/neighbor_search.m)
 
 ### 3.4 拥挤抑制（局部调制）
 

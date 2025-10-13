@@ -228,7 +228,7 @@ switch config.batch.seed_mode
         end
 end
 
-% GPU strategy
+% GPU strategy (RNG + compute convenience toggle)
 def_gpu = config.batch.use_gpu;
 val = input(sprintf('8) GPU strategy use_gpu [auto/on/off] [default=%s]: ', def_gpu), 's');
 if ~isempty(val)
@@ -238,6 +238,24 @@ if ~isempty(val)
     else
         fprintf('   Invalid input, keeping default: %s\n', def_gpu);
     end
+end
+% Map batch.use_gpu to compute.use_gpu for neighbor search acceleration (keep simple for users)
+if ~isfield(config, 'compute') || ~isstruct(config.compute)
+    config.compute = struct();
+end
+if ~isfield(config.compute, 'use_gpu') || isempty(config.compute.use_gpu)
+    config.compute.use_gpu = 'off';
+end
+switch lower(config.batch.use_gpu)
+    case 'on'
+        config.compute.use_gpu = 'on';
+    case 'auto'
+        % If user hasn't explicitly set compute.use_gpu elsewhere, adopt auto
+        if any(strcmpi(config.compute.use_gpu, {'off','auto'}))
+            config.compute.use_gpu = 'auto';
+        end
+    case 'off'
+        config.compute.use_gpu = 'off';
 end
 
 % parfor - auto-enabled by default, user can disable if needed
@@ -286,7 +304,15 @@ switch config.batch.seed_mode
     case 'per_batch_random'
         fprintf('  per-batch will auto-generate random seeds\n');
 end
-fprintf('GPU: %s | parfor: %s', upper(config.batch.use_gpu), tf(config.batch.use_parfor));
+% Summary of GPU and compute backend
+if ~isfield(config, 'compute') || ~isfield(config.compute, 'neighbor_backend')
+    neighbor_backend = 'auto';
+else
+    neighbor_backend = char(string(config.compute.neighbor_backend));
+end
+
+fprintf('GPU(RNG): %s | GPU(Compute): %s | Backend: %s | parfor: %s', ...
+    upper(config.batch.use_gpu), upper(getfield(config.compute, 'use_gpu')), neighbor_backend, tf(config.batch.use_parfor));
 if config.batch.use_parfor
     num_cores = feature('numcores');
     fprintf(' (auto: %d workers)', max(1, num_cores - 1));

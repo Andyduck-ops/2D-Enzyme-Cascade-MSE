@@ -22,9 +22,9 @@ use_accurate = config.simulation_params.use_accurate_probability;
 kcat_gox = config.particle_params.k_cat_GOx;
 kcat_hrp = config.particle_params.k_cat_HRP;
 
-% Turnover time (steps)
-turnover_steps_gox = max(1, round((1/max(kcat_gox, eps))/dt));
-turnover_steps_hrp = max(1, round((1/max(kcat_hrp, eps))/dt));
+% Turnover time (continuous seconds)
+turnover_time_gox = 1 / max(kcat_gox, eps);
+turnover_time_hrp = 1 / max(kcat_hrp, eps);
 
 % Reaction distances
 r_goxt = state.reaction_dist_GOx;
@@ -46,8 +46,9 @@ if use_accurate
     p_gox_base = 1 - exp(-kcat_gox * dt);
     p_hrp_base = 1 - exp(-kcat_hrp * dt);
 else
-    p_gox_base = kcat_gox * dt;
-    p_hrp_base = kcat_hrp * dt;
+    % Safe linear approximation with clamping
+    p_gox_base = min(max(kcat_gox * dt, 0), 1);
+    p_hrp_base = min(max(kcat_hrp * dt, 0), 1);
 end
 
 % Membrane region constraint parameters for MSE mode (compatible with legacy value 'surface')
@@ -64,15 +65,19 @@ event_coords_gox_step = zeros(0, 2);
 
 num_sub = size(state.substrate_pos, 1);
 if num_sub > 0 && ~isempty(state.gox_pos)
-    % Calculate distance matrix and find collision pairs
-    D_gox = pdist2(state.substrate_pos, state.gox_pos);
-    [sub_idx, gox_idx] = find(D_gox < r_goxt);
+    % Neighbor search (backend can be CPU/GPU/rangesearch)
+    backend = getfield_or(config, {'compute','neighbor_backend'}, 'auto');
+    use_gpu_compute = getfield_or(config, {'compute','use_gpu'}, 'off');
+    [sub_idx, gox_idx] = neighbor_search(state.substrate_pos, state.gox_pos, r_goxt, backend, use_gpu_compute);
 
     % Mark reacted substrates for unified deletion
     reacted_substrate_flags = false(num_sub, 1);
 
     num_gox = size(state.gox_pos, 1);
-    for e = 1:num_gox
+    % Randomize enzyme processing order to avoid selection bias
+    gox_order = randperm(num_gox);
+    for idx = 1:num_gox
+        e = gox_order(idx);
         if state.gox_busy(e), continue; end
         cand = sub_idx(gox_idx == e);
         if isempty(cand), continue; end
@@ -107,7 +112,7 @@ if num_sub > 0 && ~isempty(state.gox_pos)
             
             % Set busy and timer
             state.gox_busy(e)  = true;
-            state.gox_timer(e) = turnover_steps_gox;
+            state.gox_timer(e) = turnover_time_gox;  % seconds (continuous timer)
 
             reacted_gox_count = reacted_gox_count + 1;
             
@@ -130,16 +135,20 @@ event_coords_hrp_step = zeros(0, 2);
 
 num_int = size(state.intermediate_pos, 1);
 if num_int > 0 && ~isempty(state.hrp_pos)
-    % Calculate distance matrix and find collision pairs
-    D_hrp = pdist2(state.intermediate_pos, state.hrp_pos);
-    [int_idx, hrp_idx] = find(D_hrp < r_hrpt);
+    % Neighbor search (backend can be CPU/GPU/rangesearch)
+    backend = getfield_or(config, {'compute','neighbor_backend'}, 'auto');
+    use_gpu_compute = getfield_or(config, {'compute','use_gpu'}, 'off');
+    [int_idx, hrp_idx] = neighbor_search(state.intermediate_pos, state.hrp_pos, r_hrpt, backend, use_gpu_compute);
 
     % Mark reacted intermediates for unified deletion
     reacted_intermediate_flags = false(num_int, 1);
 
 
     num_hrp = size(state.hrp_pos, 1);
-    for e = 1:num_hrp
+    % Randomize enzyme processing order to avoid selection bias
+    hrp_order = randperm(num_hrp);
+    for idx = 1:num_hrp
+        e = hrp_order(idx);
         if state.hrp_busy(e), continue; end
         cand = int_idx(hrp_idx == e);
         if isempty(cand), continue; end
@@ -173,7 +182,7 @@ if num_int > 0 && ~isempty(state.hrp_pos)
             
             % Set busy and timer
             state.hrp_busy(e)  = true;
-            state.hrp_timer(e) = turnover_steps_hrp;
+            state.hrp_timer(e) = turnover_time_hrp;  % seconds (continuous timer)
             reacted_hrp_count = reacted_hrp_count + 1;
             
             % Record HRP event coordinates (this step)

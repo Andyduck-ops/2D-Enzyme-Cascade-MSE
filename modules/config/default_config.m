@@ -17,6 +17,11 @@ config.simulation_params.total_time = 100;              % s
 config.simulation_params.time_step = 0.1;               % s
 config.simulation_params.use_accurate_probability = true; % true: P=1-exp(-k*dt)
 config.simulation_params.simulation_mode = 'MSE';   % 'MSE' or 'bulk'
+% Auto-adapt time step to meet accuracy constraints (enabled by default)
+config.simulation_params.enable_auto_dt = true;      % auto adjust dt before run
+config.simulation_params.auto_dt.target_k_fraction = 0.05;   % ensure k_max*dt <= this
+config.simulation_params.auto_dt.target_sigma_fraction = 0.3; % sigma <= this * min(scale)
+config.simulation_params.auto_dt.target_sigma_abs_nm = 1.0;   % and sigma <= this (nm)
 
 % -------------------------------------------------------------------------
 % B. Particle and Molecular Properties
@@ -52,6 +57,10 @@ config.plotting_controls.force_cpu_mode = false;
 config.plotting_controls.progress_report_interval = 250;
 config.plotting_controls.data_recording_interval = 25;
 config.plotting_controls.snapshot_times = [0, 50, 100];
+% Box plot y-limits padding policy (for batch distribution plots)
+config.plotting_controls.boxplot_y_pad_frac = 0.05;   % fraction of data range (top & bottom)
+config.plotting_controls.boxplot_y_pad_min  = 1;      % absolute min padding (units)
+config.plotting_controls.boxplot_y_pad_max  = 200;    % absolute max padding (units)
 
 % -------------------------------------------------------------------------
 % F. Professional Plotting Color Controls
@@ -98,7 +107,15 @@ config.ui_controls.dual_system_comparison = false;      % Dual-system comparison
 config.ui_controls.enable_animation = false;            % Snapshot animation generation (requires snapshots)
 
 % -------------------------------------------------------------------------
-% K. Batch and Random Number Strategies
+% K. Compute/Acceleration Options
+% -------------------------------------------------------------------------
+% Neighbor search backend: 'auto' | 'pdist2' | 'rangesearch' | 'gpu'
+config.compute.neighbor_backend = 'auto';
+% GPU compute for neighbor search: 'off' | 'on' | 'auto'
+config.compute.use_gpu = 'off';
+
+% -------------------------------------------------------------------------
+% L. Batch and Random Number Strategies
 % -------------------------------------------------------------------------
 % seed_mode: 'fixed' | 'per_batch_random' | 'manual_list' | 'incremental'
 config.batch.batch_count = 1;
@@ -112,7 +129,7 @@ config.batch.num_workers = 'auto';                      % Always auto-detect CPU
 config.batch.report_basename = 'batch_results';         % Report file prefix
 
 % -------------------------------------------------------------------------
-% L. IO Settings
+% M. IO Settings
 % -------------------------------------------------------------------------
 % Convention: out directory located under project 2D/out; main control script can override this path
 config.io.outdir = fullfile('2D', 'out');

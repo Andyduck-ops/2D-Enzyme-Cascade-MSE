@@ -196,6 +196,16 @@ Batch: [run_batches()](modules/batch/run_batches.m)
 RNG: [setup_rng()](modules/rng/setup_rng.m)
 Seeds: [get_batch_seeds()](modules/seed_utils/get_batch_seeds.m)
 
+### Accuracy & Acceleration (Key Settings)
+- Continuous busy timers: cool-downs are tracked in seconds (no step-rounding), improving high-rate accuracy.
+- Neighbor search backends (single-run acceleration):
+  ```matlab
+  % Compute options
+  config.compute.neighbor_backend = 'auto';    % 'auto' | 'pdist2' | 'rangesearch' | 'gpu'
+  config.compute.use_gpu = 'off';              % 'off'  | 'on'     | 'auto'
+  ```
+- Time-step sanity: prefer `k_max * dt <= 0.05` and `sqrt(2*D_bulk*dt) << min(reaction radii, film thickness)`. Warnings are printed by `config_sanity_checks()`.
+
 ## 📋 Table of Contents
 
 - [Project Overview](#-project-overview)

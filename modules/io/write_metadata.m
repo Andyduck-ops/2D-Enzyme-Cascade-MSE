@@ -93,6 +93,21 @@ metadata.parameters.dual_comparison = is_dual;
 metadata.parameters.box_size = getfield_or(config, {'simulation_params', 'box_size'}, 0);
 metadata.parameters.total_time = getfield_or(config, {'simulation_params', 'total_time'}, 0);
 metadata.parameters.time_step = getfield_or(config, {'simulation_params', 'time_step'}, 0);
+metadata.parameters.auto_dt_enabled = getfield_or(config, {'simulation_params','enable_auto_dt'}, false);
+% Record dt auto-adjust information if available
+if isfield(config, 'meta') && isfield(config.meta, 'dt_auto') && ~isempty(config.meta.dt_auto)
+    dta = config.meta.dt_auto;
+    metadata.parameters.dt_initial = getfield(dta, 'initial_dt');
+    metadata.parameters.dt_final = getfield(dta, 'final_dt');
+    metadata.parameters.dt_history = getfield(dta, 'history');
+    metadata.parameters.kdt_final = getfield(dta, 'kdt_final');
+    metadata.parameters.sigma_final = getfield(dta, 'sigma_final');
+    metadata.parameters.dt_targets = struct( ...
+        'k_fraction', getfield(dta,'target_k_fraction'), ...
+        'sigma_fraction', getfield(dta,'target_sigma_fraction'), ...
+        'sigma_abs_nm', getfield(dta,'target_sigma_abs_nm') ...
+    );
+end
 metadata.parameters.diff_coeff_bulk = getfield_or(config, {'particle_params', 'diff_coeff_bulk'}, 0);
 metadata.parameters.diff_coeff_film = getfield_or(config, {'particle_params', 'diff_coeff_film'}, 0);
 metadata.parameters.k_cat_GOx = getfield_or(config, {'particle_params', 'k_cat_GOx'}, 0);

@@ -185,3 +185,21 @@ parpool(8);
 - **2025-10-10**: 添加自动CPU核心检测功能
 - 新增 `config.batch.num_workers` 配置项
 - 新增 `auto_configure_parallel()` 函数
+
+---
+
+## 单次运行加速 / Single-Run Acceleration
+
+除批处理并行外，单次仿真的邻域搜索已抽象为可插拔后端（默认自动选择）：
+
+```matlab
+% 计算/加速选项（默认自动）
+config.compute.neighbor_backend = 'auto';    % 'auto' | 'pdist2' | 'rangesearch' | 'gpu'
+config.compute.use_gpu = 'off';              % 'off' | 'on' | 'auto'
+```
+
+- `rangesearch` 需要 Statistics and Machine Learning Toolbox；存在时更高效。
+- `gpu` 后端通过矩阵乘法在 GPU 上构造半径掩码，适合较大的配对搜索（需 Parallel Computing Toolbox / GPU 支持）。
+- 若 GPU 不可用或失败，将自动回退至 CPU 后端。
+
+注意：单次仿真内部尚未使用 `parfor`；跨批并行与单次加速可以叠加使用。

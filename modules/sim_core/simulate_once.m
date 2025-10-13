@@ -40,6 +40,13 @@ if strcmpi(mode,'surface')
     mode = 'MSE'; 
 end
 
+% Sanity checks for time scale and step size
+try
+    config_sanity_checks(config); % [config_sanity_checks()](../utils/config_sanity_checks.m:1)
+catch ME
+    fprintf('config_sanity_checks warning: %s\n', ME.message);
+end
+
 
 % 1) Initialization + precomputation
 state = init_positions(config);           % [init_positions()](./init_positions.m:1)

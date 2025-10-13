@@ -138,6 +138,37 @@ config.io.data_dir = output_paths.data_dir;
 config.io.figures_dir = output_paths.figures_dir;
 config.io.single_viz_dir = output_paths.single_viz_dir;
 
+% --- 2.6) Auto-adjust dt for accuracy and log history ---
+try
+    if getfield_or(config, {'simulation_params','enable_auto_dt'}, false)
+        [config, dt_info] = auto_adjust_dt(config); % [auto_adjust_dt()](modules/utils/auto_adjust_dt.m:1)
+        % Write dt history log for reproducibility
+        try
+            dt_log_path = fullfile(config.io.data_dir, 'dt_history.txt');
+            fid = fopen(dt_log_path, 'w');
+            if fid ~= -1
+                fprintf(fid, 'initial_dt = %.12g\n', dt_info.initial_dt);
+                fprintf(fid, 'final_dt = %.12g\n', dt_info.final_dt);
+                fprintf(fid, 'history = [%s]\n', strjoin(arrayfun(@(x) sprintf('%.12g', x), dt_info.history, 'UniformOutput', false), ', '));
+                fprintf(fid, 'kmax = %.6g\nD_bulk = %.6g\nmin_scale = %.6g\n', dt_info.kmax, dt_info.D_bulk, dt_info.min_scale);
+                fprintf(fid, 'target_k_fraction = %.6g\n', dt_info.target_k_fraction);
+                fprintf(fid, 'target_sigma_fraction = %.6g\n', dt_info.target_sigma_fraction);
+                fprintf(fid, 'target_sigma_abs_nm = %.6g\n', dt_info.target_sigma_abs_nm);
+                fprintf(fid, 'kdt_final = %.6g\n', dt_info.kdt_final);
+                fprintf(fid, 'sigma_final_nm = %.6g\n', dt_info.sigma_final);
+                fclose(fid);
+                fprintf('Auto-dt log written: %s\n', dt_log_path);
+            else
+                warning('Failed to open dt_history.txt for writing.');
+            end
+        catch ME
+            fprintf('auto_adjust_dt: failed to write dt history (%s)\n', ME.message);
+        end
+    end
+catch ME
+    fprintf('auto_adjust_dt warning: %s\n', ME.message);
+end
+
 % Track output files for metadata
 output_files = struct();
 output_files.figures = {};

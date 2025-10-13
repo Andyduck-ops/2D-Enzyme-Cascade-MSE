@@ -26,7 +26,8 @@ ax.FontName = getfield_or(font_settings, 'global_font_name', 'Arial');
 ax.FontSize = getfield_or(font_settings, 'axis_font_size', 10);
 ax.LineWidth = 1.0;
 box(ax, 'on');
-axis(ax, 'tight');
+% Provide a little padding to avoid label/markers clipping
+axis(ax, 'padded');
 grid(ax, 'on');
 ax.GridLineStyle = ':';
 ax.GridAlpha = 0.5;
