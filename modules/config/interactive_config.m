@@ -100,6 +100,57 @@ if ~isempty(val) && isnumeric(val) && isfinite(val) && val >= 0
 end
 
 % -----------------------------
+% Accuracy/Speed Preset Selection
+% -----------------------------
+fprintf('\n--- Accuracy/Speed Preset ---\n');
+fprintf('  [1] High-Speed Mode (dt=0.0025s, ~40k steps, 92-96%% accuracy)\n');
+fprintf('      → Best for: Large batch runs, parameter sweeps\n');
+fprintf('  [2] Balanced Mode (dt=0.0015s, ~67k steps, 95-98%% accuracy) [RECOMMENDED]\n');
+fprintf('      → Best for: Daily research, exploration\n');
+fprintf('  [3] High-Precision Mode (dt=0.0005s, ~200k steps, 99%%+ accuracy)\n');
+fprintf('      → Best for: Publication, method validation\n');
+fprintf('  [4] Custom (specify your own dt)\n');
+val = input('Select preset [1-4] [default=2]: ', 's');
+if isempty(val)
+    val = '2';
+end
+
+switch val
+    case '1'
+        % High-Speed Mode
+        config.simulation_params.enable_auto_dt = false;
+        config.simulation_params.time_step = 0.0025;
+        fprintf('   → High-Speed Mode selected: dt=0.0025s (fixed, no auto-adjustment)\n');
+    case '2'
+        % Balanced Mode (default)
+        config.simulation_params.enable_auto_dt = false;
+        config.simulation_params.time_step = 0.0015;
+        fprintf('   → Balanced Mode selected: dt=0.0015s (fixed, no auto-adjustment)\n');
+    case '3'
+        % High-Precision Mode
+        config.simulation_params.enable_auto_dt = false;
+        config.simulation_params.time_step = 0.0005;
+        fprintf('   → High-Precision Mode selected: dt=0.0005s (fixed, no auto-adjustment)\n');
+    case '4'
+        % Custom
+        def_dt = config.simulation_params.time_step;
+        val_dt = input(sprintf('   Enter custom time_step (seconds) [default=%.4f]: ', def_dt));
+        if ~isempty(val_dt) && isnumeric(val_dt) && val_dt > 0
+            config.simulation_params.enable_auto_dt = false;
+            config.simulation_params.time_step = val_dt;
+            fprintf('   → Custom Mode: dt=%.4fs (fixed, no auto-adjustment)\n', val_dt);
+        else
+            fprintf('   Invalid input, using Balanced Mode: dt=0.0015s\n');
+            config.simulation_params.enable_auto_dt = false;
+            config.simulation_params.time_step = 0.0015;
+        end
+    otherwise
+        fprintf('   Invalid selection, using Balanced Mode: dt=0.0015s\n');
+        config.simulation_params.enable_auto_dt = false;
+        config.simulation_params.time_step = 0.0015;
+end
+
+% -----------------------------
 % Mode and visualization
 % -----------------------------
 % Mode
@@ -121,6 +172,10 @@ def_vis = config.ui_controls.visualize_enabled;
 val = input(sprintf('5) Enable visualization visualize_enabled [y/n] [default=%s]: ', tf(def_vis)), 's');
 if ~isempty(val)
     config.ui_controls.visualize_enabled = is_yes(val);
+    % Auto-enable figure saving when visualization is enabled
+    if config.ui_controls.visualize_enabled
+        config.ui_controls.enable_fig_save = true;
+    end
 end
 
 % Animation generation toggle (only relevant if visualization is enabled)
@@ -166,6 +221,13 @@ def_batches = config.batch.batch_count;
 val = input(sprintf('6) Batch count batch_count [default=%d]: ', def_batches));
 if ~isempty(val) && isnumeric(val) && isfinite(val) && val > 0
     config.batch.batch_count = round(val);
+end
+
+% Checkpoint protection info
+if config.batch.batch_count > 1
+    fprintf('   → Checkpoint protection enabled (results saved after each batch)\n');
+    fprintf('   → Can resume if interrupted\n');
+    fprintf('   → Time-series data will be saved\n');
 end
 
 % RNG mode

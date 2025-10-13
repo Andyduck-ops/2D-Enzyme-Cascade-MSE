@@ -1,28 +1,39 @@
-function v = getfield_or(s, key, default)
-% GETFIELD_OR Get field or nested field from structure, return default if not exists
+function v = getfield_or(s, path, default)
+% GETFIELD_OR Get nested struct field with default fallback
+%
 % Usage:
-%   v = getfield_or(s, 'field', default)
-%   v = getfield_or(s, {'a','b','c'}, default)
+%   value = getfield_or(struct, 'field', default)
+%   value = getfield_or(struct, {'nested','field'}, default)
+%
+% Inputs:
+%   s: struct to query
+%   path: field name (string) or cell array of nested field names
+%   default: default value if field doesn't exist
+%
+% Output:
+%   v: field value if exists, otherwise default
+%
+% Examples:
+%   config.io.outdir = 'out';
+%   getfield_or(config, {'io','outdir'}, 'default')  % returns 'out'
+%   getfield_or(config, {'io','missing'}, 'default') % returns 'default'
 
 v = default;
 try
-    % Single field name
-    if ischar(key) || (isstring(key) && isscalar(key))
-        k = char(key);
-        if isstruct(s) && isfield(s, k)
-            v = s.(k);
+    % Handle single string path
+    if ischar(path) || isstring(path)
+        if isstruct(s) && isfield(s, char(path))
+            v = s.(char(path));
         end
         return;
     end
-
-    % Nested path: cell string array
-    for i = 1:numel(key)
-        k = key{i};
-        if isstring(k), k = char(k); end
-        if isstruct(s) && isfield(s, k)
-            s = s.(k);
+    
+    % Handle cell array path (nested fields)
+    for i = 1:numel(path)
+        key = path{i};
+        if isstruct(s) && isfield(s, key)
+            s = s.(key);
         else
-            v = default;
             return;
         end
     end
