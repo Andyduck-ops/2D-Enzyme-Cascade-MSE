@@ -659,22 +659,22 @@ end
 │   │   ├── run_batches.m           # 批次蒙特卡洛
 │   │   └── auto_configure_parallel.m # 自动配置 parfor 并行池（自动选择 workers）
 │   ├── viz/
-│   │   ├── viz_style.m
-│   │   ├── plot_product_curve.m
-│   │   ├── plot_event_map.m
-│   │   ├── plot_tracers.m
-│   │   ├── plot_reaction_rate_analysis.m
-│   │   ├── plot_dual_system_comparison.m
-│   │   ├── plot_batch_distribution.m
-│   │   └── plot_batch_timeseries_heatmap.m
+│   │   ├── viz_style.m                 # 统一风格（主题自适应）
+│   │   ├── plot_product_curve.m        # 产物动力学曲线
+│   │   ├── plot_event_map.m            # 反应事件空间分布图
+│   │   ├── plot_tracers.m              # 粒子轨迹可视化
+│   │   ├── plot_reaction_rate_analysis.m # 反应速率诊断 + 指数拟合
+│   │   ├── plot_dual_system_comparison.m # Bulk vs MSE 平均±标准差曲线
+│   │   ├── plot_batch_distribution.m   # 箱线图 + 直方图叠加
+│   │   └── plot_batch_timeseries_heatmap.m # 批次时序热力图
 │   ├── rng/
-│   │   └── setup_rng.m
+│   │   └── setup_rng.m                 # CPU/GPU 随机数播种（可复现）
 │   ├── seed_utils/
-│   │   └── get_batch_seeds.m
+│   │   └── get_batch_seeds.m           # 按策略生成批次种子列表
 │   ├── data_import/
-│   │   ├── select_runs_interactive.m
-│   │   ├── load_seeds_from_file.m
-│   │   └── browse_history.m
+│   │   ├── select_runs_interactive.m   # 交互式选择历史运行
+│   │   ├── load_seeds_from_file.m      # 从历史文件导入种子
+│   │   └── browse_history.m            # 命令行历史浏览器
 │   ├── io/
 │   │   ├── output_manager.m        # 根级 out/
 │   │   ├── write_report_csv.m / save_timeseries.m / save_figures.m

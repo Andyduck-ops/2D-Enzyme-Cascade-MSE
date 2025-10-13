@@ -864,22 +864,22 @@ end
 │   │   ├── run_batches.m           # Batch Monte Carlo
 │   │   └── auto_configure_parallel.m # parfor pool management (auto workers)
 │   ├── viz/
-│   │   ├── viz_style.m
-│   │   ├── plot_product_curve.m
-│   │   ├── plot_event_map.m
-│   │   ├── plot_tracers.m
-│   │   ├── plot_reaction_rate_analysis.m
-│   │   ├── plot_dual_system_comparison.m
-│   │   ├── plot_batch_distribution.m
-│   │   └── plot_batch_timeseries_heatmap.m
+│   │   ├── viz_style.m                 # Unified styling (theme-aware)
+│   │   ├── plot_product_curve.m        # Product kinetics over time
+│   │   ├── plot_event_map.m            # Spatial reaction event map
+│   │   ├── plot_tracers.m              # Particle trajectory visualization
+│   │   ├── plot_reaction_rate_analysis.m # Rate diagnostics + exponential fit
+│   │   ├── plot_dual_system_comparison.m # Bulk vs MSE mean±SD curves
+│   │   ├── plot_batch_distribution.m   # Box plot + overlaid histograms
+│   │   └── plot_batch_timeseries_heatmap.m # Batch timeseries heatmap
 │   ├── rng/
-│   │   └── setup_rng.m
+│   │   └── setup_rng.m                 # Seed CPU/GPU RNG deterministically
 │   ├── seed_utils/
-│   │   └── get_batch_seeds.m
+│   │   └── get_batch_seeds.m           # Generate seed list by mode
 │   ├── data_import/
-│   │   ├── select_runs_interactive.m
-│   │   ├── load_seeds_from_file.m
-│   │   └── browse_history.m
+│   │   ├── select_runs_interactive.m   # Pick prior runs interactively
+│   │   ├── load_seeds_from_file.m      # Load seeds from history file
+│   │   └── browse_history.m            # CLI history browser
 │   ├── io/
 │   │   ├── output_manager.m        # root-level out/
 │   │   ├── write_report_csv.m / save_timeseries.m / save_figures.m
