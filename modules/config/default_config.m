@@ -109,10 +109,28 @@ config.ui_controls.enable_animation = false;            % Snapshot animation gen
 % -------------------------------------------------------------------------
 % K. Compute/Acceleration Options
 % -------------------------------------------------------------------------
-% Neighbor search backend: 'auto' | 'pdist2' | 'rangesearch' | 'gpu'
+% Neighbor search backend: 'auto' | 'pdist2' | 'rangesearch' | 'kdtree' | 'gpu'
 config.compute.neighbor_backend = 'auto';
 % GPU compute for neighbor search: 'off' | 'on' | 'auto'
 config.compute.use_gpu = 'off';
+
+% -------------------------------------------------------------------------
+% K2. Neighbor Search Optimization (P0/P1/P2)
+% -------------------------------------------------------------------------
+% Verlet neighbor list parameters
+config.neighbor.r_skin_nm = 1.5;              % Skin buffer width (nm), recommend 0.5-1.0 × r_react
+config.neighbor.rebuild_stride = 10;          % Rebuild every N steps
+config.neighbor.max_drift_nm = 0.75;          % Rebuild if max drift > threshold (nm)
+% Cell list parameters
+config.neighbor.cell_size_factor = 1.0;       % cell_size = (r_react + r_skin) × factor
+% Contact cache parameters
+config.neighbor.r_buffer = 2.0;               % Buffer radius for contact cache (nm)
+
+% -------------------------------------------------------------------------
+% K3. Reaction Check Optimization (P2)
+% -------------------------------------------------------------------------
+% Reaction check stride: 1 = every step, 2-3 = every m steps
+config.reaction_check_stride = 1;
 
 % -------------------------------------------------------------------------
 % L. Batch and Random Number Strategies

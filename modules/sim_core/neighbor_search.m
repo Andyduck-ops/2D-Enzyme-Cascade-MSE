@@ -1,17 +1,24 @@
-function [i_idx, j_idx] = neighbor_search(A, B, r, backend, use_gpu)
+function [i_idx, j_idx] = neighbor_search(A, B, r, backend, use_gpu, varargin)
 % NEIGHBOR_SEARCH Find pair indices (i,j) where distance(A(i,:), B(j,:)) < r
 % Usage:
-%   [i_idx, j_idx] = neighbor_search(A, B, r, backend, use_gpu)
+%   [i_idx, j_idx] = neighbor_search(A, B, r, backend, use_gpu, searcher)
 % Inputs:
 %   - A [NA x d], B [NB x d]
 %   - r scalar radius
-%   - backend: 'auto' | 'pdist2' | 'rangesearch' | 'gpu'
+%   - backend: 'auto' | 'pdist2' | 'rangesearch' | 'kdtree' | 'gpu'
 %   - use_gpu: 'off' | 'on' | 'auto'
+%   - searcher: (optional) cached KDTreeSearcher for rangesearch/kdtree backend
 % Output:
 %   - i_idx, j_idx: column vectors of indices into A and B
 
 if nargin < 4 || isempty(backend), backend = 'auto'; end
 if nargin < 5 || isempty(use_gpu), use_gpu = 'off'; end
+
+% Extract optional cached searcher
+searcher = [];
+if nargin >= 6 && ~isempty(varargin{1})
+    searcher = varargin{1};
+end
 
 % Decide backend
 if strcmpi(backend, 'auto')
@@ -26,11 +33,36 @@ else
     chosen = lower(string(backend));
 end
 
+% Handle 'kdtree' as alias for 'rangesearch'
+if strcmpi(chosen, 'kdtree')
+    chosen = 'rangesearch';
+end
+
 switch char(chosen)
     case 'gpu'
         [i_idx, j_idx] = neighbor_gpu(A, B, r);
+    case 'celllist'
+        % Cell list backend (P1 optimization)
+        % Requires box_size in varargin{2} and optional cell_list in varargin{3}
+        if nargin >= 7 && ~isempty(varargin{2})
+            box_size = varargin{2};
+            cell_list_B = [];
+            if nargin >= 8 && ~isempty(varargin{3})
+                cell_list_B = varargin{3};
+            end
+            [i_idx, j_idx] = neighbor_celllist(A, B, r, box_size, cell_list_B);
+        else
+            warning('neighbor_search:celllist_no_boxsize', ...
+                'celllist backend requires box_size, falling back to rangesearch');
+            [i_idx, j_idx] = neighbor_rangesearch(A, B, r);
+        end
     case 'rangesearch'
-        [i_idx, j_idx] = neighbor_rangesearch(A, B, r);
+        if ~isempty(searcher)
+            % Use cached searcher
+            [i_idx, j_idx, ~] = neighbor_kdtree(A, B, r, searcher);
+        else
+            [i_idx, j_idx] = neighbor_rangesearch(A, B, r);
+        end
     otherwise % 'pdist2'
         [i_idx, j_idx] = neighbor_pdist2(A, B, r);
 end

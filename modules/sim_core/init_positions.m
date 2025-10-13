@@ -96,6 +96,22 @@ hrp_busy  = false(hrp_n, 1);
 gox_timer = zeros(gox_n, 1);
 hrp_timer = zeros(hrp_n, 1);
 
+% ---------------- Build KD-tree searchers for enzymes (P0 optimization) ----------------
+% Check if Statistics Toolbox available
+has_stats_toolbox = exist('KDTreeSearcher', 'class') == 8;
+
+if has_stats_toolbox && ~isempty(gox_pos)
+    state.gox_searcher = KDTreeSearcher(gox_pos);
+else
+    state.gox_searcher = [];
+end
+
+if has_stats_toolbox && ~isempty(hrp_pos)
+    state.hrp_searcher = KDTreeSearcher(hrp_pos);
+else
+    state.hrp_searcher = [];
+end
+
 % ---------------- Assemble state ----------------
 state.enzyme_pos   = enzyme_pos;
 state.enzyme_type  = enzyme_type;

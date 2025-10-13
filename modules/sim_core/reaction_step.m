@@ -65,15 +65,48 @@ event_coords_gox_step = zeros(0, 2);
 
 num_sub = size(state.substrate_pos, 1);
 if num_sub > 0 && ~isempty(state.gox_pos)
-    % Neighbor search (backend can be CPU/GPU/rangesearch)
-    backend = getfield_or(config, {'compute','neighbor_backend'}, 'auto');
-    use_gpu_compute = getfield_or(config, {'compute','use_gpu'}, 'off');
-    [sub_idx, gox_idx] = neighbor_search(state.substrate_pos, state.gox_pos, r_goxt, backend, use_gpu_compute);
+    % ROI pre-filtering for MSE mode (P0 optimization)
+    if is_mse_mode
+        [sub_pos_roi, sub_ids_roi, sub_mask] = roi_filter(...
+            state.substrate_pos, state.substrate_ids, state.particle_center, ...
+            pr, film_r, r_goxt);
+        
+        % Neighbor search on filtered subset
+        backend = getfield_or(config, {'compute','neighbor_backend'}, 'auto');
+        use_gpu_compute = getfield_or(config, {'compute','use_gpu'}, 'off');
+        
+        % Use cached KD-tree searcher if available
+        searcher = [];
+        if isfield(state, 'gox_searcher') && ~isempty(state.gox_searcher)
+            searcher = state.gox_searcher;
+        end
+        
+        [sub_idx_roi, gox_idx] = neighbor_search(sub_pos_roi, state.gox_pos, r_goxt, backend, use_gpu_compute, searcher);
+        
+        % Map back to original indices
+        sub_idx_orig = find(sub_mask);
+        sub_idx = sub_idx_orig(sub_idx_roi);
+    else
+        % Bulk mode: no ROI filtering
+        backend = getfield_or(config, {'compute','neighbor_backend'}, 'auto');
+        use_gpu_compute = getfield_or(config, {'compute','use_gpu'}, 'off');
+        
+        % Use cached KD-tree searcher if available
+        searcher = [];
+        if isfield(state, 'gox_searcher') && ~isempty(state.gox_searcher)
+            searcher = state.gox_searcher;
+        end
+        
+        [sub_idx, gox_idx] = neighbor_search(state.substrate_pos, state.gox_pos, r_goxt, backend, use_gpu_compute, searcher);
+    end
 
     % Mark reacted substrates for unified deletion
     reacted_substrate_flags = false(num_sub, 1);
 
     num_gox = size(state.gox_pos, 1);
+    % Vectorized random number generation (P0 optimization)
+    rand_vals_gox = rand(num_gox, 1);
+    
     % Randomize enzyme processing order to avoid selection bias
     gox_order = randperm(num_gox);
     for idx = 1:num_gox
@@ -98,7 +131,7 @@ if num_sub > 0 && ~isempty(state.gox_pos)
         end
 
         p_eff = p_gox_base * inhib_gox(e);
-        if rand() < p_eff
+        if rand_vals_gox(e) < p_eff
             % Record reaction position and ID
             reacted_pos = state.substrate_pos(selected_sub, :);
             reacted_id  = state.substrate_ids(selected_sub);
@@ -135,16 +168,49 @@ event_coords_hrp_step = zeros(0, 2);
 
 num_int = size(state.intermediate_pos, 1);
 if num_int > 0 && ~isempty(state.hrp_pos)
-    % Neighbor search (backend can be CPU/GPU/rangesearch)
-    backend = getfield_or(config, {'compute','neighbor_backend'}, 'auto');
-    use_gpu_compute = getfield_or(config, {'compute','use_gpu'}, 'off');
-    [int_idx, hrp_idx] = neighbor_search(state.intermediate_pos, state.hrp_pos, r_hrpt, backend, use_gpu_compute);
+    % ROI pre-filtering for MSE mode (P0 optimization)
+    if is_mse_mode
+        [int_pos_roi, int_ids_roi, int_mask] = roi_filter(...
+            state.intermediate_pos, state.intermediate_ids, state.particle_center, ...
+            pr, film_r, r_hrpt);
+        
+        % Neighbor search on filtered subset
+        backend = getfield_or(config, {'compute','neighbor_backend'}, 'auto');
+        use_gpu_compute = getfield_or(config, {'compute','use_gpu'}, 'off');
+        
+        % Use cached KD-tree searcher if available
+        searcher = [];
+        if isfield(state, 'hrp_searcher') && ~isempty(state.hrp_searcher)
+            searcher = state.hrp_searcher;
+        end
+        
+        [int_idx_roi, hrp_idx] = neighbor_search(int_pos_roi, state.hrp_pos, r_hrpt, backend, use_gpu_compute, searcher);
+        
+        % Map back to original indices
+        int_idx_orig = find(int_mask);
+        int_idx = int_idx_orig(int_idx_roi);
+    else
+        % Bulk mode: no ROI filtering
+        backend = getfield_or(config, {'compute','neighbor_backend'}, 'auto');
+        use_gpu_compute = getfield_or(config, {'compute','use_gpu'}, 'off');
+        
+        % Use cached KD-tree searcher if available
+        searcher = [];
+        if isfield(state, 'hrp_searcher') && ~isempty(state.hrp_searcher)
+            searcher = state.hrp_searcher;
+        end
+        
+        [int_idx, hrp_idx] = neighbor_search(state.intermediate_pos, state.hrp_pos, r_hrpt, backend, use_gpu_compute, searcher);
+    end
 
     % Mark reacted intermediates for unified deletion
     reacted_intermediate_flags = false(num_int, 1);
 
 
     num_hrp = size(state.hrp_pos, 1);
+    % Vectorized random number generation (P0 optimization)
+    rand_vals_hrp = rand(num_hrp, 1);
+    
     % Randomize enzyme processing order to avoid selection bias
     hrp_order = randperm(num_hrp);
     for idx = 1:num_hrp
@@ -167,7 +233,7 @@ if num_int > 0 && ~isempty(state.hrp_pos)
         end
 
         p_eff = p_hrp_base * inhib_hrp(e);
-        if rand() < p_eff
+        if rand_vals_hrp(e) < p_eff
             % Record reaction position and ID
             reacted_pos = state.intermediate_pos(selected_int, :);
             reacted_id  = state.intermediate_ids(selected_int);
