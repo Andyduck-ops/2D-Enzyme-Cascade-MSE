@@ -187,6 +187,32 @@ RNG 设置：[setup_rng()](modules/rng/setup_rng.m)
   ```
 - 步长体检建议：优先满足`k_max * dt ≤ 0.05`，且`sqrt(2*D_bulk*dt) ≪ min(反应半径, 薄膜厚度)`；`config_sanity_checks()`会打印提醒。
 
+- 自动自适应 `dt`（默认开启）
+  ```matlab
+  % 自动回退 dt 直至满足门槛，并记录历史
+  config.simulation_params.enable_auto_dt = true;
+  % 门槛（可选调节）
+  config.simulation_params.auto_dt.target_k_fraction   = 0.05;  % 约束 k_max*dt ≤ 该值
+  config.simulation_params.auto_dt.target_sigma_fraction = 0.3; % 约束 σ ≤ 该比例·最小几何尺度
+  config.simulation_params.auto_dt.target_sigma_abs_nm   = 1.0; % 且 σ ≤ 该绝对上限
+  ```
+  - 整个批次共享同一“自适应后的 dt”（在运行前确定）；
+  - 输出会在`out/.../data/dt_history.txt`记录初始/最终 dt 与迭代历史；
+  - `run_metadata.json`中也会写入`dt_initial/dt_final/dt_history/kdt_final/sigma_final`等字段，保证完全复现。
+
+- 交互 GPU 选项更简单
+  - 交互里的`GPU strategy use_gpu`现在会自动映射到计算后端：
+    - `on` 开启 GPU 邻域搜索（可用时），`auto` 自动检测且不可用时回退 CPU，`off` 固定 CPU；
+    - RNG 的 GPU 种子设置也同时保持一致。
+
+- 箱线图可读性（批次可视化）
+  - 已默认增加上下留白，避免箱须/离群点贴边；如需调整：
+    ```matlab
+    config.plotting_controls.boxplot_y_pad_frac = 0.05; % 留白占数据跨度比例
+    config.plotting_controls.boxplot_y_pad_min  = 1;    % 留白下限
+    config.plotting_controls.boxplot_y_pad_max  = 200;  % 留白上限
+    ```
+
 ## 📋 目录
 
 - [项目概览](#-项目概览)
