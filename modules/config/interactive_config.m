@@ -99,6 +99,13 @@ if ~isempty(val) && isnumeric(val) && isfinite(val) && val >= 0
     config.particle_params.num_substrate = round(val);
 end
 
+% Simulation time
+def_total_time = config.simulation_params.total_time;
+val = input(sprintf('4) Simulation time total_time (seconds) [default=%g]: ', def_total_time));
+if ~isempty(val) && isnumeric(val) && isfinite(val) && val > 0
+    config.simulation_params.total_time = val;
+end
+
 % -----------------------------
 % Accuracy/Speed Preset Selection
 % -----------------------------
@@ -155,7 +162,7 @@ end
 % -----------------------------
 % Mode
 def_mode = config.simulation_params.simulation_mode;
-val = input(sprintf('4) Mode simulation_mode [MSE/bulk] [default=%s]: ', def_mode), 's');
+val = input(sprintf('5) Mode simulation_mode [MSE/bulk] [default=%s]: ', def_mode), 's');
 if ~isempty(val)
     v = lower(strtrim(val));
     % Compatibility: map surface to MSE
@@ -169,7 +176,7 @@ end
 
 % Visualization toggle
 def_vis = config.ui_controls.visualize_enabled;
-val = input(sprintf('5) Enable visualization visualize_enabled [y/n] [default=%s]: ', tf(def_vis)), 's');
+val = input(sprintf('6) Enable visualization visualize_enabled [y/n] [default=%s]: ', tf(def_vis)), 's');
 if ~isempty(val)
     config.ui_controls.visualize_enabled = is_yes(val);
     % Auto-enable figure saving when visualization is enabled
@@ -184,7 +191,7 @@ if ~isfield(config.ui_controls, 'enable_animation')
 end
 if config.ui_controls.visualize_enabled
     def_anim = config.ui_controls.enable_animation;
-    val = input(sprintf('5a) Enable snapshot animation (MP4 video for single-run visualization) [y/n] [default=%s]: ', tf(def_anim)), 's');
+    val = input(sprintf('6a) Enable snapshot animation (MP4 video for single-run visualization) [y/n] [default=%s]: ', tf(def_anim)), 's');
     if ~isempty(val)
         config.ui_controls.enable_animation = is_yes(val);
     end
@@ -198,7 +205,7 @@ if ~isfield(config.ui_controls, 'dual_system_comparison')
     config.ui_controls.dual_system_comparison = false;
 end
 def_dual = config.ui_controls.dual_system_comparison;
-val = input(sprintf('5b) Run dual-system comparison (bulk vs MSE) [y/n] [default=%s]: ', tf(def_dual)), 's');
+val = input(sprintf('6b) Run dual-system comparison (bulk vs MSE) [y/n] [default=%s]: ', tf(def_dual)), 's');
 if ~isempty(val)
     config.ui_controls.dual_system_comparison = is_yes(val);
 end
@@ -208,7 +215,7 @@ if ~isfield(config.ui_controls, 'enable_fig_save')
     config.ui_controls.enable_fig_save = false;
 end
 def_fig_save = config.ui_controls.enable_fig_save;
-val = input(sprintf('5c) Enable figure saving (save plots to files) [y/n] [default=%s]: ', tf(def_fig_save)), 's');
+val = input(sprintf('6c) Enable figure saving (save plots to files) [y/n] [default=%s]: ', tf(def_fig_save)), 's');
 if ~isempty(val)
     config.ui_controls.enable_fig_save = is_yes(val);
 end
@@ -218,7 +225,7 @@ end
 % -----------------------------
 % Batch count
 def_batches = config.batch.batch_count;
-val = input(sprintf('6) Batch count batch_count [default=%d]: ', def_batches));
+val = input(sprintf('7) Batch count batch_count [default=%d]: ', def_batches));
 if ~isempty(val) && isnumeric(val) && isfinite(val) && val > 0
     config.batch.batch_count = round(val);
 end
@@ -232,7 +239,7 @@ end
 
 % RNG mode
 def_seed_mode = config.batch.seed_mode;
-val = input(sprintf(['7) Seed mode seed_mode [fixed/per_batch_random/manual_list/incremental/from_file]\n' ...
+val = input(sprintf(['8) Seed mode seed_mode [fixed/per_batch_random/manual_list/incremental/from_file]\n' ...
                      '   [default=%s]: '], def_seed_mode), 's');
 if ~isempty(val)
     v = lower(strtrim(val));
@@ -292,7 +299,7 @@ end
 
 % GPU strategy (RNG + compute convenience toggle)
 def_gpu = config.batch.use_gpu;
-val = input(sprintf('8) GPU strategy use_gpu [auto/on/off] [default=%s]: ', def_gpu), 's');
+val = input(sprintf('9) GPU strategy use_gpu [auto/on/off] [default=%s]: ', def_gpu), 's');
 if ~isempty(val)
     v = lower(strtrim(val));
     if any(strcmp(v, {'auto','on','off'}))
@@ -322,7 +329,7 @@ end
 
 % parfor - auto-enabled by default, user can disable if needed
 def_pf = config.batch.use_parfor;
-val = input(sprintf('9) Enable parallel computing (auto-detects CPU cores) [y/n] [default=%s]: ', tf(def_pf)), 's');
+val = input(sprintf('10) Enable parallel computing (auto-detects CPU cores) [y/n] [default=%s]: ', tf(def_pf)), 's');
 if ~isempty(val)
     config.batch.use_parfor = is_yes(val);
 end
