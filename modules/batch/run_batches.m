@@ -135,10 +135,16 @@ if use_parfor && batch_count > 1
         % Execute simulation
         results = simulate_once(config, s); % [simulate_once()](../sim_core/simulate_once.m:1)
         
-        % Capture summary fields
-        [seed_col, prod_col, mode_col, enz_col, gox_col, hrp_col, substrate_col, dt_col, total_time_col] = ...
-            record_batch_result(b, s, results, batch_config, ...
-                               seed_col, prod_col, mode_col, enz_col, gox_col, hrp_col, substrate_col, dt_col, total_time_col);
+        % Capture summary fields directly (parfor-compatible)
+        seed_col(b) = s;
+        prod_col(b) = getfield_or(results, 'products_final', 0);
+        mode_col(b) = string(sim_mode);
+        enz_col(b) = N_total;
+        gox_col(b) = gox_n;
+        hrp_col(b) = hrp_n;
+        substrate_col(b) = num_sub;
+        dt_col(b) = dt;
+        total_time_col(b) = T_total;
         
         fprintf('  > %d/%d | Seed=%d | Products=%g | Mode=%s\n', ...
             b, batch_count, s, prod_col(b), sim_mode);
