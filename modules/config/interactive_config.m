@@ -185,13 +185,30 @@ if ~isempty(val)
     end
 end
 
+% Snapshot times configuration (only relevant if visualization is enabled)
+if config.ui_controls.visualize_enabled
+    def_snapshot_times = config.plotting_controls.snapshot_times;
+    fprintf('6a) Snapshot times (time points to capture visualization snapshots)\n');
+    fprintf('    Current: [%s] seconds\n', sprintf('%.1f ', def_snapshot_times));
+    val = input('    Enter new snapshot times (e.g., 0,25,50,75,100) or press Enter to keep default: ', 's');
+    if ~isempty(val)
+        nums = parse_list_to_num(val);
+        if ~isempty(nums)
+            config.plotting_controls.snapshot_times = nums(:).';
+            fprintf('    → Snapshot times updated to: [%s] seconds\n', sprintf('%.1f ', config.plotting_controls.snapshot_times));
+        else
+            fprintf('    Invalid input, keeping default: [%s] seconds\n', sprintf('%.1f ', def_snapshot_times));
+        end
+    end
+end
+
 % Animation generation toggle (only relevant if visualization is enabled)
 if ~isfield(config.ui_controls, 'enable_animation')
     config.ui_controls.enable_animation = false;
 end
 if config.ui_controls.visualize_enabled
     def_anim = config.ui_controls.enable_animation;
-    val = input(sprintf('6a) Enable snapshot animation (MP4 video for single-run visualization) [y/n] [default=%s]: ', tf(def_anim)), 's');
+    val = input(sprintf('6b) Enable snapshot animation (MP4 video for single-run visualization) [y/n] [default=%s]: ', tf(def_anim)), 's');
     if ~isempty(val)
         config.ui_controls.enable_animation = is_yes(val);
     end
@@ -205,7 +222,7 @@ if ~isfield(config.ui_controls, 'dual_system_comparison')
     config.ui_controls.dual_system_comparison = false;
 end
 def_dual = config.ui_controls.dual_system_comparison;
-val = input(sprintf('6b) Run dual-system comparison (bulk vs MSE) [y/n] [default=%s]: ', tf(def_dual)), 's');
+val = input(sprintf('6c) Run dual-system comparison (bulk vs MSE) [y/n] [default=%s]: ', tf(def_dual)), 's');
 if ~isempty(val)
     config.ui_controls.dual_system_comparison = is_yes(val);
 end
@@ -215,7 +232,7 @@ if ~isfield(config.ui_controls, 'enable_fig_save')
     config.ui_controls.enable_fig_save = false;
 end
 def_fig_save = config.ui_controls.enable_fig_save;
-val = input(sprintf('6c) Enable figure saving (save plots to files) [y/n] [default=%s]: ', tf(def_fig_save)), 's');
+val = input(sprintf('6d) Enable figure saving (save plots to files) [y/n] [default=%s]: ', tf(def_fig_save)), 's');
 if ~isempty(val)
     config.ui_controls.enable_fig_save = is_yes(val);
 end
@@ -410,6 +427,18 @@ nums = [];
 try
     parts = strsplit(str, ',');
     nums = cellfun(@(x) round(str2double(strtrim(x))), parts);
+    nums = nums(isfinite(nums)); % Remove NaN values
+catch
+    nums = [];
+end
+end
+
+function nums = parse_list_to_num(str)
+% Parse comma-separated string to numeric array (supports decimals)
+nums = [];
+try
+    parts = strsplit(str, ',');
+    nums = cellfun(@(x) str2double(strtrim(x)), parts);
     nums = nums(isfinite(nums)); % Remove NaN values
 catch
     nums = [];
