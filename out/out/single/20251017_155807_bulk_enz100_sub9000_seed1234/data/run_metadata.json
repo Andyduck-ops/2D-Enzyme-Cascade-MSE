@@ -1,0 +1,72 @@
+{
+  "timestamp":"2025-10-17T16:05:38",
+  "run_type":"single",
+  "mode":"bulk",
+  "parameters":{
+  "num_enzymes":100,
+  "num_substrate":9000,
+  "gox_hrp_split":0.5,
+  "batch_count":1,
+  "simulation_mode":"bulk",
+  "dual_comparison":false,
+  "box_size":500,
+  "total_time":50,
+  "time_step":0.0005,
+  "auto_dt_enabled":false,
+  "diff_coeff_bulk":1000,
+  "diff_coeff_film":10,
+  "k_cat_GOx":100,
+  "k_cat_HRP":100
+},
+  "seed_info":{
+  "seed_mode":"fixed",
+  "fixed_seed":1234,
+  "seed_base":1000,
+  "seed_list":[
+  
+]
+},
+  "output_files":{
+  "seeds":"data\\seeds.csv",
+  "batch_results":"data\\batch_results.csv",
+  "figures":[
+  [
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\single\\20251017_155807_bulk_enz100_sub9000_seed1234\\figures\\viz_seed_1234_01_Product_Curve.fig            ",
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\single\\20251017_155807_bulk_enz100_sub9000_seed1234\\figures\\viz_seed_1234_01_Product_Curve.png            ",
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\single\\20251017_155807_bulk_enz100_sub9000_seed1234\\figures\\viz_seed_1234_01_Product_Curve.pdf            ",
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\single\\20251017_155807_bulk_enz100_sub9000_seed1234\\figures\\viz_seed_1234_02_Reaction_Rate_Analysis.fig   ",
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\single\\20251017_155807_bulk_enz100_sub9000_seed1234\\figures\\viz_seed_1234_02_Reaction_Rate_Analysis.png   ",
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\single\\20251017_155807_bulk_enz100_sub9000_seed1234\\figures\\viz_seed_1234_02_Reaction_Rate_Analysis.pdf   ",
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\single\\20251017_155807_bulk_enz100_sub9000_seed1234\\figures\\viz_seed_1234_03_2D_Snapshot_1.fig            ",
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\single\\20251017_155807_bulk_enz100_sub9000_seed1234\\figures\\viz_seed_1234_03_2D_Snapshot_1.png            ",
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\single\\20251017_155807_bulk_enz100_sub9000_seed1234\\figures\\viz_seed_1234_03_2D_Snapshot_1.pdf            ",
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\single\\20251017_155807_bulk_enz100_sub9000_seed1234\\figures\\viz_seed_1234_04_2D_Snapshot_2.fig            ",
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\single\\20251017_155807_bulk_enz100_sub9000_seed1234\\figures\\viz_seed_1234_04_2D_Snapshot_2.png            ",
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\single\\20251017_155807_bulk_enz100_sub9000_seed1234\\figures\\viz_seed_1234_04_2D_Snapshot_2.pdf            ",
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\single\\20251017_155807_bulk_enz100_sub9000_seed1234\\figures\\viz_seed_1234_05_2D_Snapshot_3.fig            ",
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\single\\20251017_155807_bulk_enz100_sub9000_seed1234\\figures\\viz_seed_1234_05_2D_Snapshot_3.png            ",
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\single\\20251017_155807_bulk_enz100_sub9000_seed1234\\figures\\viz_seed_1234_05_2D_Snapshot_3.pdf            ",
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\single\\20251017_155807_bulk_enz100_sub9000_seed1234\\figures\\viz_seed_1234_06_Reaction_Event_Map.fig       ",
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\single\\20251017_155807_bulk_enz100_sub9000_seed1234\\figures\\viz_seed_1234_06_Reaction_Event_Map.png       ",
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\single\\20251017_155807_bulk_enz100_sub9000_seed1234\\figures\\viz_seed_1234_06_Reaction_Event_Map.pdf       ",
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\single\\20251017_155807_bulk_enz100_sub9000_seed1234\\figures\\viz_seed_1234_07_Particle_Tracers.fig         ",
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\single\\20251017_155807_bulk_enz100_sub9000_seed1234\\figures\\viz_seed_1234_07_Particle_Tracers.png         ",
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\single\\20251017_155807_bulk_enz100_sub9000_seed1234\\figures\\viz_seed_1234_07_Particle_Tracers.pdf         ",
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\single\\20251017_155807_bulk_enz100_sub9000_seed1234\\figures\\viz_seed_1234_08_Shell_Population_Dynamics.fig",
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\single\\20251017_155807_bulk_enz100_sub9000_seed1234\\figures\\viz_seed_1234_08_Shell_Population_Dynamics.png",
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\single\\20251017_155807_bulk_enz100_sub9000_seed1234\\figures\\viz_seed_1234_08_Shell_Population_Dynamics.pdf"
+]
+]
+},
+  "system_info":{
+  "matlab_version":"9.14.0.2891782 (R2023a) Update 8",
+  "platform":"PCWIN64",
+  "hostname":"LAPTOP-CHKFB95L"
+},
+  "runtime":{
+  "start_time":"2025-10-17T15:58:07",
+  "end_time":"2025-10-17T16:05:38",
+  "duration_seconds":451.0458784,
+  "n_batches_completed":1
+}
+}

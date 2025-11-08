@@ -1,0 +1,73 @@
+{
+  "timestamp":"2025-10-16T01:14:31",
+  "run_type":"batch",
+  "mode":"dual",
+  "parameters":{
+  "num_enzymes":100,
+  "num_substrate":9000,
+  "gox_hrp_split":0.5,
+  "batch_count":200,
+  "simulation_mode":"MSE",
+  "dual_comparison":true,
+  "box_size":500,
+  "total_time":50,
+  "time_step":0.0015,
+  "auto_dt_enabled":false,
+  "diff_coeff_bulk":1000,
+  "diff_coeff_film":10,
+  "k_cat_GOx":100,
+  "k_cat_HRP":100
+},
+  "seed_info":{
+  "seed_mode":"per_batch_random",
+  "fixed_seed":1234,
+  "seed_base":1000,
+  "seed_list":[
+  
+]
+},
+  "output_files":{
+  "seeds":"data\\seeds.csv",
+  "batch_results":"data\\batch_results.csv",
+  "timeseries":[
+  "data\\timeseries_products_bulk.csv",
+  "data\\timeseries_products_mse.csv"
+],
+  "figures":[
+  [
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\batch\\20251015_160908_dual_enz100_sub9000_n200\\figures\\dual_comparison_enzymes_100_01_Dual_System_Comparison_Bulk_vs_MSE_.fig",
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\batch\\20251015_160908_dual_enz100_sub9000_n200\\figures\\dual_comparison_enzymes_100_01_Dual_System_Comparison_Bulk_vs_MSE_.png",
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\batch\\20251015_160908_dual_enz100_sub9000_n200\\figures\\dual_comparison_enzymes_100_01_Dual_System_Comparison_Bulk_vs_MSE_.pdf",
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\batch\\20251015_160908_dual_enz100_sub9000_n200\\figures\\stats_enzymes_100_01_Batch_Distribution_Comparison.fig                ",
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\batch\\20251015_160908_dual_enz100_sub9000_n200\\figures\\stats_enzymes_100_01_Batch_Distribution_Comparison.png                ",
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\batch\\20251015_160908_dual_enz100_sub9000_n200\\figures\\stats_enzymes_100_01_Batch_Distribution_Comparison.pdf                ",
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\batch\\20251015_160908_dual_enz100_sub9000_n200\\figures\\stats_enzymes_100_02_Enhancement_Factor_Evolution.fig                 ",
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\batch\\20251015_160908_dual_enz100_sub9000_n200\\figures\\stats_enzymes_100_02_Enhancement_Factor_Evolution.png                 ",
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\batch\\20251015_160908_dual_enz100_sub9000_n200\\figures\\stats_enzymes_100_02_Enhancement_Factor_Evolution.pdf                 ",
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\batch\\20251015_160908_dual_enz100_sub9000_n200\\figures\\stats_enzymes_100_03_MC_Convergence_Analysis_Bulk_.fig                ",
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\batch\\20251015_160908_dual_enz100_sub9000_n200\\figures\\stats_enzymes_100_03_MC_Convergence_Analysis_Bulk_.png                ",
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\batch\\20251015_160908_dual_enz100_sub9000_n200\\figures\\stats_enzymes_100_03_MC_Convergence_Analysis_Bulk_.pdf                ",
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\batch\\20251015_160908_dual_enz100_sub9000_n200\\figures\\stats_enzymes_100_04_MC_Convergence_Analysis_MSE_.fig                 ",
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\batch\\20251015_160908_dual_enz100_sub9000_n200\\figures\\stats_enzymes_100_04_MC_Convergence_Analysis_MSE_.png                 ",
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\batch\\20251015_160908_dual_enz100_sub9000_n200\\figures\\stats_enzymes_100_04_MC_Convergence_Analysis_MSE_.pdf                 ",
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\batch\\20251015_160908_dual_enz100_sub9000_n200\\figures\\stats_enzymes_100_05_Batch_Timeseries_Heatmap_Bulk_.fig               ",
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\batch\\20251015_160908_dual_enz100_sub9000_n200\\figures\\stats_enzymes_100_05_Batch_Timeseries_Heatmap_Bulk_.png               ",
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\batch\\20251015_160908_dual_enz100_sub9000_n200\\figures\\stats_enzymes_100_05_Batch_Timeseries_Heatmap_Bulk_.pdf               ",
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\batch\\20251015_160908_dual_enz100_sub9000_n200\\figures\\stats_enzymes_100_06_Batch_Timeseries_Heatmap_MSE_.fig                ",
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\batch\\20251015_160908_dual_enz100_sub9000_n200\\figures\\stats_enzymes_100_06_Batch_Timeseries_Heatmap_MSE_.png                ",
+  "D:\\Users\\ASUS\\Documents\\2D-Enzyme-Cascade-MSE-master (1)\\2D-Enzyme-Cascade-MSE-master\\out\\batch\\20251015_160908_dual_enz100_sub9000_n200\\figures\\stats_enzymes_100_06_Batch_Timeseries_Heatmap_MSE_.pdf                "
+]
+]
+},
+  "system_info":{
+  "matlab_version":"9.14.0.2891782 (R2023a) Update 8",
+  "platform":"PCWIN64",
+  "hostname":"LAPTOP-CHKFB95L"
+},
+  "runtime":{
+  "start_time":"2025-10-15T16:09:08",
+  "end_time":"2025-10-16T01:14:31",
+  "duration_seconds":32722.4423554,
+  "n_batches_completed":200
+}
+}

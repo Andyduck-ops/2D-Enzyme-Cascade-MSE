@@ -1,0 +1,2 @@
+batch_index,seed,products_final,mode,num_enzymes,gox_count,hrp_count,num_substrate,dt,total_time
+1,1234,2959,MSE,100,50,50,3000,0.0015,300

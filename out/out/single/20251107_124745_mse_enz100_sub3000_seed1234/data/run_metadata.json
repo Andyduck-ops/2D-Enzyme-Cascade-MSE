@@ -1,0 +1,81 @@
+{
+  "timestamp":"2025-11-07T12:58:06",
+  "run_type":"single",
+  "mode":"MSE",
+  "parameters":{
+  "num_enzymes":100,
+  "num_substrate":3000,
+  "gox_hrp_split":0.5,
+  "batch_count":1,
+  "simulation_mode":"MSE",
+  "dual_comparison":false,
+  "box_size":500,
+  "total_time":300,
+  "time_step":0.0015,
+  "auto_dt_enabled":false,
+  "diff_coeff_bulk":1000,
+  "diff_coeff_film":10,
+  "k_cat_GOx":100,
+  "k_cat_HRP":100
+},
+  "seed_info":{
+  "seed_mode":"fixed",
+  "fixed_seed":1234,
+  "seed_base":1000,
+  "seed_list":[
+  
+]
+},
+  "output_files":{
+  "seeds":"data\\seeds.csv",
+  "batch_results":"data\\batch_results.csv",
+  "figures":[
+  [
+  "C:\\Users\\ASUS\\Desktop\\x\\out\\single\\20251107_124745_mse_enz100_sub3000_seed1234\\figures\\viz_seed_1234_01_Product_Curve.fig            ",
+  "C:\\Users\\ASUS\\Desktop\\x\\out\\single\\20251107_124745_mse_enz100_sub3000_seed1234\\figures\\viz_seed_1234_01_Product_Curve.png            ",
+  "C:\\Users\\ASUS\\Desktop\\x\\out\\single\\20251107_124745_mse_enz100_sub3000_seed1234\\figures\\viz_seed_1234_01_Product_Curve.pdf            ",
+  "C:\\Users\\ASUS\\Desktop\\x\\out\\single\\20251107_124745_mse_enz100_sub3000_seed1234\\figures\\viz_seed_1234_02_Reaction_Rate_Analysis.fig   ",
+  "C:\\Users\\ASUS\\Desktop\\x\\out\\single\\20251107_124745_mse_enz100_sub3000_seed1234\\figures\\viz_seed_1234_02_Reaction_Rate_Analysis.png   ",
+  "C:\\Users\\ASUS\\Desktop\\x\\out\\single\\20251107_124745_mse_enz100_sub3000_seed1234\\figures\\viz_seed_1234_02_Reaction_Rate_Analysis.pdf   ",
+  "C:\\Users\\ASUS\\Desktop\\x\\out\\single\\20251107_124745_mse_enz100_sub3000_seed1234\\figures\\viz_seed_1234_03_2D_Snapshot_1.fig            ",
+  "C:\\Users\\ASUS\\Desktop\\x\\out\\single\\20251107_124745_mse_enz100_sub3000_seed1234\\figures\\viz_seed_1234_03_2D_Snapshot_1.png            ",
+  "C:\\Users\\ASUS\\Desktop\\x\\out\\single\\20251107_124745_mse_enz100_sub3000_seed1234\\figures\\viz_seed_1234_03_2D_Snapshot_1.pdf            ",
+  "C:\\Users\\ASUS\\Desktop\\x\\out\\single\\20251107_124745_mse_enz100_sub3000_seed1234\\figures\\viz_seed_1234_04_2D_Snapshot_2.fig            ",
+  "C:\\Users\\ASUS\\Desktop\\x\\out\\single\\20251107_124745_mse_enz100_sub3000_seed1234\\figures\\viz_seed_1234_04_2D_Snapshot_2.png            ",
+  "C:\\Users\\ASUS\\Desktop\\x\\out\\single\\20251107_124745_mse_enz100_sub3000_seed1234\\figures\\viz_seed_1234_04_2D_Snapshot_2.pdf            ",
+  "C:\\Users\\ASUS\\Desktop\\x\\out\\single\\20251107_124745_mse_enz100_sub3000_seed1234\\figures\\viz_seed_1234_05_2D_Snapshot_3.fig            ",
+  "C:\\Users\\ASUS\\Desktop\\x\\out\\single\\20251107_124745_mse_enz100_sub3000_seed1234\\figures\\viz_seed_1234_05_2D_Snapshot_3.png            ",
+  "C:\\Users\\ASUS\\Desktop\\x\\out\\single\\20251107_124745_mse_enz100_sub3000_seed1234\\figures\\viz_seed_1234_05_2D_Snapshot_3.pdf            ",
+  "C:\\Users\\ASUS\\Desktop\\x\\out\\single\\20251107_124745_mse_enz100_sub3000_seed1234\\figures\\viz_seed_1234_06_2D_Snapshot_4.fig            ",
+  "C:\\Users\\ASUS\\Desktop\\x\\out\\single\\20251107_124745_mse_enz100_sub3000_seed1234\\figures\\viz_seed_1234_06_2D_Snapshot_4.png            ",
+  "C:\\Users\\ASUS\\Desktop\\x\\out\\single\\20251107_124745_mse_enz100_sub3000_seed1234\\figures\\viz_seed_1234_06_2D_Snapshot_4.pdf            ",
+  "C:\\Users\\ASUS\\Desktop\\x\\out\\single\\20251107_124745_mse_enz100_sub3000_seed1234\\figures\\viz_seed_1234_07_2D_Snapshot_5.fig            ",
+  "C:\\Users\\ASUS\\Desktop\\x\\out\\single\\20251107_124745_mse_enz100_sub3000_seed1234\\figures\\viz_seed_1234_07_2D_Snapshot_5.png            ",
+  "C:\\Users\\ASUS\\Desktop\\x\\out\\single\\20251107_124745_mse_enz100_sub3000_seed1234\\figures\\viz_seed_1234_07_2D_Snapshot_5.pdf            ",
+  "C:\\Users\\ASUS\\Desktop\\x\\out\\single\\20251107_124745_mse_enz100_sub3000_seed1234\\figures\\viz_seed_1234_08_2D_Snapshot_6.fig            ",
+  "C:\\Users\\ASUS\\Desktop\\x\\out\\single\\20251107_124745_mse_enz100_sub3000_seed1234\\figures\\viz_seed_1234_08_2D_Snapshot_6.png            ",
+  "C:\\Users\\ASUS\\Desktop\\x\\out\\single\\20251107_124745_mse_enz100_sub3000_seed1234\\figures\\viz_seed_1234_08_2D_Snapshot_6.pdf            ",
+  "C:\\Users\\ASUS\\Desktop\\x\\out\\single\\20251107_124745_mse_enz100_sub3000_seed1234\\figures\\viz_seed_1234_09_Reaction_Event_Map.fig       ",
+  "C:\\Users\\ASUS\\Desktop\\x\\out\\single\\20251107_124745_mse_enz100_sub3000_seed1234\\figures\\viz_seed_1234_09_Reaction_Event_Map.png       ",
+  "C:\\Users\\ASUS\\Desktop\\x\\out\\single\\20251107_124745_mse_enz100_sub3000_seed1234\\figures\\viz_seed_1234_09_Reaction_Event_Map.pdf       ",
+  "C:\\Users\\ASUS\\Desktop\\x\\out\\single\\20251107_124745_mse_enz100_sub3000_seed1234\\figures\\viz_seed_1234_10_Particle_Tracers.fig         ",
+  "C:\\Users\\ASUS\\Desktop\\x\\out\\single\\20251107_124745_mse_enz100_sub3000_seed1234\\figures\\viz_seed_1234_10_Particle_Tracers.png         ",
+  "C:\\Users\\ASUS\\Desktop\\x\\out\\single\\20251107_124745_mse_enz100_sub3000_seed1234\\figures\\viz_seed_1234_10_Particle_Tracers.pdf         ",
+  "C:\\Users\\ASUS\\Desktop\\x\\out\\single\\20251107_124745_mse_enz100_sub3000_seed1234\\figures\\viz_seed_1234_11_Shell_Population_Dynamics.fig",
+  "C:\\Users\\ASUS\\Desktop\\x\\out\\single\\20251107_124745_mse_enz100_sub3000_seed1234\\figures\\viz_seed_1234_11_Shell_Population_Dynamics.png",
+  "C:\\Users\\ASUS\\Desktop\\x\\out\\single\\20251107_124745_mse_enz100_sub3000_seed1234\\figures\\viz_seed_1234_11_Shell_Population_Dynamics.pdf"
+]
+]
+},
+  "system_info":{
+  "matlab_version":"9.14.0.2891782 (R2023a) Update 8",
+  "platform":"PCWIN64",
+  "hostname":"LAPTOP-CHKFB95L"
+},
+  "runtime":{
+  "start_time":"2025-11-07T12:47:45",
+  "end_time":"2025-11-07T12:58:06",
+  "duration_seconds":620.4334079,
+  "n_batches_completed":1
+}
+}
