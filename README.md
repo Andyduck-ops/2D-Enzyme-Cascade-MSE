@@ -121,7 +121,7 @@ The framework systematically compares two fundamental configurations representin
 - **Timestamped Output Structure**: Organized directory hierarchy with automatic timestamping for easy data management
   - `out/single/` and `out/batch/` directories with timestamped subdirectories
   - Automatic `latest` shortcuts/symlinks to most recent runs
-  - Structured subdirectories: `data/`, `figures/`, `single_viz/`
+  - Structured subdirectories: `data/` and `figures/`
 - **Historical Data Import**: Load and compare results from previous simulation runs
   - Interactive run selection interface
   - Support for both single-mode and dual-mode historical data
@@ -131,10 +131,10 @@ The framework systematically compares two fundamental configurations representin
   - Shaded error bands for statistical visualization
   - Interactive legend with click-to-toggle visibility
   - Automatic color and line style cycling for clarity
-- **Seed Import & Reproducibility**: Import seeds from historical runs for exact reproduction
-  - Load seeds from any previous batch run
-  - Automatic handling of seed count mismatches
-  - Full traceability with source information in metadata
+- **Output-Based Reproducibility**: Reproduce runs from the timestamped folder under `out/`
+  - Use the folder name to identify the historical run
+  - Read complete parameters from `data/run_metadata.json`
+  - Load batch seeds from `data/seeds.csv` when reproducing Monte Carlo runs
 - **Comprehensive Metadata**: JSON-formatted run metadata for complete traceability
   - Configuration parameters, seed information, output file manifest
   - System information and runtime statistics
@@ -434,8 +434,7 @@ out/
 │   │   │   ├── batch_results_mse.csv
 │   │   │   ├── timeseries_products_bulk.csv
 │   │   │   └── timeseries_products_mse.csv
-│   │   ├── figures/                # Statistical plots
-│   │   └── single_viz/             # Single-run visualization
+│   │   └── figures/                # Statistical plots
 │   └── latest.lnk
 └── comparisons/                     # Multi-dataset comparisons
     └── comparison_20251010_150000_n3.png
@@ -443,75 +442,92 @@ out/
 
 ## 🔄 Quick Reproduction
 
-### Using Reproducibility Seeds
+### Reproduce from `out/` Run Directories
 
-For rapid reproduction of documented experimental results, use the seeds recorded in [`复现seed.txt`](复现seed.txt):
+This project reproduces historical runs from the timestamped directories under `out/`, not from a manually maintained seed text file. The directory name is a compact index for finding a run; the complete parameter record and output manifest are stored in `data/run_metadata.json`, and Monte Carlo batch seeds are stored in `data/seeds.csv`.
 
-#### Method 1: Single Experiment Reproduction
+Typical run directory names include the main indexing fields:
+
+```text
+out/single/20251017_154320_mse_enz100_sub9000_seed1234/
+out/batch/20251016_110157_dual_enz20_sub9000_n200/
+```
+
+Use the timestamp, mode, enzyme count, substrate count, seed, or batch count in the folder name to locate the target run. For exact reproduction, use `data/run_metadata.json` as the source of truth.
+
+#### Method 1: Browse Historical Runs
+
 ```matlab
-% Reproduce a specific documented experiment
+% List historical runs from out/single and out/batch
+browse_history_cli()
+
+% Or only list batch runs
+browse_history_cli('batch')
+```
+
+You can also inspect the files directly:
+
+```text
+out/batch/20251016_110157_dual_enz20_sub9000_n200/data/run_metadata.json
+out/batch/20251016_110157_dual_enz20_sub9000_n200/data/seeds.csv
+```
+
+#### Method 2: Reproduce a Single Run from Metadata
+
+```matlab
+% Example: restore the configuration from the parameters field
+% in data/run_metadata.json
 config = default_config();
 
-% Example: Reproduce MSE Enhancement Study
 config.simulation_params.simulation_mode = 'MSE';
-config.particle_params.num_enzymes = 400;
+config.particle_params.num_enzymes = 100;
+config.particle_params.num_substrate = 9000;
+config.simulation_params.total_time = 50;
+config.simulation_params.time_step = 0.0005;
+config.particle_params.diff_coeff_bulk = 1000;
 config.particle_params.diff_coeff_film = 10;
-config.simulation_params.total_time = 100.0;
+config.particle_params.k_cat_GOx = 100;
+config.particle_params.k_cat_HRP = 100;
 
-% Use documented seed for exact reproduction
-documented_seed = 1234;  % From 复现seed.txt
-result = simulate_once(config, documented_seed);
-
+% Seed comes from the directory name or seed_info.fixed_seed
+% in run_metadata.json
+result = simulate_once(config, 1234);
 fprintf('Reproduced result: %d products\n', result.products_final);
 ```
 
-#### Method 2: Batch Reproduction with Seed Range
+If adaptive dt was enabled, also apply the `dt_final`, `dt_history`, and dt target fields recorded in `run_metadata.json`. The snippet above shows only the core fields; do not rely on it as a complete metadata parser.
+
+#### Method 3: Reproduce a Batch Run from `seeds.csv`
+
 ```matlab
-% Reproduce batch experiments using consecutive seeds
 config = default_config();
+
+% Restore parameters from the target run_metadata.json
 config.simulation_params.simulation_mode = 'MSE';
-config.batch.batch_count = 30;
+config.particle_params.num_enzymes = 20;
+config.particle_params.num_substrate = 9000;
+config.batch.batch_count = 200;
 
-% Define seed range from documented experiment
-base_seed = 1234;
-seed_range = base_seed + (0:29);  % 30 consecutive seeds
+% Load the original Monte Carlo seeds from the selected run directory
+seed_table = readtable('out/batch/20251016_110157_dual_enz20_sub9000_n200/data/seeds.csv');
+seeds = seed_table.seed;
 
-% Run batch with specific seed sequence
-batch_results = run_batches(config, seed_range);
-
-% Compare with documented results
-mean_products = mean(batch_results.products_final);
+batch_results = run_batches(config, seeds);
 fprintf('Batch reproduction: %.1f ± %.1f products\n', ...
-    mean_products, std(batch_results.products_final));
+    mean(batch_results.products_final), std(batch_results.products_final));
 ```
 
-#### Method 3: Automated Seed Loading
-```matlab
-% Future enhancement: Load seeds directly from 复现seed.txt
-% This functionality will be added as experiments are documented
-
-function reproduce_experiment(experiment_name)
-    % Load parameters from 复现seed.txt
-    % Apply configuration automatically
-    % Run reproduction and validate results
-end
-```
+In the interactive workflow, you can also choose `from_file` as the seed mode. The program will let you select a historical batch run, load its `seeds.csv`, and record the seed source in the new run metadata.
 
 ### Recording New Experiments
 
-When you discover significant results, document them in [`复现seed.txt`](复现seed.txt):
+Every run automatically creates a timestamped output directory. Keep or share that directory to preserve the information needed for reproduction:
 
-```txt
-[Your_Experiment_Name]
-seed = 1234
-simulation_mode = MSE
-batch_count = 30
-key_parameters = num_enzymes=200, diff_coeff_film=10, total_time=1.0
-description = Brief description of your findings
-results_summary = Key numerical results (e.g., mean±std)
-date_recorded = 2025-09-21
-researcher = YourName
-```
+- `data/run_metadata.json`: run type, mode, key parameters, adaptive-dt information, seed information, output-file manifest, system information, and runtime
+- `data/seeds.csv`: one seed per Monte Carlo batch
+- `data/batch_results*.csv`: final statistical results
+- `data/timeseries_products*.csv`: product time series
+- `figures/`: generated plots from the run
 
 ## 💡 Examples
 
@@ -637,85 +653,57 @@ end
 
 ## 🔄 Reproducibility
 
-### Research Reproducibility Framework
+### Output-Based Research Reproducibility
 
-This project implements a comprehensive reproducibility framework essential for scientific research, enabling exact replication of experimental conditions and results. The framework supports systematic documentation of experimental seeds, conditions, and outcomes through the [复现seed.txt](复现seed.txt) file and automated seed management.
+The project records reproducibility information with each simulation output. A timestamped run directory is the durable record of an experiment:
 
-### Reproducibility Seeds File
-
-The `复现seed.txt` file serves as a centralized repository for experimental conditions and random seeds, enabling researchers to:
-
-- **Document experimental conditions** for key simulation runs
-- **Share specific parameter combinations** that produce notable results
-- **Reproduce exact simulation outcomes** across different systems and timepoints
-- **Facilitate collaborative research** with standardized experimental records
-
-### Using Reproducibility Seeds
-
-#### 1. Recording Experimental Conditions
-When you discover interesting results, record them in `复现seed.txt`:
-
-```txt
-[MSE_Enhancement_Study_Example]
-seed = 1234
-simulation_mode = MSE
-batch_count = 30
-key_parameters = num_enzymes=200, diff_coeff_film=10, total_time=1.0
-description = Demonstrates significant MSE enhancement over bulk distribution
-results_summary = MSE showed 3.2x enhancement in product yield (mean=150.3±12.7)
-date_recorded = 2024-09-20
-researcher = YourName
+```text
+out/<single|batch>/<timestamp>_<mode|dual>_enz<N>_sub<M>_<seed|nBatches>/
 ```
 
-#### 2. Reproducing Documented Results
-To reproduce a documented experiment:
+The folder name is useful for browsing and selecting a run, while the complete reproducibility payload lives in `data/`:
+
+- `run_metadata.json`: parameter snapshot, simulation mode, adaptive-dt fields, seed mode/source, output-file manifest, runtime, and system information
+- `seeds.csv`: exact Monte Carlo seed sequence for batch runs
+- `batch_results*.csv`: final product counts and summary tables
+- `timeseries_products*.csv`: product curves used by the comparison figures
+
+### Reproducing a Historical Run
+
+1. Identify the target folder from its name or with `browse_history_cli()`.
+2. Open `data/run_metadata.json` and restore the fields under `parameters`.
+3. For a single run, use `seed_info.fixed_seed` or the `seed<value>` suffix in the directory name.
+4. For a batch run, read `data/seeds.csv` and pass the seed vector to `run_batches(config, seeds)`.
+5. Compare the new `batch_results*.csv` and `timeseries_products*.csv` with the historical files.
 
 ```matlab
-% Example: Reproduce the MSE Enhancement Study
+% Example: reproduce a batch run after restoring parameters
+% from data/run_metadata.json.
 config = default_config();
-
-% Apply the documented parameters
 config.simulation_params.simulation_mode = 'MSE';
-config.particle_params.num_enzymes = 200;
-config.particle_params.diff_coeff_film = 10;
-config.simulation_params.total_time = 1.0;
-config.batch.batch_count = 30;
+config.particle_params.num_enzymes = 20;
+config.particle_params.num_substrate = 9000;
+config.batch.batch_count = 200;
 
-% Use the documented seed for exact reproduction
-documented_seed = 1234;
-results = run_batches(config, documented_seed);
+seed_table = readtable('out/batch/20251016_110157_dual_enz20_sub9000_n200/data/seeds.csv');
+seeds = seed_table.seed;
 
-% Verify reproduction
+results = run_batches(config, seeds);
 fprintf('Reproduced mean products: %.1f\n', mean(results.products_final));
 ```
 
-#### 3. Batch Reproducibility with Seed Ranges
-For systematic studies with multiple seeds:
+### Automated Metadata and Seed Documentation
+
+The framework automatically writes metadata and seed records during each run. No separate manual seed registry is required:
 
 ```matlab
-% Define seed range from documented experiment
-base_seed = 1234;
-seed_range = base_seed + (0:29);  % 30 consecutive seeds
-
-% Run batch with specific seed sequence
-config = default_config();
-config.simulation_params.simulation_mode = 'MSE';
-batch_results = run_batches(config, seed_range);
-```
-
-### Automated Seed Documentation
-
-The framework automatically generates seed records during batch processing:
-
-```matlab
-% Automatic seed documentation in seeds.csv
 config = default_config();
 config.batch.batch_count = 50;
-config.batch.seed_mode = 'fixed';  % Ensures reproducibility
+config.batch.seed_mode = 'fixed';
 config.batch.fixed_seed = 2000;
 
-% Seeds are automatically recorded in out/seeds.csv
 results = run_batches(config);
+% Reproducibility files are written under the timestamped out/.../data/ directory.
 ```
 
 ### Cross-Platform Reproducibility
@@ -729,12 +717,12 @@ The simulation framework ensures identical results across different platforms by
 
 ### Reproducibility Best Practices
 
-1. **Always document significant findings** in `复现seed.txt`
-2. **Use fixed seeds** for reproducible research (`config.batch.seed_mode = 'fixed'`)
-3. **Record complete parameter sets** including all non-default values
-4. **Include brief descriptions** of experimental goals and key findings
-5. **Version control** your `复现seed.txt` file along with code changes
-6. **Validate reproduction** by running documented experiments on different systems
+1. **Keep the full timestamped run directory** for any result used in analysis or publications
+2. **Use `run_metadata.json` as the source of truth** for parameters, not the abbreviated folder name
+3. **Use `seeds.csv` for batch reproduction** instead of reconstructing seed ranges manually
+4. **Record external analysis notes separately** if needed, but do not duplicate parameters by hand
+5. **Version control code changes** together with the output directory or archived metadata used for a result
+6. **Validate reproduction** by comparing regenerated CSV outputs against the historical files
 
 ### Statistical Reproducibility
 
@@ -758,26 +746,20 @@ bulk_results = run_batches(config, 4000 + (0:99));
 
 ### Reproducibility Verification
 
-Verify your experimental reproduction with built-in validation:
+Verify reproduction by comparing regenerated outputs with the historical CSV files from the selected `out/` directory:
 
 ```matlab
-% Load expected results from previous run
-expected_mean = 150.3;
-expected_std = 12.7;
+historical = readtable('out/batch/20251016_110157_dual_enz20_sub9000_n200/data/batch_results_mse.csv');
+reproduced_mean = mean(results.products_final);
+historical_mean = mean(historical.products_final);
 
-% Run reproduction
-reproduced_results = run_batches(config, documented_seed);
-reproduced_mean = mean(reproduced_results.products_final);
-reproduced_std = std(reproduced_results.products_final);
-
-% Statistical validation
-tolerance = 0.1;  % 10% tolerance for numerical precision
-if abs(reproduced_mean - expected_mean) < tolerance
-    fprintf('✓ Reproduction successful: %.1f vs %.1f (expected)\n', ...
-        reproduced_mean, expected_mean);
+tolerance = 1e-9;
+if abs(reproduced_mean - historical_mean) <= tolerance
+    fprintf('Reproduction successful: %.6f vs %.6f\n', ...
+        reproduced_mean, historical_mean);
 else
-    fprintf('✗ Reproduction failed: %.1f vs %.1f (expected)\n', ...
-        reproduced_mean, expected_mean);
+    fprintf('Reproduction differs: %.6f vs %.6f\n', ...
+        reproduced_mean, historical_mean);
 end
 ```
 

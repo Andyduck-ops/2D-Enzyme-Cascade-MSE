@@ -93,7 +93,7 @@
 - **时间戳输出结构**: 自动时间戳的分层目录结构，便于数据管理
   - `out/single/` 和 `out/batch/` 目录，包含时间戳子目录
   - 自动创建 `latest` 快捷方式/符号链接指向最新运行
-  - 结构化子目录：`data/`、`figures/`、`single_viz/`
+  - 结构化子目录：`data/`、`figures/`
 - **历史数据导入**: 加载并对比之前的模拟运行结果
   - 交互式运行选择界面
   - 支持单模式和双模式历史数据
@@ -103,10 +103,10 @@
   - 统计可视化的阴影误差带
   - 交互式图例，点击切换可见性
   - 自动颜色和线型循环以提高清晰度
-- **种子导入与可复现性**: 从历史运行导入种子以精确复现
-  - 从任何之前的批次运行加载种子
-  - 自动处理种子数量不匹配
-  - 元数据中完整的来源信息追溯
+- **基于输出目录的可复现性**: 根据 `out/` 下的时间戳运行目录复现实验
+  - 用目录名定位历史运行
+  - 从 `data/run_metadata.json` 读取完整参数
+  - 复现 Monte Carlo 批量运行时从 `data/seeds.csv` 读取批次种子
 - **全面元数据**: JSON格式的运行元数据，完整可追溯
   - 配置参数、种子信息、输出文件清单
   - 系统信息和运行时统计
@@ -302,75 +302,90 @@ fprintf('MSE模式产生了%d个产物\n', result.products_final);
 
 ## 🔄 快速复现
 
-### 使用复现种子
+### 根据 `out/` 运行目录复现
 
-使用记录在 [`复现seed.txt`](复现seed.txt) 中的种子快速复现已记录的实验结果：
+本项目的复现入口是 `out/` 下的历史运行目录，而不是手动维护的 seed 文本文件。目录名用于快速定位一次运行，完整参数和输出文件清单记录在该目录的 `data/run_metadata.json` 中；批量 Monte Carlo 运行的每个批次种子记录在 `data/seeds.csv` 中。
 
-#### 方法1：单个实验复现
+典型目录名包含关键索引信息：
+
+```text
+out/single/20251017_154320_mse_enz100_sub9000_seed1234/
+out/batch/20251016_110157_dual_enz20_sub9000_n200/
+```
+
+目录名中的时间戳、模式、酶数量、底物数量、seed 或批次数用于选择目标实验；真正用于复现的完整配置以 `data/run_metadata.json` 为准。
+
+#### 方法1：查看历史运行并选择目标目录
+
 ```matlab
-% 复现特定的已记录实验
+% 列出 out/single 和 out/batch 中的历史运行
+browse_history_cli()
+
+% 或只查看批量运行
+browse_history_cli('batch')
+```
+
+也可以直接打开目标目录，例如：
+
+```text
+out/batch/20251016_110157_dual_enz20_sub9000_n200/data/run_metadata.json
+out/batch/20251016_110157_dual_enz20_sub9000_n200/data/seeds.csv
+```
+
+#### 方法2：按元数据恢复单次运行
+
+```matlab
+% 示例：根据 run_metadata.json 中的 parameters 字段恢复配置
 config = default_config();
 
-% 示例：复现MSE增强研究
 config.simulation_params.simulation_mode = 'MSE';
-config.particle_params.num_enzymes = 400;
+config.particle_params.num_enzymes = 100;
+config.particle_params.num_substrate = 9000;
+config.simulation_params.total_time = 50;
+config.simulation_params.time_step = 0.0005;
+config.particle_params.diff_coeff_bulk = 1000;
 config.particle_params.diff_coeff_film = 10;
-config.simulation_params.total_time = 100.0;
+config.particle_params.k_cat_GOx = 100;
+config.particle_params.k_cat_HRP = 100;
 
-% 使用已记录的种子进行精确复现
-documented_seed = 1234;  % 来自 复现seed.txt
-result = simulate_once(config, documented_seed);
-
+% seed 来自目录名或 run_metadata.json 的 seed_info.fixed_seed
+result = simulate_once(config, 1234);
 fprintf('复现结果: %d 个产物\n', result.products_final);
 ```
 
-#### 方法2：批量复现使用种子范围
+如果开启了自适应 dt，请同时使用 `run_metadata.json` 中记录的 `dt_final`、`dt_history` 和 dt 约束信息；README 中示例只展示核心参数，复现时不要只依赖示例。
+
+#### 方法3：按 `seeds.csv` 复现批量运行
+
 ```matlab
-% 使用连续种子复现批量实验
 config = default_config();
+
+% 根据目标 run_metadata.json 恢复参数
 config.simulation_params.simulation_mode = 'MSE';
-config.batch.batch_count = 30;
+config.particle_params.num_enzymes = 20;
+config.particle_params.num_substrate = 9000;
+config.batch.batch_count = 200;
 
-% 定义来自已记录实验的种子范围
-base_seed = 1234;
-seed_range = base_seed + (0:29);  % 30个连续种子
+% 从目标运行目录读取原始批次种子
+seed_table = readtable('out/batch/20251016_110157_dual_enz20_sub9000_n200/data/seeds.csv');
+seeds = seed_table.seed;
 
-% 使用特定种子序列运行批量实验
-batch_results = run_batches(config, seed_range);
-
-% 与已记录结果比较
-mean_products = mean(batch_results.products_final);
+batch_results = run_batches(config, seeds);
 fprintf('批量复现: %.1f ± %.1f 个产物\n', ...
-    mean_products, std(batch_results.products_final));
+    mean(batch_results.products_final), std(batch_results.products_final));
 ```
 
-#### 方法3：自动种子加载
-```matlab
-% 未来增强功能：直接从 复现seed.txt 加载种子
-% 此功能将在实验记录完成后添加
-
-function reproduce_experiment(experiment_name)
-    % 从 复现seed.txt 加载参数
-    % 自动应用配置
-    % 运行复现并验证结果
-end
-```
+交互模式下也可以在 seed mode 选择 `from_file`，程序会从历史批量运行中选择 `seeds.csv` 并记录来源信息。
 
 ### 记录新实验
 
-当你发现重要结果时，请在 [`复现seed.txt`](复现seed.txt) 中记录：
+每次运行都会自动生成带时间戳的输出目录。保留或分享该目录即可保留复现实验所需的信息：
 
-```txt
-[你的实验名称]
-seed = 1234
-simulation_mode = MSE
-batch_count = 30
-key_parameters = num_enzymes=200, diff_coeff_film=10, total_time=1.0
-description = 你的发现的简要描述
-results_summary = 关键数值结果（如 mean±std）
-date_recorded = 2025-09-21
-researcher = 你的姓名
-```
+- `data/run_metadata.json`：运行类型、模式、关键参数、dt 自适应信息、seed 信息、输出文件清单、系统信息和运行时间
+- `data/seeds.csv`：批量运行的每个 Monte Carlo 批次 seed
+- `data/batch_results*.csv`：最终统计结果
+- `data/timeseries_products*.csv`：产物时间序列
+- `figures/`：本次运行生成的图
 
 ## 💡 示例代码
 
